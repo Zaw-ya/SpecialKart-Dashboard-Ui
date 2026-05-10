@@ -1,0 +1,105 @@
+<div class="row">
+  <!-- Welcome Header -->
+  <div class="col-12 mb-4">
+    <div class="card bg-black text-white welcome-card animate__animated animate__fadeIn">
+      <div class="card-body p-4">
+        <h2 class="text-white mb-1">Welcome to SpecialKart Dashboard</h2>
+        <p class="text-white-50 mb-0">Manage your cards, locations, and staff efficiently.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  @if (loading) {
+    <div class="col-12 text-center p-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else {
+    <div class="col-md-6 col-xl-3">
+      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Invitation Cards</h6>
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">{{ stats.cards }}</h3>
+            <div class="stat-icon bg-light-primary text-primary">
+              <i class="ti ti-picture"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Event Types</h6>
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">{{ stats.eventTypes }}</h3>
+            <div class="stat-icon bg-light-success text-success">
+              <i class="ti ti-tag"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Supervisors</h6>
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">{{ stats.supervisors }}</h3>
+            <div class="stat-icon bg-light-info text-info">
+              <i class="ti ti-users"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Countries</h6>
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">{{ stats.countries }}</h3>
+            <div class="stat-icon bg-light-warning text-warning">
+              <i class="ti ti-world"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Actions -->
+    <div class="col-12 mt-2">
+      <h5 class="mb-3">Quick Management</h5>
+      <div class="row g-3">
+        <div class="col-md-4 col-lg-3">
+          <a [routerLink]="['/invitation-cards']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
+            <div class="mb-2"><i class="ti ti-plus fs-3"></i></div>
+            <h6 class="mb-0">New Invitation Card</h6>
+          </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <a [routerLink]="['/event-types']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
+            <div class="mb-2"><i class="ti ti-tag fs-3"></i></div>
+            <h6 class="mb-0">Manage Event Types</h6>
+          </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <a [routerLink]="['/supervisors']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
+            <div class="mb-2"><i class="ti ti-user-plus fs-3"></i></div>
+            <h6 class="mb-0">Add New Supervisor</h6>
+          </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <a [routerLink]="['/register']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
+            <div class="mb-2"><i class="ti ti-shield fs-3"></i></div>
+            <h6 class="mb-0">Register Admin</h6>
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+</div>

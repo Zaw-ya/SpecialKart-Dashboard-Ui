@@ -1,0 +1,163 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card card-table">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Invitation Cards Management</h5>
+        <button class="btn btn-primary btn-sm" (click)="addCard()" [disabled]="showForm">
+          <i class="ti ti-plus me-1"></i> Add New Card
+        </button>
+      </div>
+
+      <!-- Form Card -->
+      @if (showForm) {
+        <div class="card-body border-bottom animate__animated animate__fadeIn">
+          <form (ngSubmit)="saveCard()">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Title*</label>
+                  <input type="text" class="form-control" name="title" [(ngModel)]="cardData.title" placeholder="Enter title" required />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group mb-3">
+                  <label class="form-label">Price*</label>
+                  <input type="number" class="form-control" name="price" [(ngModel)]="cardData.price" required />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group mb-3">
+                  <label class="form-label">Gender*</label>
+                  <select class="form-select" name="gender" [(ngModel)]="cardData.gender" required>
+                    <option [value]="0">ذكوري (Male)</option>
+                    <option [value]="1">أنثوي (Female)</option>
+                    <option [value]="2">محايد (Neutral)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Image URL*</label>
+                  <input type="text" class="form-control" name="imageUrl" [(ngModel)]="cardData.imageUrl" placeholder="Enter image URL" required />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group mb-3">
+                  <label class="form-label">Rating (1-5)*</label>
+                  <input type="number" class="form-control" name="rating" [(ngModel)]="cardData.rating" min="1" max="5" required />
+                </div>
+              </div>
+              <div class="col-md-3 mt-4">
+                <div class="d-flex gap-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="isVisible" [(ngModel)]="cardData.isVisible" id="formVisible" />
+                    <label class="form-check-label" for="formVisible">Visible</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="inCarousel" [(ngModel)]="cardData.inCarousel" id="formCarousel" />
+                    <label class="form-check-label" for="formCarousel">Carousel</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Event Types Selection -->
+              <div class="col-12 mb-3">
+                <label class="form-label d-block">Event Types</label>
+                <div class="d-flex flex-wrap gap-2">
+                  @for (type of eventTypes; track type.id) {
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" [id]="'type-' + type.id" 
+                             [checked]="isEventTypeSelected(type.id)" (change)="onEventTypeToggle(type.id)" />
+                      <label class="form-check-label" [for]="'type-' + type.id">{{ type.name }}</label>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2 mt-2">
+              <button type="button" class="btn btn-light" (click)="cancelForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="submitting || !cardData.title || !cardData.imageUrl">
+                @if (submitting) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ editingCard ? 'Update Card' : 'Save Card' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+      <div class="card-body">
+        @if (loading) {
+          <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        } @else if (error) {
+          <div class="alert alert-danger m-3">{{ error }}</div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Gender</th>
+                  <th>Price</th>
+                  <th>Rating</th>
+                  <th>Visible</th>
+                  <th>Carousel</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (card of cards; track card.id) {
+                  <tr>
+                    <td>
+                      <img [src]="card.imageUrl" alt="Card" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;" />
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ card.title }}</h6>
+                    </td>
+                    <td>
+                      <span class="badge" [ngClass]="{'bg-light-primary text-primary': card.gender === 0, 'bg-light-danger text-danger': card.gender === 1, 'bg-light-secondary text-secondary': card.gender === 2}">
+                        {{ getGenderLabel(card.gender) }}
+                      </span>
+                    </td>
+                    <td>{{ card.price | currency:'EGP ':'symbol':'1.2-2' }}</td>
+                    <td>
+                      <div class="text-warning">
+                        @for (i of [1,2,3,4,5]; track i) {
+                          <i class="ti" [ngClass]="card.rating >= i ? 'ti-star-filled' : 'ti-star'"></i>
+                        }
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" [checked]="card.isVisible" (change)="toggleVisibility(card)" />
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge" [ngClass]="card.inCarousel ? 'bg-success' : 'bg-light text-muted'">
+                        {{ card.inCarousel ? 'Yes' : 'No' }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <button class="btn btn-icon btn-light-primary me-2" (click)="editCard(card)"><i class="ti ti-edit"></i></button>
+                      <button class="btn btn-icon btn-light-danger" (click)="deleteCard(card.id)"><i class="ti ti-trash"></i></button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="8" class="text-center p-5 text-muted">No invitation cards found.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

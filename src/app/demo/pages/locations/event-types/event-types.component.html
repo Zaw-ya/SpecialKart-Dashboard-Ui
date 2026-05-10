@@ -1,0 +1,99 @@
+<div class="row">
+  <div class="col-sm-12">
+    <!-- Form Card -->
+    @if (showForm) {
+      <div class="card mb-4 animate__animated animate__fadeIn">
+        <div class="card-header">
+          <h5>{{ editingEventType ? 'Edit Event Type' : 'Add New Event Type' }}</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="saveEventType()">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group mb-3">
+                  <label class="form-label">Event Type Name</label>
+                  <input type="text" class="form-control" name="name" [(ngModel)]="eventTypeName" placeholder="Enter name (e.g. Wedding)" required />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group mb-3">
+                  <label class="form-label">Icon (Tabler Class)</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i [class]="eventTypeIcon"></i></span>
+                    <input type="text" class="form-control" name="icon" [(ngModel)]="eventTypeIcon" placeholder="ti ti-star" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-light" (click)="cancelForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="submitting || !eventTypeName.trim()">
+                @if (submitting) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ editingEventType ? 'Update' : 'Save' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Table Card -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Event Types</h5>
+        <button class="btn btn-primary btn-sm" (click)="addEventType()" [disabled]="showForm">
+          <i class="ti ti-plus me-1"></i> Add Event Type
+        </button>
+      </div>
+      <div class="card-body">
+        @if (loading) {
+          <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+        } @else if (error) {
+          <div class="alert alert-danger m-3">{{ error }}</div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Icon</th>
+                  <th>Name</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (type of eventTypes; track type.id) {
+                  <tr>
+                    <td>
+                      <div class="avatar avatar-s bg-light-primary text-primary">
+                        <i [class]="type.icon || 'ti ti-star'" style="font-size: 20px;"></i>
+                      </div>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ type.name }}</h6>
+                    </td>
+                    <td class="text-end">
+                      <button class="btn btn-icon btn-light-primary me-2" (click)="editEventType(type)">
+                        <i class="ti ti-pencil"></i>
+                      </button>
+                      <button class="btn btn-icon btn-light-danger" (click)="deleteEventType(type.id)">
+                        <i class="ti ti-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="3" class="text-center p-5 text-muted">No event types found.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

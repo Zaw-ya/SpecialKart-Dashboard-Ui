@@ -1,0 +1,53 @@
+.card-table {
+  .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+  }
+
+  .table {
+    th {
+      border-top: none;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      color: #8c8c8c;
+      padding: 1rem 1.5rem;
+    }
+
+    td {
+      padding: 1rem 1.5rem;
+      vertical-align: middle;
+    }
+  }
+
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 8px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.5em 0.8em;
+}
+
+.bg-light-primary { background-color: rgba(70, 128, 255, 0.1); }
+.bg-light-danger { background-color: rgba(220, 38, 38, 0.1); }
+.bg-light-secondary { background-color: rgba(140, 140, 140, 0.1); }
+
+.form-switch .form-check-input {
+  cursor: pointer;
+  width: 2.5em;
+  height: 1.25em;
+}

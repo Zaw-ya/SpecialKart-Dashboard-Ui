@@ -1,0 +1,101 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { EventTypeService, EventType } from 'src/app/theme/shared/service/event-type.service';
+import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-event-types',
+  standalone: true,
+  imports: [CommonModule, SharedModule, FormsModule],
+  templateUrl: './event-types.component.html',
+  styleUrl: './event-types.component.scss'
+})
+export class EventTypesComponent implements OnInit {
+  eventTypes: EventType[] = [];
+  loading = true;
+  error = '';
+  
+  // For Create/Edit
+  showForm = false;
+  editingEventType: EventType | null = null;
+  eventTypeName = '';
+  eventTypeIcon = 'ti ti-star';
+  submitting = false;
+
+  constructor(private eventTypeService: EventTypeService) {}
+
+  ngOnInit(): void {
+    this.loadEventTypes();
+  }
+
+  loadEventTypes(silent = false): void {
+    if (!silent) this.loading = true;
+    this.eventTypeService.getAll().subscribe({
+      next: (data) => {
+        this.eventTypes = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load event types';
+        this.loading = false;
+      }
+    });
+  }
+
+  addEventType(): void {
+    this.editingEventType = null;
+    this.eventTypeName = '';
+    this.eventTypeIcon = 'ti ti-star';
+    this.showForm = true;
+  }
+
+  editEventType(eventType: EventType): void {
+    this.editingEventType = eventType;
+    this.eventTypeName = eventType.name;
+    this.eventTypeIcon = eventType.icon;
+    this.showForm = true;
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+    this.editingEventType = null;
+    this.eventTypeName = '';
+  }
+
+  saveEventType(): void {
+    if (!this.eventTypeName.trim()) return;
+    
+    this.submitting = true;
+    const data = { name: this.eventTypeName, icon: this.eventTypeIcon };
+    
+    const request = this.editingEventType 
+      ? this.eventTypeService.update(this.editingEventType.id, data)
+      : this.eventTypeService.create(data);
+
+    request.subscribe({
+      next: () => {
+        this.eventTypeService.clearCache();
+        this.loadEventTypes(true);
+        this.cancelForm();
+        this.submitting = false;
+      },
+      error: (err) => {
+        alert('Failed to save event type: ' + (err.error?.message || err.message));
+        this.submitting = false;
+      }
+    });
+  }
+
+  deleteEventType(id: number): void {
+    if (confirm('Are you sure? This might affect invitation cards linked to this event type.')) {
+      this.eventTypeService.delete(id).subscribe({
+        next: () => {
+          this.eventTypeService.clearCache();
+          this.loadEventTypes();
+        },
+        error: () => alert('Failed to delete event type')
+      });
+    }
+  }
+}

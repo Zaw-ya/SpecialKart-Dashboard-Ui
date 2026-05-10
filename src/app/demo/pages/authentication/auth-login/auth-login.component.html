@@ -1,0 +1,42 @@
+<div class="auth-main">
+  <div class="auth-wrapper v3">
+    <div class="auth-form">
+      <div class="auth-header">
+        <h2 class="logo-text">SpecialKart</h2>
+      </div>
+      <div class="card my-5">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-end mb-4">
+            <h3 class="mb-0"><b>Login</b></h3>
+          </div>
+          <form (ngSubmit)="login()">
+            <div class="form-group mb-3">
+              <label class="form-label" for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" [(ngModel)]="email" required />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]="password" required />
+            </div>
+            @if (error) {
+              <div class="alert alert-danger mb-3">{{ error }}</div>
+            }
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loading">
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="auth-footer row">
+        <div class="col my-1 text-center">
+          <p class="m-0">SpecialKart © 2026</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
