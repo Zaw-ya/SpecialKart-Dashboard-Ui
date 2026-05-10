@@ -1,0 +1,1032 @@
+openapi: 3.1.1
+info:
+  title: Krooty.Api | v1
+  version: 1.0.0
+servers:
+  - url: https://specialcart-dashboard.tryasp.net/
+paths:
+  /:
+    get:
+      tags:
+        - Krooty.Api
+      responses:
+        "200":
+          description: OK
+  /api/Auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/RegisterDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Cities:
+    get:
+      tags:
+        - Cities
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Cities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCityDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateCityDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateCityDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Cities/country/{countryId}:
+    get:
+      tags:
+        - Cities
+      parameters:
+        - name: countryId
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Cities/{id}:
+    get:
+      tags:
+        - Cities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Cities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCityDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCityDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateCityDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Cities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Countries:
+    get:
+      tags:
+        - Countries
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Countries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCountryDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateCountryDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateCountryDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Countries/{id}:
+    get:
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCountryDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCountryDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateCountryDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/EventTypes:
+    get:
+      tags:
+        - EventTypes
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - EventTypes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventTypeDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventTypeDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateEventTypeDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/EventTypes/{id}:
+    get:
+      tags:
+        - EventTypes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - EventTypes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventTypeDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventTypeDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventTypeDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - EventTypes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Features:
+    get:
+      tags:
+        - Features
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Features
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFeatureDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateFeatureDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateFeatureDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Features/{id}:
+    get:
+      tags:
+        - Features
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Features
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFeatureDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFeatureDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateFeatureDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Features
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/InvitationCards:
+    get:
+      tags:
+        - InvitationCards
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - InvitationCards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvitationCardDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvitationCardDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateInvitationCardDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/InvitationCards/visible:
+    get:
+      tags:
+        - InvitationCards
+      parameters:
+        - name: minRating
+          in: query
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: OK
+  /api/InvitationCards/carousel:
+    get:
+      tags:
+        - InvitationCards
+      parameters:
+        - name: minRating
+          in: query
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: OK
+  /api/InvitationCards/{id}:
+    get:
+      tags:
+        - InvitationCards
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - InvitationCards
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvitationCardDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvitationCardDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvitationCardDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - InvitationCards
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Packages:
+    get:
+      tags:
+        - Packages
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Packages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Packages/active:
+    get:
+      tags:
+        - Packages
+      responses:
+        "200":
+          description: OK
+  /api/Packages/{id}:
+    get:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePackageDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePackageDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdatePackageDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Packages/{id}/toggle-active:
+    patch:
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /api/Supervisors:
+    get:
+      tags:
+        - Supervisors
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Supervisors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSupervisorDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/CreateSupervisorDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/CreateSupervisorDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/Supervisors/visible:
+    get:
+      tags:
+        - Supervisors
+      responses:
+        "200":
+          description: OK
+  /api/Supervisors/{id}:
+    get:
+      tags:
+        - Supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSupervisorDto"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSupervisorDto"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/UpdateSupervisorDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    CardGender:
+      type: integer
+    CreateCityDto:
+      required:
+        - name
+        - countryId
+      type: object
+      properties:
+        name:
+          type: string
+        countryId:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+    CreateCountryDto:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+    CreateEventTypeDto:
+      required:
+        - name
+        - icon
+      type: object
+      properties:
+        name:
+          type: string
+        icon:
+          type: string
+    CreateFeatureDto:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          type: string
+    CreateInvitationCardDto:
+      required:
+        - title
+        - gender
+        - price
+        - imageUrl
+        - isVisible
+        - inCarousel
+        - rating
+        - eventTypeIds
+      type: object
+      properties:
+        title:
+          type: string
+        gender:
+          $ref: "#/components/schemas/CardGender"
+        price:
+          pattern: ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
+          type:
+            - number
+            - string
+          format: double
+        imageUrl:
+          type: string
+        isVisible:
+          type: boolean
+        inCarousel:
+          type: boolean
+        rating:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        eventTypeIds:
+          type: array
+          items:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+    CreatePackageDto:
+      required:
+        - name
+        - description
+        - compensationPercentage
+        - isPopular
+        - isActive
+        - featureIds
+        - pricingTiers
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        compensationPercentage:
+          pattern: ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
+          type:
+            - number
+            - string
+          format: double
+        isPopular:
+          type: boolean
+        isActive:
+          type: boolean
+        featureIds:
+          type: array
+          items:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+        pricingTiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreatePackagePricingTierDto"
+    CreatePackagePricingTierDto:
+      required:
+        - minInvitations
+        - maxInvitations
+        - price
+      type: object
+      properties:
+        minInvitations:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        maxInvitations:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        price:
+          pattern: ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
+          type:
+            - number
+            - string
+          format: double
+    CreateSupervisorDto:
+      required:
+        - name
+        - nickname
+        - imageUrl
+        - rating
+        - isVisible
+      type: object
+      properties:
+        name:
+          type: string
+        nickname:
+          type: string
+        imageUrl:
+          type: string
+        rating:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        isVisible:
+          type: boolean
+    LoginDto:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    RegisterDto:
+      required:
+        - email
+        - password
+        - fullName
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        fullName:
+          type: string
+    UpdateCityDto:
+      required:
+        - name
+        - countryId
+      type: object
+      properties:
+        name:
+          type: string
+        countryId:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+    UpdateCountryDto:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+    UpdateEventTypeDto:
+      required:
+        - name
+        - icon
+      type: object
+      properties:
+        name:
+          type: string
+        icon:
+          type: string
+    UpdateFeatureDto:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          type: string
+    UpdateInvitationCardDto:
+      required:
+        - title
+        - gender
+        - price
+        - imageUrl
+        - isVisible
+        - inCarousel
+        - rating
+        - eventTypeIds
+      type: object
+      properties:
+        title:
+          type: string
+        gender:
+          $ref: "#/components/schemas/CardGender"
+        price:
+          pattern: ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
+          type:
+            - number
+            - string
+          format: double
+        imageUrl:
+          type: string
+        isVisible:
+          type: boolean
+        inCarousel:
+          type: boolean
+        rating:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        eventTypeIds:
+          type: array
+          items:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+    UpdatePackageDto:
+      required:
+        - name
+        - description
+        - compensationPercentage
+        - isPopular
+        - isActive
+        - featureIds
+        - pricingTiers
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        compensationPercentage:
+          pattern: ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
+          type:
+            - number
+            - string
+          format: double
+        isPopular:
+          type: boolean
+        isActive:
+          type: boolean
+        featureIds:
+          type: array
+          items:
+            pattern: ^-?(?:0|[1-9]\d*)$
+            type:
+              - integer
+              - string
+            format: int32
+        pricingTiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreatePackagePricingTierDto"
+    UpdateSupervisorDto:
+      required:
+        - name
+        - nickname
+        - imageUrl
+        - rating
+        - isVisible
+      type: object
+      properties:
+        name:
+          type: string
+        nickname:
+          type: string
+        imageUrl:
+          type: string
+        rating:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+            - integer
+            - string
+          format: int32
+        isVisible:
+          type: boolean
+tags:
+  - name: Krooty.Api
+  - name: Auth
+  - name: Cities
+  - name: Countries
+  - name: EventTypes
+  - name: Features
+  - name: InvitationCards
+  - name: Packages
+  - name: Supervisors

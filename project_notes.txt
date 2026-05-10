@@ -1,0 +1,36 @@
+# Project Notes - SpecialKartDashboardApp
+
+## Initial Setup (2026-05-10)
+- **Dependency Resolution**: Resolved missing `node_modules` by running `npm install --legacy-peer-deps`. This was necessary due to peer dependency conflicts between Angular 21 and `@ng-bootstrap`.
+- **System Configuration**: Used `npm.cmd` to bypass PowerShell execution policy restrictions on the host machine.
+- **Server Initialization**: Successfully started the development server via `npm run start`. The application is currently listening on http://localhost:4200.
+
+## Authentication Implementation (2026-05-10)
+- **Environment Variable**: Created `.env.local` and updated `src/environments/environment.ts` with `apiUrl: 'https://localhost:7084/api'`.
+- **AuthService**: Implemented `src/app/theme/shared/service/auth.service.ts` to manage JWT authentication via the .NET backend.
+- **AuthGuard**: Implemented `src/app/theme/shared/service/auth.guard.ts` to protect dashboard routes.
+- **Routing Protection**: Applied `AuthGuard` to the `AdminLayout` route in `app-routing.module.ts`.
+- **Login Page Refactoring**:
+  - Removed unnecessary social login buttons and pre-filled data.
+  - Integrated `AuthService` for real API authentication.
+  - Added form validation and loading states.
+  - Implemented automatic redirection to the dashboard upon successful login.
+- **Register Page Refactoring**:
+  - Simplified the form to Full Name, Email, and Password to match the API.
+  - Removed all unnecessary social sign-up options and boilerplate fields.
+  - Connected the form to the `AuthService` for real user registration.
+  - Added success messages and automatic redirection to login.
+
+## Dashboard Features (2026-05-10)
+- **API Interceptor**: Implemented `src/app/theme/shared/service/jwt.interceptor.ts` to automatically attach JWT tokens to all outgoing HTTP requests.
+- **Invitation Cards Management**:
+  - **Service**: Created `invitation-card.service.ts` for CRUD operations.
+  - **Page**: Built a management page (`invitation-cards.component`) with a data table, status toggles, and delete functionality.
+  - **Navigation**: Added a new "Management" section to the sidebar menu.
+  - **Dynamic Data**: Connected the page to the live API to display real invitation card data.
+- **Location Management**:
+  - **Services**: Created `country.service.ts` and `city.service.ts`.
+  - **Pages**: Built full CRUD interfaces for both Countries and Cities.
+  - **Inter-dependency**: Cities management includes a dropdown to select from existing countries.
+  - **Navigation**: Added "Countries" and "Cities" to the Management sidebar group.
+

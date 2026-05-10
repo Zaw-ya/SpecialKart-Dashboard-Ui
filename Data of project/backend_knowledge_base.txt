@@ -1,0 +1,76 @@
+# Krooty Project & Backend Knowledge Base
+
+## 1. Project Map (Directory Structure)
+- `/Krooty.Api`: Entry point. Contains Controllers, Program.cs, and appsettings.json.
+- `/Krooty.Core`: The Domain layer. Contains Entities, Enums, and Interfaces. This is the source of truth for the data model.
+- `/Krooty.Application`: The Service layer. Contains DTOs, Mappings (AutoMapper), and business logic services.
+- `/Krooty.Infrastructure`: The Data layer. Contains the DbContext (EF Core), Migrations, and Identity setup.
+
+## 2. Technical Stack
+- **Framework**: .NET 10 Web API.
+- **Database**: SQL Server (configured via EF Core).
+- **Auth**: JWT Bearer Authentication with ASP.NET Core Identity.
+- **Mapping**: AutoMapper for converting Entities to DTOs.
+- **File Storage**: Cloudinary (for images).
+
+---
+
+## 3. Data Entities (Krooty.Core/Entities)
+
+### Invitation Cards (`InvitationCard`)
+- **Properties**: `Title`, `Gender` (Enum), `Price`, `ImageUrl`, `ImagePublicId`, `IsVisible`, `InCarousel`, `Rating`.
+- **Relationships**: Many-to-Many with `CardTag`.
+
+### Packages (`Package`)
+- **Properties**: `Name`, `Description`, `CompensationPercentage`, `IsPopular`, `IsActive`.
+- **Relationships**:
+  - One-to-Many with `PackagePricingTier` (Price varies by quantity).
+  - Many-to-Many with `Feature` (via `PackageFeature`).
+
+### Supervisors (`Supervisor`)
+- **Properties**: `FullName`, `JobTitle`, `ProfileImageUrl`, `IsVisible`, `Rating`.
+
+### Locations
+- `Country`: `Name`.
+- `City`: `Name`, `CountryId`.
+
+### Content
+- `EventType`: `Name`, `IconUrl` (Lucide icon names or URLs).
+- `Feature`: `Name`, `Description`.
+
+---
+
+## 4. API Endpoints Reference
+
+### 🔐 Authentication (`/api/Auth`)
+- `POST /login`: { email, password } -> returns { token, roles, email }.
+- `POST /register`: { email, password, confirmPassword }.
+
+### 🖼️ Invitation Cards (`/api/InvitationCards`)
+- `GET /`: (Admin) All cards.
+- `GET /visible?minRating=0`: (Public) Filtered by visibility and rating.
+- `GET /carousel?minRating=0`: (Public) For hero slider.
+- `GET /{id}`: Details.
+- `POST/PUT/DELETE`: (Admin) Manage designs.
+
+### 📦 Packages (`/api/Packages`)
+- `GET /`: (Admin) All.
+- `GET /active`: (Public) Enabled packages.
+- `GET /{id}`: Detailed view with tiers and features.
+- `PATCH /{id}/toggle-active`: (Admin) Quick toggle.
+
+### 👤 Supervisors (`/api/Supervisors`)
+- `GET /`: (Admin).
+- `GET /visible`: (Public).
+
+### 📍 Locations (`/api/Cities`, `/api/Countries`)
+- `GET /countries`: All countries.
+- `GET /cities/country/{countryId}`: Cities filtered by country.
+
+---
+
+## 5. Development Patterns
+- **Clean Architecture**: Services in `Application` handle logic; Controllers in `Api` handle HTTP.
+- **Soft Delete**: Entities are flagged as `IsDeleted` instead of being removed from DB.
+- **Validation**: Request data is validated in Controllers or Services (standard .NET validation).
+- **Admin Security**: Most management endpoints are protected with `[Authorize(Roles = "Admin")]`.
