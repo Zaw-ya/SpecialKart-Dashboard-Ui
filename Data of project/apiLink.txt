@@ -1,1 +1,0 @@
-https://specialcart-dashboard.tryasp.net/api
