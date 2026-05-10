@@ -42,11 +42,11 @@ export class InvitationCardService {
     return this.http.get<InvitationCard>(`${this.apiUrl}/${id}`);
   }
 
-  create(card: any): Observable<InvitationCard> {
+  create(card: FormData): Observable<InvitationCard> {
     return this.http.post<InvitationCard>(this.apiUrl, card);
   }
 
-  update(id: number, card: any): Observable<InvitationCard> {
+  update(id: number, card: FormData): Observable<InvitationCard> {
     return this.http.put<InvitationCard>(`${this.apiUrl}/${id}`, card);
   }
 

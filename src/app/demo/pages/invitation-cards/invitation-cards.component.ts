@@ -4,6 +4,7 @@ import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/serv
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { EventTypeService, EventType } from 'src/app/theme/shared/service/event-type.service';
+import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -27,16 +28,18 @@ export class InvitationCardsComponent implements OnInit {
     title: '',
     gender: 0,
     price: 0,
-    imageUrl: '',
     isVisible: true,
     inCarousel: false,
     rating: 5,
     eventTypeIds: [] as number[]
   };
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private invitationCardService: InvitationCardService,
-    private eventTypeService: EventTypeService
+    private eventTypeService: EventTypeService,
+    private toastService: ToastService
   ) {}
 
   getGenderLabel(gender: number): string {
@@ -80,12 +83,13 @@ export class InvitationCardsComponent implements OnInit {
       title: '',
       gender: 0,
       price: 0,
-      imageUrl: '',
       isVisible: true,
       inCarousel: false,
       rating: 5,
       eventTypeIds: []
     };
+    this.selectedFile = null;
+    this.imagePreview = null;
     this.showForm = true;
   }
 
@@ -95,39 +99,70 @@ export class InvitationCardsComponent implements OnInit {
       title: card.title,
       gender: Number(card.gender),
       price: card.price,
-      imageUrl: card.imageUrl,
       isVisible: card.isVisible,
       inCarousel: card.inCarousel,
       rating: card.rating,
       eventTypeIds: card.eventTypeIds || []
     };
+    this.selectedFile = null;
+    this.imagePreview = card.imageUrl;
     this.showForm = true;
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   cancelForm(): void {
     this.showForm = false;
     this.editingCard = null;
+    this.selectedFile = null;
+    this.imagePreview = null;
   }
 
   saveCard(): void {
     this.submitting = true;
-    console.log('Saving card:', this.cardData);
     
+    const formData = new FormData();
+    formData.append('Title', this.cardData.title);
+    formData.append('Gender', this.cardData.gender.toString());
+    formData.append('Price', this.cardData.price.toString());
+    formData.append('IsVisible', this.cardData.isVisible.toString());
+    formData.append('InCarousel', this.cardData.inCarousel.toString());
+    formData.append('Rating', this.cardData.rating.toString());
+
+    this.cardData.eventTypeIds.forEach(id => {
+      formData.append('EventTypeIds', id.toString());
+    });
+
+    if (this.selectedFile) {
+      formData.append('Image', this.selectedFile);
+    }
+
     const request = this.editingCard
-      ? this.invitationCardService.update(this.editingCard.id, this.cardData)
-      : this.invitationCardService.create(this.cardData);
+      ? this.invitationCardService.update(this.editingCard.id, formData)
+      : this.invitationCardService.create(formData);
 
     request.subscribe({
       next: () => {
+        this.submitting = false;
+        this.cancelForm();
+        this.toastService.success('Card saved successfully!');
         this.invitationCardService.clearCache();
         this.loadData(true);
-        this.cancelForm();
-        this.submitting = false;
       },
       error: (err) => {
-        console.error('Error saving card:', err);
-        alert('Failed to save card: ' + (err.error?.message || err.message));
         this.submitting = false;
+        const detail = err.error?.detail || err.error?.message || err.message || 'Unknown error';
+        this.toastService.error(`Failed to save card: ${detail}`);
       }
     });
   }
@@ -150,12 +185,21 @@ export class InvitationCardsComponent implements OnInit {
   }
 
   toggleVisibility(card: InvitationCard): void {
-    const updatedCard = { ...card, isVisible: !card.isVisible };
-    console.log('Toggling visibility for card:', card.id);
-    this.invitationCardService.update(card.id, updatedCard).subscribe({
+    const formData = new FormData();
+    formData.append('Title', card.title);
+    formData.append('Gender', card.gender.toString());
+    formData.append('Price', card.price.toString());
+    formData.append('IsVisible', (!card.isVisible).toString());
+    formData.append('InCarousel', (!card.isVisible ? 'false' : card.inCarousel.toString()));
+    formData.append('Rating', card.rating.toString());
+    if (card.eventTypeIds) {
+      card.eventTypeIds.forEach(id => formData.append('EventTypeIds', id.toString()));
+    }
+
+    this.invitationCardService.update(card.id, formData).subscribe({
       next: () => {
-        card.isVisible = updatedCard.isVisible;
-        console.log('Visibility updated successfully');
+        card.isVisible = !card.isVisible;
+        this.invitationCardService.clearCache();
       },
       error: (err) => {
         console.error('Error toggling visibility:', err);
@@ -165,12 +209,21 @@ export class InvitationCardsComponent implements OnInit {
   }
 
   toggleCarousel(card: InvitationCard): void {
-    const updatedCard = { ...card, inCarousel: !card.inCarousel };
-    console.log('Toggling carousel for card:', card.id);
-    this.invitationCardService.update(card.id, updatedCard).subscribe({
+    const formData = new FormData();
+    formData.append('Title', card.title);
+    formData.append('Gender', card.gender.toString());
+    formData.append('Price', card.price.toString());
+    formData.append('IsVisible', card.isVisible.toString());
+    formData.append('InCarousel', (!card.inCarousel).toString());
+    formData.append('Rating', card.rating.toString());
+    if (card.eventTypeIds) {
+      card.eventTypeIds.forEach(id => formData.append('EventTypeIds', id.toString()));
+    }
+
+    this.invitationCardService.update(card.id, formData).subscribe({
       next: () => {
-        card.inCarousel = updatedCard.inCarousel;
-        console.log('Carousel updated successfully');
+        card.inCarousel = !card.inCarousel;
+        this.invitationCardService.clearCache();
       },
       error: (err) => {
         console.error('Error toggling carousel:', err);

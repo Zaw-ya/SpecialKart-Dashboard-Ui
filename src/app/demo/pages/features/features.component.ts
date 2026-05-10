@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FeatureService, Feature } from 'src/app/theme/shared/service/feature.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from 'src/app/theme/shared/service/toast.service';
 
 @Component({
   selector: 'app-features',
@@ -21,7 +22,7 @@ export class FeaturesComponent implements OnInit {
   featureDescription = '';
   submitting = false;
 
-  constructor(private featureService: FeatureService) {}
+  constructor(private featureService: FeatureService, private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.loadFeatures();
@@ -68,14 +69,16 @@ export class FeaturesComponent implements OnInit {
 
     request.subscribe({
       next: () => {
+        this.submitting = false;
+        this.cancelForm();
+        this.toastService.success('Feature saved successfully!');
         this.featureService.clearCache();
         this.loadFeatures(true);
-        this.cancelForm();
-        this.submitting = false;
       },
       error: (err) => {
-        alert('Failed to save feature');
         this.submitting = false;
+        const detail = err.error?.detail || err.error?.message || err.message || 'Unknown error';
+        this.toastService.error(`Failed to save feature: ${detail}`);
       }
     });
   }

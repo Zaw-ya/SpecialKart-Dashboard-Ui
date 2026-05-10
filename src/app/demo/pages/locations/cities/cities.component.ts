@@ -4,6 +4,7 @@ import { CityService, City } from 'src/app/theme/shared/service/city.service';
 import { CountryService, Country } from 'src/app/theme/shared/service/country.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -28,7 +29,8 @@ export class CitiesComponent implements OnInit {
 
   constructor(
     private cityService: CityService,
-    private countryService: CountryService
+    private countryService: CountryService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -90,16 +92,16 @@ export class CitiesComponent implements OnInit {
       : this.cityService.create(cityData);
 
     request.subscribe({
-      next: (res) => {
-        console.log('Save success:', res);
-        this.loadData(true); // Silent refresh
-        this.cancelForm();
+      next: () => {
         this.submitting = false;
+        this.cancelForm();
+        this.toastService.success('City saved successfully!');
+        this.loadData(true);
       },
       error: (err) => {
-        console.error('Save error:', err);
-        alert('Failed to save city: ' + (err.error?.message || err.message));
         this.submitting = false;
+        const detail = err.error?.detail || err.error?.message || err.message || 'Unknown error';
+        this.toastService.error(`Failed to save city: ${detail}`);
       }
     });
   }

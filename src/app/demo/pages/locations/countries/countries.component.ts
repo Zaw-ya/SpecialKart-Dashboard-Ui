@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CountryService, Country } from 'src/app/theme/shared/service/country.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from 'src/app/theme/shared/service/toast.service';
 
 @Component({
   selector: 'app-countries',
@@ -22,7 +23,7 @@ export class CountriesComponent implements OnInit {
   countryName = '';
   submitting = false;
 
-  constructor(private countryService: CountryService) {}
+  constructor(private countryService: CountryService, private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.loadCountries();
@@ -74,17 +75,17 @@ export class CountriesComponent implements OnInit {
       : this.countryService.create({ name: this.countryName });
 
     request.subscribe({
-      next: (res) => {
-        console.log('Save success:', res);
-        this.countryService.clearCache();
-        this.loadCountries(true); // Silent refresh
-        this.cancelForm();
+      next: () => {
         this.submitting = false;
+        this.cancelForm();
+        this.toastService.success('Country saved successfully!');
+        this.countryService.clearCache();
+        this.loadCountries(true);
       },
       error: (err) => {
-        console.error('Save error:', err);
-        alert('Failed to save country: ' + (err.error?.message || err.message));
         this.submitting = false;
+        const detail = err.error?.detail || err.error?.message || err.message || 'Unknown error';
+        this.toastService.error(`Failed to save country: ${detail}`);
       }
     });
   }

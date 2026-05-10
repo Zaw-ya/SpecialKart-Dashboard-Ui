@@ -34,11 +34,11 @@ export class SupervisorService {
     this.supervisors$ = null;
   }
 
-  create(supervisor: any): Observable<Supervisor> {
+  create(supervisor: FormData): Observable<Supervisor> {
     return this.http.post<Supervisor>(this.apiUrl, supervisor);
   }
 
-  update(id: number, supervisor: any): Observable<Supervisor> {
+  update(id: number, supervisor: FormData): Observable<Supervisor> {
     return this.http.put<Supervisor>(`${this.apiUrl}/${id}`, supervisor);
   }
 

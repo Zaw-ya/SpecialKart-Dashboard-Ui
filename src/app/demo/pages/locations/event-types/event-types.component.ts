@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EventTypeService, EventType } from 'src/app/theme/shared/service/event-type.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from 'src/app/theme/shared/service/toast.service';
 
 @Component({
   selector: 'app-event-types',
@@ -23,7 +24,7 @@ export class EventTypesComponent implements OnInit {
   eventTypeIcon = 'ti ti-star';
   submitting = false;
 
-  constructor(private eventTypeService: EventTypeService) {}
+  constructor(private eventTypeService: EventTypeService, private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.loadEventTypes();
@@ -75,14 +76,16 @@ export class EventTypesComponent implements OnInit {
 
     request.subscribe({
       next: () => {
+        this.submitting = false;
+        this.cancelForm();
+        this.toastService.success('Event type saved successfully!');
         this.eventTypeService.clearCache();
         this.loadEventTypes(true);
-        this.cancelForm();
-        this.submitting = false;
       },
       error: (err) => {
-        alert('Failed to save event type: ' + (err.error?.message || err.message));
         this.submitting = false;
+        const detail = err.error?.detail || err.error?.message || err.message || 'Unknown error';
+        this.toastService.error(`Failed to save event type: ${detail}`);
       }
     });
   }

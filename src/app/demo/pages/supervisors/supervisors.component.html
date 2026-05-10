@@ -22,8 +22,13 @@
               </div>
               <div class="col-md-8">
                 <div class="form-group mb-3">
-                  <label class="form-label">Image URL*</label>
-                  <input type="text" class="form-control" name="imageUrl" [(ngModel)]="supervisorData.imageUrl" required />
+                  <label class="form-label">Image*</label>
+                  <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" [required]="!editingSupervisor" />
+                  @if (imagePreview) {
+                    <div class="mt-2">
+                      <img [src]="imagePreview" alt="Preview" class="img-thumbnail" style="max-height: 100px;" />
+                    </div>
+                  }
                 </div>
               </div>
               <div class="col-md-2">
@@ -41,7 +46,7 @@
             </div>
             <div class="d-flex justify-content-end gap-2 mt-2">
               <button type="button" class="btn btn-light" (click)="cancelForm()">Cancel</button>
-              <button type="submit" class="btn btn-primary" [disabled]="submitting || !supervisorData.name.trim()">
+              <button type="submit" class="btn btn-primary" [disabled]="submitting || !supervisorData.name.trim() || (!editingSupervisor && !selectedFile)">
                 @if (submitting) {
                   <span class="spinner-border spinner-border-sm me-1"></span>
                 }
