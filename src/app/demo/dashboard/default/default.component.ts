@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 // project import
-import { CardComponent } from 'src/app/theme/shared/components/card/card.component';
-import { InvitationCardService } from 'src/app/theme/shared/service/invitation-card.service';
-import { CountryService } from 'src/app/theme/shared/service/country.service';
-import { SupervisorService } from 'src/app/theme/shared/service/supervisor.service';
-import { EventTypeService } from 'src/app/theme/shared/service/event-type.service';
-import { OrderService, Order, OrderStatus } from 'src/app/theme/shared/service/order.service';
-import { ContactService, ContactMessage } from 'src/app/theme/shared/service/contact.service';
-import { PackageService } from 'src/app/theme/shared/service/package.service';
-import { BlogService } from 'src/app/theme/shared/service/blog.service';
+import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { InvitationCardService } from '../../../theme/shared/service/invitation-card.service';
+import { CountryService } from '../../../theme/shared/service/country.service';
+import { SupervisorService } from '../../../theme/shared/service/supervisor.service';
+import { EventTypeService } from '../../../theme/shared/service/event-type.service';
+import { OrderService, Order, OrderStatus } from '../../../theme/shared/service/order.service';
+import { ContactService, ContactMessage } from '../../../theme/shared/service/contact.service';
+import { PackageService } from '../../../theme/shared/service/package.service';
+import { BlogService } from '../../../theme/shared/service/blog.service';
 import { forkJoin } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChangeDetectorRef } from '@angular/core';

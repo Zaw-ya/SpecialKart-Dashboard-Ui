@@ -2,23 +2,48 @@
   <div class="col-sm-12">
     <!-- Form Card -->
     @if (showForm) {
-      <div class="card mb-4 animate__animated animate__fadeIn">
-        <div class="card-header">
-          <h5>{{ editingCountry ? 'Edit Country' : 'Add New Country' }}</h5>
+      <div class="card mb-4 animate__animated animate__fadeIn border-0 shadow-sm overflow-hidden">
+        <div class="card-header bg-dark text-white border-0 py-3">
+          <h5 class="mb-0 fw-bold text-white">{{ editingCountry ? 'Update Country Details' : 'Register New Country' }}</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           <form (ngSubmit)="saveCountry()">
-            <div class="form-group mb-3">
-              <label class="form-label">Country Name</label>
-              <input type="text" class="form-control" name="name" [(ngModel)]="countryName" placeholder="Enter country name" required />
-            </div>
-            <div class="d-flex justify-content-end gap-2">
-              <button type="button" class="btn btn-light" (click)="cancelForm()">Cancel</button>
-              <button type="submit" class="btn btn-primary" [disabled]="submitting || !countryName.trim()">
-                @if (submitting) {
-                  <span class="spinner-border spinner-border-sm me-1"></span>
+            <div class="form-group mb-4">
+              <label class="form-label fw-bold text-uppercase small text-muted mb-3 d-flex justify-content-between">
+                <span>Select Country From Registry</span>
+                @if (loadingExternal) {
+                  <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                 }
-                {{ editingCountry ? 'Update' : 'Save' }}
+              </label>
+              
+              <div class="row g-3">
+                <div class="col-md-5">
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="ti ti-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Filter global list..." [(ngModel)]="countrySearch" name="search" />
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <select class="form-select border-0 bg-light fw-bold" name="name" [(ngModel)]="countryName" required [size]="filteredCountries.length > 5 ? 5 : 0">
+                    <option value="" disabled>-- Choose a verified country --</option>
+                    @for (c of filteredCountries; track c.name) {
+                      <option [value]="c.name">{{ c.name }} ({{ c.capital }})</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="mt-2 text-end">
+                <small class="text-muted italic">Showing {{ filteredCountries.length }} of {{ externalCountries.length }} countries</small>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+              <button type="button" class="btn btn-light px-4 fw-bold" (click)="cancelForm()">Discard</button>
+              <button type="submit" class="btn btn-dark px-5 fw-bold d-flex align-items-center gap-2" [disabled]="submitting || !countryName.trim()">
+                @if (submitting) {
+                  <span class="spinner-border spinner-border-sm"></span>
+                }
+                <span>{{ editingCountry ? 'Update Country' : 'Add to Registry' }}</span>
               </button>
             </div>
           </form>
@@ -27,49 +52,80 @@
     }
 
     <!-- Table Card -->
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Countries</h5>
-        <button class="btn btn-primary btn-sm" (click)="addCountry()" [disabled]="showForm">
-          <i class="ti ti-plus me-1"></i> Add Country
-        </button>
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0 fw-bold">Active Countries</h5>
+          <p class="text-muted small mb-0">Manage service availability across regions</p>
+        </div>
+        <div class="d-flex gap-2">
+          <div class="input-group input-group-sm" style="width: 250px;">
+            <span class="input-group-text bg-light border-0"><i class="ti ti-search"></i></span>
+            <input type="text" class="form-control bg-light border-0" placeholder="Search saved countries..." [(ngModel)]="tableSearch" />
+          </div>
+          <button class="btn btn-dark btn-sm d-flex align-items-center gap-2" (click)="addCountry()" [disabled]="showForm">
+            <i class="ti ti-plus"></i> Add Country
+          </button>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body p-0">
         @if (loading) {
           <div class="text-center p-5">
-            <div class="spinner-border text-primary" role="status"></div>
+            <div class="spinner-border text-dark" role="status"></div>
+            <p class="mt-2 text-muted">Loading your countries...</p>
           </div>
         } @else if (error) {
-          <div class="alert alert-danger m-3">{{ error }}</div>
+          <div class="alert alert-danger m-4">{{ error }}</div>
         } @else {
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead>
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th class="text-end">Actions</th>
+                  <th class="ps-4" style="width: 80px;">ID</th>
+                  <th>Country</th>
+                  <th class="text-end pe-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                @for (country of countries; track country.id) {
+                @for (country of filteredTableCountries; track country.id) {
                   <tr>
-                    <td>{{ country.id }}</td>
-                    <td>
-                      <h6 class="mb-0">{{ country.name }}</h6>
+                    <td class="ps-4">
+                      <span class="text-muted small">#{{ country.id }}</span>
                     </td>
-                    <td class="text-end">
-                      <button class="btn btn-icon btn-light-primary me-2" (click)="editCountry(country)">
-                        <i class="ti ti-edit"></i>
-                      </button>
-                      <button class="btn btn-icon btn-light-danger" (click)="deleteCountry(country.id)">
-                        <i class="ti ti-trash"></i>
-                      </button>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="flag-container me-3 rounded overflow-hidden shadow-sm" style="width: 32px; height: 20px;">
+                          @if (flags[country.name]) {
+                            <img [src]="flags[country.name]" class="img-fluid w-100 h-100 object-fit-cover" [alt]="country.name" />
+                          } @else {
+                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-world text-muted small"></i>
+                            </div>
+                          }
+                        </div>
+                        <h6 class="mb-0 fw-bold">{{ country.name }}</h6>
+                      </div>
+                    </td>
+                    <td class="text-end pe-4">
+                      <div class="d-flex justify-content-end gap-1">
+                        <button class="btn btn-icon btn-link-primary" (click)="editCountry(country)" title="Edit">
+                          <i class="ti ti-edit"></i>
+                        </button>
+                        <button class="btn btn-icon btn-link-danger" (click)="deleteCountry(country.id)" title="Delete">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="3" class="text-center p-5 text-muted">No countries found.</td>
+                    <td colspan="3" class="text-center p-5">
+                      <div class="mb-3">
+                        <i class="ti ti-world-off fs-1 text-muted"></i>
+                      </div>
+                      <h6 class="text-muted">No countries found</h6>
+                      <p class="text-muted small">Start by adding a new country to your service area.</p>
+                    </td>
                   </tr>
                 }
               </tbody>

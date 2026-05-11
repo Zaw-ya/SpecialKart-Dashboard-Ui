@@ -2,37 +2,35 @@
   <div class="col-sm-12">
     <!-- Form Card -->
     @if (showForm) {
-      <div class="card mb-4 animate__animated animate__fadeIn">
-        <div class="card-header">
-          <h5>{{ editingCity ? 'Edit City' : 'Add New City' }}</h5>
+      <div class="card mb-4 animate__animated animate__fadeIn border-0 shadow-sm overflow-hidden">
+        <div class="card-header bg-dark text-white border-0 py-3">
+          <h5 class="mb-0 fw-bold text-white">{{ editingCity ? 'Edit City Profile' : 'Register New City' }}</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           <form (ngSubmit)="saveCity()">
-            <div class="row">
+            <div class="row g-4 mb-4">
               <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label class="form-label">City Name</label>
-                  <input type="text" class="form-control" name="name" [(ngModel)]="cityName" placeholder="Enter city name" required />
-                </div>
+                <label class="form-label fw-bold text-uppercase small text-muted mb-2">City Name</label>
+                <input type="text" class="form-control border-0 bg-light fw-bold p-3" name="name" [(ngModel)]="cityName" placeholder="e.g. Cairo, Dubai" required />
               </div>
               <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label class="form-label">Country</label>
-                  <select class="form-select" name="countryId" [(ngModel)]="selectedCountryId" required>
-                    @for (country of countries; track country.id) {
-                      <option [value]="country.id">{{ country.name }}</option>
-                    }
-                  </select>
-                </div>
+                <label class="form-label fw-bold text-uppercase small text-muted mb-2">Belongs to Country</label>
+                <select class="form-select border-0 bg-light fw-bold p-3" name="countryId" [(ngModel)]="selectedCountryId" required>
+                  <option [ngValue]="null" disabled>-- Select Country --</option>
+                  @for (country of countries; track country.id) {
+                    <option [value]="country.id">{{ country.name }}</option>
+                  }
+                </select>
               </div>
             </div>
-            <div class="d-flex justify-content-end gap-2">
-              <button type="button" class="btn btn-light" (click)="cancelForm()">Cancel</button>
-              <button type="submit" class="btn btn-primary" [disabled]="submitting || !cityName.trim() || !selectedCountryId">
+            
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+              <button type="button" class="btn btn-light px-4 fw-bold" (click)="cancelForm()">Discard</button>
+              <button type="submit" class="btn btn-dark px-5 fw-bold d-flex align-items-center gap-2" [disabled]="submitting || !cityName.trim() || !selectedCountryId">
                 @if (submitting) {
-                  <span class="spinner-border spinner-border-sm me-1"></span>
+                  <span class="spinner-border spinner-border-sm"></span>
                 }
-                {{ editingCity ? 'Update' : 'Save' }}
+                <span>{{ editingCity ? 'Update City' : 'Add to Registry' }}</span>
               </button>
             </div>
           </form>
@@ -41,53 +39,85 @@
     }
 
     <!-- Table Card -->
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Cities</h5>
-        <button class="btn btn-primary btn-sm" (click)="addCity()" [disabled]="showForm">
-          <i class="ti ti-plus me-1"></i> Add City
-        </button>
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0 fw-bold">Urban Directory</h5>
+          <p class="text-muted small mb-0">Manage delivery and service coverage across cities</p>
+        </div>
+        <div class="d-flex gap-2">
+          <div class="input-group input-group-sm" style="width: 250px;">
+            <span class="input-group-text bg-light border-0"><i class="ti ti-search"></i></span>
+            <input type="text" class="form-control bg-light border-0" placeholder="Search cities or countries..." [(ngModel)]="tableSearch" />
+          </div>
+          <button class="btn btn-dark btn-sm d-flex align-items-center gap-2" (click)="addCity()" [disabled]="showForm">
+            <i class="ti ti-plus"></i> Add City
+          </button>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body p-0">
         @if (loading) {
           <div class="text-center p-5">
-            <div class="spinner-border text-primary" role="status"></div>
+            <div class="spinner-border text-dark" role="status"></div>
+            <p class="mt-2 text-muted">Synchronizing urban data...</p>
           </div>
         } @else if (error) {
-          <div class="alert alert-danger m-3">{{ error }}</div>
+          <div class="alert alert-danger m-4">{{ error }}</div>
         } @else {
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead>
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
+                  <th class="ps-4" style="width: 80px;">ID</th>
+                  <th>City</th>
                   <th>Country</th>
-                  <th class="text-end">Actions</th>
+                  <th class="text-end pe-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                @for (city of cities; track city.id) {
+                @for (city of filteredTableCities; track city.id) {
                   <tr>
-                    <td>{{ city.id }}</td>
-                    <td>
-                      <h6 class="mb-0">{{ city.name }}</h6>
+                    <td class="ps-4">
+                      <span class="text-muted small">#{{ city.id }}</span>
                     </td>
                     <td>
-                      <span class="badge bg-light-primary text-primary">{{ getCountryName(city.countryId) }}</span>
+                      <h6 class="mb-0 fw-bold">{{ city.name }}</h6>
                     </td>
-                    <td class="text-end">
-                      <button class="btn btn-icon btn-light-primary me-2" (click)="editCity(city)">
-                        <i class="ti ti-edit"></i>
-                      </button>
-                      <button class="btn btn-icon btn-light-danger" (click)="deleteCity(city.id)">
-                        <i class="ti ti-trash"></i>
-                      </button>
+                    <td>
+                      @let countryName = getCountryName(city.countryId);
+                      <div class="d-flex align-items-center">
+                        <div class="flag-container me-2 rounded overflow-hidden shadow-sm" style="width: 24px; height: 15px;">
+                          @if (flags[countryName]) {
+                            <img [src]="flags[countryName]" class="img-fluid w-100 h-100 object-fit-cover" [alt]="countryName" />
+                          } @else {
+                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                              <i class="ti ti-world text-muted small"></i>
+                            </div>
+                          }
+                        </div>
+                        <span class="text-muted">{{ countryName }}</span>
+                      </div>
+                    </td>
+                    <td class="text-end pe-4">
+                      <div class="d-flex justify-content-end gap-1">
+                        <button class="btn btn-icon btn-link-primary" (click)="editCity(city)" title="Edit">
+                          <i class="ti ti-edit"></i>
+                        </button>
+                        <button class="btn btn-icon btn-link-danger" (click)="deleteCity(city.id)" title="Delete">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="4" class="text-center p-5 text-muted">No cities found.</td>
+                    <td colspan="4" class="text-center p-5">
+                      <div class="mb-3">
+                        <i class="ti ti-map-pin-off fs-1 text-muted"></i>
+                      </div>
+                      <h6 class="text-muted">No cities registered</h6>
+                      <p class="text-muted small">Expand your reach by adding your first service city.</p>
+                    </td>
                   </tr>
                 }
               </tbody>

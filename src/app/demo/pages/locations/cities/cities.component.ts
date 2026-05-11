@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CityService, City } from 'src/app/theme/shared/service/city.service';
-import { CountryService, Country } from 'src/app/theme/shared/service/country.service';
-import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { CityService, City } from '../../../../theme/shared/service/city.service';
+import { CountryService, Country } from '../../../../theme/shared/service/country.service';
+import { SharedModule } from '../../../../theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
-import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { ToastService } from '../../../../theme/shared/service/toast.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -26,6 +26,8 @@ export class CitiesComponent implements OnInit {
   cityName = '';
   selectedCountryId: number | null = null;
   submitting = false;
+  tableSearch = '';
+  flags: { [key: string]: string } = {};
 
   constructor(
     private cityService: CityService,
@@ -44,13 +46,19 @@ export class CitiesComponent implements OnInit {
     
     forkJoin({
       countries: this.countryService.getAll(),
-      cities: this.cityService.getAll()
+      cities: this.cityService.getAll(),
+      external: this.countryService.getExternalCountries()
     }).subscribe({
       next: (data) => {
         this.countries = data.countries;
         this.cities = data.cities;
+        
+        // Map flags
+        data.external.forEach((c: any) => {
+          this.flags[c.name.common] = c.flags?.svg || c.flags?.png || '';
+        });
+
         this.loading = false;
-        console.log('Cities and countries loaded successfully');
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -118,8 +126,16 @@ export class CitiesComponent implements OnInit {
       });
     }
   }
-
   getCountryName(id: number): string {
     return this.countries.find(c => c.id === id)?.name || 'Unknown';
+  }
+
+  get filteredTableCities(): City[] {
+    if (!this.tableSearch) return this.cities;
+    const search = this.tableSearch.toLowerCase();
+    return this.cities.filter(c => 
+      c.name.toLowerCase().includes(search) || 
+      this.getCountryName(c.countryId).toLowerCase().includes(search)
+    );
   }
 }

@@ -38,4 +38,8 @@ export class CountryService {
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getExternalCountries(): Observable<any[]> {
+    return this.http.get<any[]>('https://restcountries.com/v3.1/all?fields=name,capital,flags');
+  }
 }
