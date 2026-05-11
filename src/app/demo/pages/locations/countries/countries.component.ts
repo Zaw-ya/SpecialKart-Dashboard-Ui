@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CountryService, Country } from 'src/app/theme/shared/service/country.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -23,7 +23,11 @@ export class CountriesComponent implements OnInit {
   countryName = '';
   submitting = false;
 
-  constructor(private countryService: CountryService, private toastService: ToastService) {}
+  constructor(
+    private countryService: CountryService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadCountries();
@@ -37,11 +41,13 @@ export class CountriesComponent implements OnInit {
         this.countries = data;
         this.loading = false;
         console.log('Countries loaded:', data);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading countries:', err);
         this.error = 'Failed to load countries';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

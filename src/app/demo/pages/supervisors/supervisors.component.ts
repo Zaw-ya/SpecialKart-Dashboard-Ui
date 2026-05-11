@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupervisorService, Supervisor } from 'src/app/theme/shared/service/supervisor.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -29,7 +29,11 @@ export class SupervisorsComponent implements OnInit {
   imagePreview: string | null = null;
   submitting = false;
 
-  constructor(private supervisorService: SupervisorService, private toastService: ToastService) {}
+  constructor(
+    private supervisorService: SupervisorService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadSupervisors();
@@ -41,10 +45,12 @@ export class SupervisorsComponent implements OnInit {
       next: (data) => {
         this.supervisors = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'Failed to load supervisors';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

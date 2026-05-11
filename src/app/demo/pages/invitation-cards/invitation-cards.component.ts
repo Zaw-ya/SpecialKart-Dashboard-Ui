@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/service/invitation-card.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -39,7 +39,8 @@ export class InvitationCardsComponent implements OnInit {
   constructor(
     private invitationCardService: InvitationCardService,
     private eventTypeService: EventTypeService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   getGenderLabel(gender: number): string {
@@ -68,11 +69,13 @@ export class InvitationCardsComponent implements OnInit {
         this.eventTypes = res.eventTypes;
         this.loading = false;
         console.log('Data loaded successfully');
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading data:', err);
         this.error = 'Failed to load data';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

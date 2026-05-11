@@ -22,17 +22,10 @@ export class SupervisorService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Supervisor[]> {
-    if (!this.supervisors$) {
-      this.supervisors$ = this.http.get<Supervisor[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.supervisors$;
+    return this.http.get<Supervisor[]>(this.apiUrl);
   }
 
-  clearCache() {
-    this.supervisors$ = null;
-  }
+  clearCache() {}
 
   create(supervisor: FormData): Observable<Supervisor> {
     return this.http.post<Supervisor>(this.apiUrl, supervisor);

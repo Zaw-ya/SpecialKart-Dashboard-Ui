@@ -25,18 +25,11 @@ export class InvitationCardService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<InvitationCard[]> {
-    if (!this.cards$) {
-      this.cards$ = this.http.get<InvitationCard[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.cards$;
+    return this.http.get<InvitationCard[]>(this.apiUrl);
   }
 
   // Add a clearCache method for when data changes
-  clearCache() {
-    this.cards$ = null;
-  }
+  clearCache() {}
 
   getById(id: number): Observable<InvitationCard> {
     return this.http.get<InvitationCard>(`${this.apiUrl}/${id}`);

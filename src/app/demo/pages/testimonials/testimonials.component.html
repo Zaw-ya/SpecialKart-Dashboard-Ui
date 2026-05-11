@@ -1,0 +1,166 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-0 fw-bold">Testimonials</h5>
+            <p class="text-muted small mb-0">Manage customer reviews and feedback</p>
+          </div>
+          <button class="btn btn-dark d-flex align-items-center gap-2" (click)="addTestimonial()">
+            <i class="ti ti-plus"></i>
+            <span>Add Testimonial</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading && testimonials.length === 0) {
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="col-12">
+      <div class="alert alert-danger">{{ error }}</div>
+    </div>
+  } @else {
+    <div class="col-sm-12">
+      <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4">Client</th>
+                <th>Role</th>
+                <th>Rating</th>
+                <th>Content</th>
+                <th>Status</th>
+                <th class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of testimonials; track item.id) {
+                <tr>
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center gap-3">
+                      <img [src]="item.imageUrl" class="rounded-circle object-fit-cover" width="40" height="40" [alt]="item.name" />
+                      <div class="fw-semibold">{{ item.name }}</div>
+                    </div>
+                  </td>
+                  <td>{{ item.role }}</td>
+                  <td>
+                    <div class="text-warning">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <i class="ti fs-6" [ngClass]="star <= item.rating ? 'ti-star-filled' : 'ti-star'"></i>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <div class="text-truncate" style="max-width: 250px;" [title]="item.content">{{ item.content }}</div>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="item.isVisible ? 'bg-light-success text-success' : 'bg-light-secondary text-secondary'">
+                      {{ item.isVisible ? 'Visible' : 'Hidden' }}
+                    </span>
+                  </td>
+                  <td class="text-end pe-4">
+                    <div class="d-flex justify-content-end gap-1">
+                      <button class="btn btn-icon btn-link-secondary" (click)="toggleVisibility(item)" [title]="item.isVisible ? 'Hide' : 'Show'">
+                        <i class="ti" [ngClass]="item.isVisible ? 'ti-eye-off' : 'ti-eye'"></i>
+                      </button>
+                      <button class="btn btn-icon btn-link-primary" (click)="editTestimonial(item)">
+                        <i class="ti ti-edit"></i>
+                      </button>
+                      <button class="btn btn-icon btn-link-danger" (click)="deleteTestimonial(item.id)">
+                        <i class="ti ti-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (testimonials.length === 0) {
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">No testimonials found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Modal Form -->
+@if (showForm) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white border-0 py-3">
+          <h5 class="modal-title fw-bold">{{ editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial' }}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cancelForm()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-12 text-center mb-3">
+              <div class="position-relative d-inline-block">
+                <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center overflow-hidden" style="width: 100px; height: 100px;">
+                  @if (imagePreview) {
+                    <img [src]="imagePreview" class="w-100 h-100 object-fit-cover" alt="Avatar" />
+                  } @else {
+                    <i class="ti ti-user fs-1 text-muted"></i>
+                  }
+                </div>
+                <label class="position-absolute bottom-0 end-0 bg-dark text-white rounded-circle p-2 cursor-pointer shadow-sm" style="line-height: 1;">
+                  <i class="ti ti-camera"></i>
+                  <input type="file" class="d-none" (change)="onFileSelected($event)" accept="image/*" />
+                </label>
+              </div>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label fw-semibold">Client Name</label>
+              <input type="text" class="form-control" [(ngModel)]="testimonialData.name" placeholder="Enter name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Role / Title</label>
+              <input type="text" class="form-control" [(ngModel)]="testimonialData.role" placeholder="e.g. Wedding Planner" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Rating</label>
+              <select class="form-select" [(ngModel)]="testimonialData.rating">
+                <option [value]="5">5 Stars</option>
+                <option [value]="4">4 Stars</option>
+                <option [value]="3">3 Stars</option>
+                <option [value]="2">2 Stars</option>
+                <option [value]="1">1 Star</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Review Content</label>
+              <textarea class="form-control" rows="4" [(ngModel)]="testimonialData.content" placeholder="Enter testimonial content..."></textarea>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="visibleSwitch" [(ngModel)]="testimonialData.isVisible" />
+                <label class="form-check-label fw-semibold" for="visibleSwitch">Visible on Website</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="button" class="btn btn-light px-4" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn btn-dark px-5 d-flex align-items-center gap-2" (click)="saveTestimonial()" [disabled]="submitting || !testimonialData.name">
+            @if (submitting) {
+              <span class="spinner-border spinner-border-sm"></span>
+            }
+            <span>{{ editingTestimonial ? 'Update' : 'Save' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

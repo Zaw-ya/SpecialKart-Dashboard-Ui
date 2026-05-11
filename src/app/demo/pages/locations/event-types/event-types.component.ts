@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventTypeService, EventType } from 'src/app/theme/shared/service/event-type.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -24,7 +24,11 @@ export class EventTypesComponent implements OnInit {
   eventTypeIcon = 'ti ti-star';
   submitting = false;
 
-  constructor(private eventTypeService: EventTypeService, private toastService: ToastService) {}
+  constructor(
+    private eventTypeService: EventTypeService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadEventTypes();
@@ -36,10 +40,12 @@ export class EventTypesComponent implements OnInit {
       next: (data) => {
         this.eventTypes = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = 'Failed to load event types';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

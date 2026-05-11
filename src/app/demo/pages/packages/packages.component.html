@@ -1,0 +1,205 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-0 fw-bold">Service Packages</h5>
+            <p class="text-muted small mb-0">Manage pricing plans and feature sets</p>
+          </div>
+          <button class="btn btn-dark d-flex align-items-center gap-2" (click)="addPackage()">
+            <i class="ti ti-plus"></i>
+            <span>Create Package</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading && packages.length === 0) {
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="col-12">
+      <div class="alert alert-danger">{{ error }}</div>
+    </div>
+  } @else {
+    <div class="col-sm-12">
+      <div class="row g-4">
+        @for (pkg of packages; track pkg.id) {
+          <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100 overflow-hidden position-relative">
+              @if (pkg.isPopular) {
+                <div class="position-absolute top-0 end-0 bg-warning text-white px-3 py-1 small fw-bold" style="border-bottom-left-radius: 12px; z-index: 1;">
+                  Popular
+                </div>
+              }
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <h5 class="fw-bold mb-0">{{ pkg.name }}</h5>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" [checked]="pkg.isActive" (change)="toggleActive(pkg)" />
+                  </div>
+                </div>
+                <p class="text-muted small mb-4 line-clamp-2" style="height: 40px;">{{ pkg.description }}</p>
+                
+                <div class="mb-4">
+                  <label class="text-muted small fw-bold text-uppercase d-block mb-2">Pricing Tiers</label>
+                  @for (tier of pkg.pricingTiers; track $index) {
+                    <div class="d-flex justify-content-between border-bottom py-2 small">
+                      <span>{{ tier.minInvitations }} - {{ tier.maxInvitations }} دعوة</span>
+                      <span class="fw-bold">{{ tier.price }} L.E</span>
+                    </div>
+                  } @empty {
+                    <div class="text-muted small italic">No pricing tiers defined</div>
+                  }
+                </div>
+
+                <div class="mb-4">
+                  <label class="text-muted small fw-bold text-uppercase d-block mb-2">Features</label>
+                  <div class="d-flex flex-wrap gap-1">
+                    @for (featureId of pkg.featureIds; track featureId) {
+                      <span class="badge bg-light text-dark border fw-normal">{{ getFeatureDescription(featureId) }}</span>
+                    } @empty {
+                      <span class="text-muted small italic">No features included</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                  <button class="btn btn-outline-dark flex-grow-1 d-flex align-items-center justify-content-center gap-2" (click)="editPackage(pkg)">
+                    <i class="ti ti-edit"></i> Edit
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="deletePackage(pkg.id)">
+                    <i class="ti ti-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        @if (packages.length === 0) {
+          <div class="col-12 text-center py-5 text-muted">No packages found.</div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Package Form Modal -->
+@if (showForm) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white border-0 py-3">
+          <h5 class="modal-title fw-bold">{{ editingPackage ? 'Edit Package' : 'Create New Package' }}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cancelForm()"></button>
+        </div>
+        <div class="modal-body p-4 bg-light-soft">
+          <div class="row g-4">
+            <!-- Left Side: Basic Info -->
+            <div class="col-md-5">
+              <div class="card border-0 shadow-sm p-4 h-100">
+                <h6 class="fw-bold mb-3 border-bottom pb-2">Basic Information</h6>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">Package Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="packageData.name" placeholder="e.g. Basic, Premium" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="packageData.description" placeholder="Brief summary of the package"></textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Compensation %</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control" [(ngModel)]="packageData.compensationPercentage" />
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="d-flex gap-4 mt-2">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="popularSwitch" [(ngModel)]="packageData.isPopular" />
+                        <label class="form-check-label fw-semibold" for="popularSwitch">Mark as Popular</label>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="activeSwitch" [(ngModel)]="packageData.isActive" />
+                        <label class="form-check-label fw-semibold" for="activeSwitch">Active</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h6 class="fw-bold mt-4 mb-3 border-bottom pb-2">Features Included</h6>
+                <div class="feature-selector overflow-auto" style="max-height: 300px;">
+                  @for (feature of allFeatures; track feature.id) {
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" [id]="'feat'+feature.id" [checked]="isFeatureSelected(feature.id)" (change)="toggleFeature(feature.id)" />
+                      <label class="form-check-label small" [for]="'feat'+feature.id">{{ feature.description }}</label>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Pricing Tiers -->
+            <div class="col-md-7">
+              <div class="card border-0 shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                  <h6 class="fw-bold mb-0">Pricing Tiers (By Invitation Count)</h6>
+                  <button class="btn btn-sm btn-dark d-flex align-items-center gap-1" (click)="addPricingTier()">
+                    <i class="ti ti-plus"></i> Add Tier
+                  </button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead>
+                      <tr class="small text-muted">
+                        <th>Min Invites</th>
+                        <th>Max Invites</th>
+                        <th>Price (L.E)</th>
+                        <th class="text-end"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (tier of packageData.pricingTiers; track $index) {
+                        <tr>
+                          <td><input type="number" class="form-control form-control-sm" [(ngModel)]="tier.minInvitations" /></td>
+                          <td><input type="number" class="form-control form-control-sm" [(ngModel)]="tier.maxInvitations" /></td>
+                          <td><input type="number" class="form-control form-control-sm" [(ngModel)]="tier.price" /></td>
+                          <td class="text-end">
+                            <button class="btn btn-sm btn-link-danger" (click)="removePricingTier($index)">
+                              <i class="ti ti-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      }
+                      @if (packageData.pricingTiers.length === 0) {
+                        <tr>
+                          <td colspan="4" class="text-center py-4 text-muted small">No pricing tiers added yet. Click 'Add Tier' above.</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="button" class="btn btn-light px-4" (click)="cancelForm()">Cancel</button>
+          <button type="button" class="btn btn-dark px-5 d-flex align-items-center gap-2" (click)="savePackage()" [disabled]="submitting || !packageData.name">
+            @if (submitting) {
+              <span class="spinner-border spinner-border-sm"></span>
+            }
+            <span>{{ editingPackage ? 'Update Package' : 'Create Package' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

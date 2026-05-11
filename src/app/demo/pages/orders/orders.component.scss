@@ -1,0 +1,32 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-light-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.bg-light-primary {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.bg-light-success {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.bg-light-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.bg-light-secondary {
+  background-color: rgba(108, 117, 125, 0.1) !important;
+}
+
+.table {
+    th { font-size: 0.85rem; }
+}
+
+.dropdown-item {
+    cursor: pointer;
+    &:hover { background-color: #f8f9fa; }
+}

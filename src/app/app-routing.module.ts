@@ -58,6 +58,26 @@ const routes: Routes = [
       {
         path: 'sample-page',
         loadComponent: () => import('./demo/others/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
+      },
+      {
+        path: 'blog',
+        loadComponent: () => import('./demo/pages/blog/blog.component').then((c) => c.BlogComponent)
+      },
+      {
+        path: 'testimonials',
+        loadComponent: () => import('./demo/pages/testimonials/testimonials.component').then((c) => c.TestimonialsComponent)
+      },
+      {
+        path: 'contacts',
+        loadComponent: () => import('./demo/pages/contacts/contacts.component').then((c) => c.ContactsComponent)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent)
+      },
+      {
+        path: 'packages',
+        loadComponent: () => import('./demo/pages/packages/packages.component').then((c) => c.PackagesComponent)
       }
     ]
   },

@@ -19,17 +19,10 @@ export class EventTypeService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<EventType[]> {
-    if (!this.eventTypes$) {
-      this.eventTypes$ = this.http.get<EventType[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.eventTypes$;
+    return this.http.get<EventType[]>(this.apiUrl);
   }
 
-  clearCache() {
-    this.eventTypes$ = null;
-  }
+  clearCache() {}
 
   create(eventType: any): Observable<EventType> {
     return this.http.post<EventType>(this.apiUrl, eventType);

@@ -1,0 +1,21 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-light-primary {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.bg-light-secondary {
+  background-color: rgba(108, 117, 125, 0.1) !important;
+}
+
+tr.fw-bold {
+    background-color: rgba(0,0,0,0.02);
+    td { color: #000; }
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}

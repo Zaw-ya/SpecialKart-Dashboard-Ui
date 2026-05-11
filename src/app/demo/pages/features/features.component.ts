@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeatureService, Feature } from 'src/app/theme/shared/service/feature.service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -22,7 +22,11 @@ export class FeaturesComponent implements OnInit {
   featureDescription = '';
   submitting = false;
 
-  constructor(private featureService: FeatureService, private toastService: ToastService) {}
+  constructor(
+    private featureService: FeatureService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadFeatures();
@@ -34,10 +38,12 @@ export class FeaturesComponent implements OnInit {
       next: (data) => {
         this.features = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'Failed to load features';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

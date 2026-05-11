@@ -1,0 +1,187 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-0 fw-bold">Orders Management</h5>
+            <p class="text-muted small mb-0">Track and manage customer orders</p>
+          </div>
+          <div class="d-flex gap-2">
+             <div class="badge bg-light-warning text-warning px-3 py-2 border">
+                {{ getPendingOrdersCount() }} Pending
+             </div>
+             <div class="badge bg-light-primary text-primary px-3 py-2 border">
+                {{ orders.length }} Total
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading && orders.length === 0) {
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="col-12">
+      <div class="alert alert-danger">{{ error }}</div>
+    </div>
+  } @else {
+    <div class="col-sm-12">
+      <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle text-end" dir="rtl">
+            <thead class="bg-light">
+              <tr>
+                <th class="pr-4">رقم الطلب</th>
+                <th>العميل</th>
+                <th>التاريخ</th>
+                <th>الإجمالي</th>
+                <th>الحالة</th>
+                <th class="text-start pl-4">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of orders; track order.id) {
+                <tr (click)="viewOrder(order)" class="cursor-pointer">
+                  <td class="pr-4">
+                    <span class="fw-bold">#{{ order.orderNumber }}</span>
+                  </td>
+                  <td>
+                    <div class="fw-semibold">{{ order.customerName }}</div>
+                    <div class="text-muted small">{{ order.customerPhone }}</div>
+                  </td>
+                  <td>{{ order.createdAt | date: 'MMM dd, yyyy' }}</td>
+                  <td>{{ order.totalPrice | number:'1.2-2' }} L.E</td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusClass(order.status)">
+                      {{ getStatusLabel(order.status) }}
+                    </span>
+                  </td>
+                  <td class="text-start pl-4">
+                    <div class="d-flex justify-content-start gap-1" (click)="$event.stopPropagation()">
+                      <button class="btn btn-icon btn-link-primary" (click)="viewOrder(order)">
+                        <i class="ti ti-eye"></i>
+                      </button>
+                      
+                      <div class="dropdown d-inline-block">
+                        <button class="btn btn-icon btn-link-secondary" data-bs-toggle="dropdown">
+                          <i class="ti ti-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-start border-0 shadow-sm">
+                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Processing)">قيد التنفيذ</a></li>
+                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Completed)">مكتمل</a></li>
+                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Cancelled)">إلغاء الطلب</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item py-2 text-danger" (click)="deleteOrder(order.id)">حذف نهائياً</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (orders.length === 0) {
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">لا يوجد طلبات حالياً.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Order Detail Modal -->
+@if (selectedOrder) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" dir="rtl">
+        <div class="modal-header bg-dark text-white border-0 py-3">
+          <h5 class="modal-title fw-bold">تفاصيل الطلب #{{ selectedOrder.orderNumber }}</h5>
+          <button type="button" class="btn-close btn-close-white ms-0 me-auto" (click)="closeOrder()"></button>
+        </div>
+        <div class="modal-body p-4 text-end">
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase d-block mb-1">بيانات العميل</label>
+              <div class="card bg-light border-0 p-3">
+                <div class="fw-bold fs-5 mb-1">{{ selectedOrder.customerName }}</div>
+                <div class="text-muted mb-1"><i class="ti ti-mail ml-2"></i> {{ selectedOrder.customerEmail }}</div>
+                <div class="text-muted"><i class="ti ti-phone ml-2"></i> {{ selectedOrder.customerPhone }}</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase d-block mb-1">حالة الطلب</label>
+              <div class="card bg-light border-0 p-3 h-100 d-flex flex-row align-items-center justify-content-between">
+                <span class="badge fs-6 px-3 py-2" [ngClass]="getStatusClass(selectedOrder.status)">
+                  {{ getStatusLabel(selectedOrder.status) }}
+                </span>
+                <div class="text-muted small">{{ selectedOrder.createdAt | date: 'MMM dd, yyyy - HH:mm' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase d-block mb-1">المنتج المحجوز</label>
+              <div class="card border-0 p-3 bg-light">
+                 @if (selectedOrder.invitationCardId) {
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="ti ti-picture fs-3 text-dark"></i>
+                        <div>
+                            <div class="fw-bold">بطاقة دعوة: {{ getCardTitle(selectedOrder.invitationCardId) }}</div>
+                            <div class="small text-muted">الكمية: {{ selectedOrder.quantity }}</div>
+                        </div>
+                    </div>
+                 } @else if (selectedOrder.packageId) {
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="ti ti-package fs-3 text-dark"></i>
+                        <div>
+                            <div class="fw-bold">باقة: {{ getPackageTitle(selectedOrder.packageId) }}</div>
+                            <div class="small text-muted">الكمية: {{ selectedOrder.quantity }}</div>
+                        </div>
+                    </div>
+                 } @else {
+                    <div class="text-muted">غير محدد</div>
+                 }
+              </div>
+            </div>
+            <div class="col-md-6">
+               <label class="text-muted small fw-bold text-uppercase d-block mb-1">إجمالي الفاتورة</label>
+               <div class="card border-0 p-3 bg-dark text-white d-flex flex-row align-items-center justify-content-between">
+                  <div class="fs-4 fw-bold">{{ selectedOrder.totalPrice | number:'1.2-2' }} L.E</div>
+                  <i class="ti ti-credit-card fs-4"></i>
+               </div>
+            </div>
+          </div>
+
+          @if (selectedOrder.notes) {
+            <div>
+              <label class="text-muted small fw-bold text-uppercase d-block mb-1">ملاحظات الطلب</label>
+              <div class="bg-light p-3 rounded" style="white-space: pre-wrap;">{{ selectedOrder.notes }}</div>
+            </div>
+          }
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0 gap-2 flex-row-reverse">
+          <button type="button" class="btn btn-outline-dark px-4" (click)="closeOrder()">إغلاق</button>
+          <div class="dropdown me-auto">
+            <button class="btn btn-dark px-4 dropdown-toggle" data-bs-toggle="dropdown">
+              تغيير الحالة
+            </button>
+            <ul class="dropdown-menu border-0 shadow-sm">
+                <li><a class="dropdown-item py-2" (click)="updateStatus(selectedOrder, OrderStatus.Processing)">قيد التنفيذ</a></li>
+                <li><a class="dropdown-item py-2" (click)="updateStatus(selectedOrder, OrderStatus.Completed)">مكتمل</a></li>
+                <li><a class="dropdown-item py-2" (click)="updateStatus(selectedOrder, OrderStatus.Cancelled)">ملغي</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

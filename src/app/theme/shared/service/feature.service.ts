@@ -18,17 +18,10 @@ export class FeatureService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Feature[]> {
-    if (!this.features$) {
-      this.features$ = this.http.get<Feature[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.features$;
+    return this.http.get<Feature[]>(this.apiUrl);
   }
 
-  clearCache() {
-    this.features$ = null;
-  }
+  clearCache() {}
 
   create(feature: any): Observable<Feature> {
     return this.http.post<Feature>(this.apiUrl, feature);

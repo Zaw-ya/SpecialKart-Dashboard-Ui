@@ -52,12 +52,66 @@ export const NavigationItems: NavigationItem[] = [
         breadcrumbs: false
       },
       {
+        id: 'packages',
+        title: 'Packages',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/packages',
+        icon: 'audit',
+        breadcrumbs: false
+      },
+      {
+        id: 'blog',
+        title: 'Blog',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/blog',
+        icon: 'read',
+        breadcrumbs: false
+      },
+      {
+        id: 'testimonials',
+        title: 'Testimonials',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/testimonials',
+        icon: 'comment',
+        breadcrumbs: false
+      },
+      {
+        id: 'supervisors',
+        title: 'Supervisors',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/supervisors',
+        icon: 'user',
+        breadcrumbs: false
+      },
+      {
+        id: 'orders',
+        title: 'Orders',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/orders',
+        icon: 'shopping-cart',
+        breadcrumbs: false
+      },
+      {
+        id: 'contacts',
+        title: 'Contact Messages',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/contacts',
+        icon: 'mail',
+        breadcrumbs: false
+      },
+      {
         id: 'countries',
         title: 'Countries',
         type: 'item',
         classes: 'nav-item',
         url: '/countries',
-        icon: 'environment',
+        icon: 'global',
         breadcrumbs: false
       },
       {
@@ -85,15 +139,6 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/features',
         icon: 'unordered-list',
-        breadcrumbs: false
-      },
-      {
-        id: 'supervisors',
-        title: 'Supervisors',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/supervisors',
-        icon: 'user',
         breadcrumbs: false
       },
       {

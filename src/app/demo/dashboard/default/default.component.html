@@ -1,102 +1,280 @@
 <div class="row">
   <!-- Welcome Header -->
   <div class="col-12 mb-4">
-    <div class="card bg-black text-white welcome-card animate__animated animate__fadeIn">
-      <div class="card-body p-4">
-        <h2 class="text-white mb-1">Welcome to SpecialKart Dashboard</h2>
-        <p class="text-white-50 mb-0">Manage your cards, locations, and staff efficiently.</p>
+    <div class="card bg-black text-white welcome-card animate__animated animate__fadeIn border-0 overflow-hidden" style="border-radius: 15px;">
+      <div class="card-body p-4 position-relative z-1">
+        <div class="row align-items-center">
+          <div class="col">
+            <h2 class="text-white mb-2 fw-bold">Executive Overview</h2>
+            <p class="text-white-50 mb-0">Managing SpecialKart's digital ecosystem and invitation infrastructure.</p>
+          </div>
+          <div class="col-auto d-none d-md-block">
+            <div class="d-flex gap-3">
+              <div class="text-end">
+                <p class="text-white-50 mb-0 small text-uppercase fw-bold">Active Orders</p>
+                <h4 class="text-white mb-0">{{ stats.orders }}</h4>
+              </div>
+              <div class="vr bg-white-50"></div>
+              <div class="text-end">
+                <p class="text-white-50 mb-0 small text-uppercase fw-bold">Pending Tasks</p>
+                <h4 class="text-white mb-0">{{ stats.pendingOrders + stats.messages }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="welcome-bg-overlay"></div>
     </div>
   </div>
 
-  <!-- Stats Grid -->
   @if (loading) {
     <div class="col-12 text-center p-5">
-      <div class="spinner-border text-primary" role="status"></div>
+      <div class="spinner-border text-dark" role="status"></div>
+      <p class="mt-2 text-muted">Synchronizing dashboard data...</p>
     </div>
   } @else {
+    <!-- Professional Stats Grid -->
     <div class="col-md-6 col-xl-3">
-      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
-        <div class="card-body">
-          <h6 class="text-muted mb-2">Invitation Cards</h6>
-          <div class="d-flex align-items-center justify-content-between">
-            <h3 class="mb-0">{{ stats.cards }}</h3>
-            <div class="stat-icon bg-light-primary text-primary">
-              <i class="ti ti-picture"></i>
+      <div class="card border-0 shadow-sm mb-4 dashboard-stat-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-light-primary text-primary rounded-circle p-3 me-3">
+              <i class="ti ti-currency-dollar fs-4"></i>
             </div>
+            <div>
+              <p class="text-muted mb-0 small text-uppercase fw-bold ls-1">Estimated Revenue</p>
+              <h3 class="mb-0 fw-bold">{{ stats.totalRevenue | number }} L.E</h3>
+            </div>
+          </div>
+          <div class="progress progress-xs bg-light">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-6 col-xl-3">
-      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-        <div class="card-body">
-          <h6 class="text-muted mb-2">Event Types</h6>
-          <div class="d-flex align-items-center justify-content-between">
-            <h3 class="mb-0">{{ stats.eventTypes }}</h3>
-            <div class="stat-icon bg-light-success text-success">
-              <i class="ti ti-tag"></i>
+      <div class="card border-0 shadow-sm mb-4 dashboard-stat-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-light-warning text-warning rounded-circle p-3 me-3">
+              <i class="ti ti-shopping-cart fs-4"></i>
             </div>
+            <div>
+              <p class="text-muted mb-0 small text-uppercase fw-bold ls-1">Pending Orders</p>
+              <h3 class="mb-0 fw-bold">{{ stats.pendingOrders }}</h3>
+            </div>
+          </div>
+          <div class="progress progress-xs bg-light">
+            <div class="progress-bar bg-warning" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-6 col-xl-3">
-      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
-        <div class="card-body">
-          <h6 class="text-muted mb-2">Supervisors</h6>
-          <div class="d-flex align-items-center justify-content-between">
-            <h3 class="mb-0">{{ stats.supervisors }}</h3>
-            <div class="stat-icon bg-light-info text-info">
-              <i class="ti ti-users"></i>
+      <div class="card border-0 shadow-sm mb-4 dashboard-stat-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-light-info text-info rounded-circle p-3 me-3">
+              <i class="ti ti-mail fs-4"></i>
             </div>
+            <div>
+              <p class="text-muted mb-0 small text-uppercase fw-bold ls-1">New Messages</p>
+              <h3 class="mb-0 fw-bold">{{ stats.messages }}</h3>
+            </div>
+          </div>
+          <div class="progress progress-xs bg-light">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-6 col-xl-3">
-      <div class="card stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-        <div class="card-body">
-          <h6 class="text-muted mb-2">Countries</h6>
-          <div class="d-flex align-items-center justify-content-between">
-            <h3 class="mb-0">{{ stats.countries }}</h3>
-            <div class="stat-icon bg-light-warning text-warning">
-              <i class="ti ti-world"></i>
+      <div class="card border-0 shadow-sm mb-4 dashboard-stat-card">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-light-success text-success rounded-circle p-3 me-3">
+              <i class="ti ti-package fs-4"></i>
+            </div>
+            <div>
+              <p class="text-muted mb-0 small text-uppercase fw-bold ls-1">Active Packages</p>
+              <h3 class="mb-0 fw-bold">{{ stats.packages }}</h3>
+            </div>
+          </div>
+          <div class="progress progress-xs bg-light">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold">Sales & Engagement Analytics</h5>
+          <div class="dropdown">
+            <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+              <i class="ti ti-dots-vertical"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-4 pt-0">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [stroke]="chartOptions.stroke"
+            [tooltip]="chartOptions.tooltip"
+            [dataLabels]="chartOptions.dataLabels"
+            [colors]="chartOptions.colors"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 p-4">
+          <h5 class="mb-0 fw-bold">Order Fulfillment</h5>
+        </div>
+        <div class="card-body p-4 pt-0">
+          <apx-chart
+            [series]="pieChartOptions.series"
+            [chart]="pieChartOptions.chart"
+            [labels]="pieChartOptions.labels"
+            [responsive]="pieChartOptions.responsive"
+            [colors]="pieChartOptions.colors"
+          ></apx-chart>
+          
+          <div class="mt-4">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="text-muted small">Target Goal</span>
+              <span class="fw-bold small">85%</span>
+            </div>
+            <div class="progress progress-xs bg-light">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Quick Access Actions -->
-    <div class="col-12 mt-2">
-      <h5 class="mb-3">Quick Management</h5>
-      <div class="row g-3">
-        <div class="col-md-4 col-lg-3">
-          <a [routerLink]="['/invitation-cards']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
-            <div class="mb-2"><i class="ti ti-plus fs-3"></i></div>
-            <h6 class="mb-0">New Invitation Card</h6>
+    <!-- Data Tables Row -->
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold">Recent Transactions</h5>
+          <a [routerLink]="['/orders']" class="btn btn-sm btn-light text-primary fw-bold">View All</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light-gray">
+                <tr>
+                  <th class="ps-4">ID</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th class="pe-4">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of recentOrders; track order.id) {
+                  <tr>
+                    <td class="ps-4 fw-bold">#{{ order.orderNumber }}</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-xs bg-light rounded-circle text-center me-2" style="width: 30px; height: 30px; line-height: 30px;">
+                          {{ order.customerName.charAt(0) }}
+                        </div>
+                        {{ order.customerName }}
+                      </div>
+                    </td>
+                    <td>{{ order.totalPrice | number }} L.E</td>
+                    <td>
+                      <span class="badge rounded-pill" [ngClass]="getStatusClass(order.status)">
+                        {{ getStatusLabel(order.status) }}
+                      </span>
+                    </td>
+                    <td class="pe-4 text-muted small">{{ order.createdAt | date:'shortDate' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold">Latest Inquiries</h5>
+          <a [routerLink]="['/contacts']" class="btn btn-sm btn-light text-primary fw-bold">Inbox</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            @for (msg of latestMessages; track msg.id) {
+              <div class="list-group-item border-0 p-4 pt-3 pb-3 border-bottom">
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1 fw-bold">{{ msg.subject }}</h6>
+                    <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">{{ msg.message }}</p>
+                    <div class="mt-2 d-flex align-items-center gap-2">
+                      <span class="small text-primary">{{ msg.name }}</span>
+                      <span class="text-muted small">&bull; {{ msg.createdAt | date:'shortTime' }}</span>
+                    </div>
+                  </div>
+                  @if (!msg.isRead) {
+                    <div class="flex-shrink-0">
+                      <span class="badge bg-danger rounded-circle p-1"><span class="visually-hidden">New</span></span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Management -->
+    <div class="col-12 mt-4 mb-5">
+      <h5 class="mb-4 fw-bold">Administrative Quick Access</h5>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <a [routerLink]="['/invitation-cards']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card bg-primary text-white">
+            <div class="mb-3 rounded-circle bg-white-10 p-3 d-inline-block">
+              <i class="ti ti-plus fs-2"></i>
+            </div>
+            <h6 class="mb-0 text-white fw-bold">New Product</h6>
           </a>
         </div>
-        <div class="col-md-4 col-lg-3">
-          <a [routerLink]="['/event-types']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
-            <div class="mb-2"><i class="ti ti-tag fs-3"></i></div>
-            <h6 class="mb-0">Manage Event Types</h6>
+        <div class="col-md-3">
+          <a [routerLink]="['/blog']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
+            <div class="mb-3 rounded-circle bg-light-gray p-3 d-inline-block text-dark">
+              <i class="ti ti-news fs-2"></i>
+            </div>
+            <h6 class="mb-0 text-dark fw-bold">Write Blog</h6>
           </a>
         </div>
-        <div class="col-md-4 col-lg-3">
-          <a [routerLink]="['/supervisors']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
-            <div class="mb-2"><i class="ti ti-user-plus fs-3"></i></div>
-            <h6 class="mb-0">Add New Supervisor</h6>
+        <div class="col-md-3">
+          <a [routerLink]="['/supervisors']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
+            <div class="mb-3 rounded-circle bg-light-gray p-3 d-inline-block text-dark">
+              <i class="ti ti-users fs-2"></i>
+            </div>
+            <h6 class="mb-0 text-dark fw-bold">Add Staff</h6>
           </a>
         </div>
-        <div class="col-md-4 col-lg-3">
-          <a [routerLink]="['/register']" class="card action-card h-100 text-decoration-none border-dashed p-3 text-center">
-            <div class="mb-2"><i class="ti ti-shield fs-3"></i></div>
-            <h6 class="mb-0">Register Admin</h6>
+        <div class="col-md-3">
+          <a [routerLink]="['/register']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
+            <div class="mb-3 rounded-circle bg-light-gray p-3 d-inline-block text-dark">
+              <i class="ti ti-settings fs-2"></i>
+            </div>
+            <h6 class="mb-0 text-dark fw-bold">Settings</h6>
           </a>
         </div>
       </div>

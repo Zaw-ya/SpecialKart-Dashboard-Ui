@@ -18,17 +18,10 @@ export class CountryService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Country[]> {
-    if (!this.countries$) {
-      this.countries$ = this.http.get<Country[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.countries$;
+    return this.http.get<Country[]>(this.apiUrl);
   }
 
-  clearCache() {
-    this.countries$ = null;
-  }
+  clearCache() {}
 
   getById(id: number): Observable<Country> {
     return this.http.get<Country>(`${this.apiUrl}/${id}`);

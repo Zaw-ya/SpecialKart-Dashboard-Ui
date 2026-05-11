@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CityService, City } from 'src/app/theme/shared/service/city.service';
 import { CountryService, Country } from 'src/app/theme/shared/service/country.service';
@@ -30,7 +30,8 @@ export class CitiesComponent implements OnInit {
   constructor(
     private cityService: CityService,
     private countryService: CountryService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,11 +51,13 @@ export class CitiesComponent implements OnInit {
         this.cities = data.cities;
         this.loading = false;
         console.log('Cities and countries loaded successfully');
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading data:', err);
         this.error = 'Failed to load data';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

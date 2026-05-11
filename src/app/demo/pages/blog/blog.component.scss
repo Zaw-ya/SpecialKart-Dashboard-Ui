@@ -1,0 +1,55 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.x-small {
+  font-size: 0.7rem;
+}
+
+.bg-light-success {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.bg-light-secondary {
+  background-color: rgba(108, 117, 125, 0.1) !important;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.modal-header {
+  border-radius: 8px 8px 0 0;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+  
+  i { font-size: 1.1rem; }
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.form-control, .form-select {
+  border-color: #e9ecef;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  
+  &:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.05);
+  }
+}
+
+textarea.form-control {
+    resize: none;
+}
