@@ -55,7 +55,11 @@ export class PackagesComponent implements OnInit {
       features: this.featureService.getAll()
     }).subscribe({
       next: (res) => {
-        this.packages = res.packages;
+        this.packages = res.packages.map(pkg => ({
+          ...pkg,
+          featureIds: pkg.featureIds?.length ? pkg.featureIds : (pkg.features?.map(f => f.id) ?? []),
+          pricingTiers: pkg.pricingTiers ?? []
+        }));
         this.allFeatures = res.features;
         this.loading = false;
         this.cdr.detectChanges();
@@ -91,18 +95,37 @@ export class PackagesComponent implements OnInit {
       compensationPercentage: pkg.compensationPercentage,
       isPopular: pkg.isPopular,
       isActive: pkg.isActive,
-      featureIds: pkg.featureIds || [],
-      pricingTiers: JSON.parse(JSON.stringify(pkg.pricingTiers || [])) // Deep clone
+      // Map features if they come as objects instead of IDs
+      featureIds: pkg.featureIds || (pkg as any).features?.map((f: any) => f.id) || [],
+      // Map pricing tiers if they come as 'tiers' instead of 'pricingTiers'
+      pricingTiers: JSON.parse(JSON.stringify(pkg.pricingTiers || (pkg as any).tiers || []))
     };
     this.showForm = true;
   }
 
   addPricingTier(): void {
+    const lastTier = this.packageData.pricingTiers[this.packageData.pricingTiers.length - 1];
+    const minVal = lastTier ? lastTier.maxInvitations + 1 : 0;
+    
     this.packageData.pricingTiers.push({
-      minInvitations: 0,
-      maxInvitations: 0,
+      minInvitations: minVal,
+      maxInvitations: minVal + 100,
       price: 0
     });
+  }
+
+  validatePricingTiers(): boolean {
+    for (const tier of this.packageData.pricingTiers) {
+      if (tier.minInvitations >= tier.maxInvitations) {
+        this.toastService.error(`Invalid range: Min Invites (${tier.minInvitations}) must be less than Max Invites (${tier.maxInvitations})`);
+        return false;
+      }
+      if (tier.price <= 0) {
+        this.toastService.error('Price must be greater than 0');
+        return false;
+      }
+    }
+    return true;
   }
 
   removePricingTier(index: number): void {
@@ -128,10 +151,33 @@ export class PackagesComponent implements OnInit {
   }
 
   savePackage(): void {
+    if (this.packageData.pricingTiers.length > 0) {
+      if (!this.validatePricingTiers()) return;
+    }
+
     this.submitting = true;
+    
+    // Prepare the payload to match the API expectation
+    const payload: any = {
+      name: this.packageData.name,
+      description: this.packageData.description,
+      compensationPercentage: this.packageData.compensationPercentage,
+      isPopular: this.packageData.isPopular,
+      isActive: this.packageData.isActive,
+      featureIds: this.packageData.featureIds,
+      pricingTiers: this.packageData.pricingTiers.map((tier: any) => ({
+        ...tier,
+        packageId: this.editingPackage?.id || 0
+      }))
+    };
+
+    if (this.editingPackage) {
+      payload.id = this.editingPackage.id;
+    }
+
     const request = this.editingPackage
-      ? this.packageService.update(this.editingPackage.id, this.packageData)
-      : this.packageService.create(this.packageData);
+      ? this.packageService.update(this.editingPackage.id, payload)
+      : this.packageService.create(payload);
 
     request.subscribe({
       next: () => {
@@ -143,7 +189,9 @@ export class PackagesComponent implements OnInit {
       },
       error: (err) => {
         this.submitting = false;
-        this.toastService.error('Failed to save package');
+        console.error('Save error:', err);
+        const errorMsg = err.error?.message || 'Failed to save package';
+        this.toastService.error(errorMsg);
       }
     });
   }

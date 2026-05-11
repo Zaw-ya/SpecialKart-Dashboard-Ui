@@ -20,6 +20,7 @@ export interface Package {
   isActive: boolean;
   pricingTiers?: PackagePricingTier[];
   featureIds?: number[];
+  features?: { id: number; description: string }[];
 }
 
 @Injectable({
