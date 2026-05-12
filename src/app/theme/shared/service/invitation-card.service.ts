@@ -13,6 +13,7 @@ export interface InvitationCard {
   inCarousel: boolean;
   rating: number;
   eventTypeIds?: number[];
+  eventTypes?: any[];
 }
 
 @Injectable({

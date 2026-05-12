@@ -104,9 +104,9 @@ export class EventTypesComponent implements OnInit {
     
     this.submitting = true;
     const formData = new FormData();
-    formData.append('name', this.eventTypeName);
+    formData.append('Name', this.eventTypeName);
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
+      formData.append('Image', this.selectedFile);
     }
     
     const request = this.editingEventType 

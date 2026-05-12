@@ -65,7 +65,10 @@ export class InvitationCardsComponent implements OnInit {
       eventTypes: this.eventTypeService.getAll()
     }).subscribe({
       next: (res) => {
-        this.cards = res.cards;
+        this.cards = res.cards.map(card => ({
+          ...card,
+          eventTypeIds: card.eventTypeIds || (card as any).EventTypeIds || card.eventTypes?.map((t: any) => t.id) || []
+        }));
         this.eventTypes = res.eventTypes;
         this.loading = false;
         console.log('Data loaded successfully');
@@ -105,7 +108,7 @@ export class InvitationCardsComponent implements OnInit {
       isVisible: card.isVisible,
       inCarousel: card.inCarousel,
       rating: card.rating,
-      eventTypeIds: card.eventTypeIds || []
+      eventTypeIds: card.eventTypeIds || (card as any).EventTypeIds || card.eventTypes?.map((t: any) => t.id) || []
     };
     this.selectedFile = null;
     this.imagePreview = card.imageUrl;
