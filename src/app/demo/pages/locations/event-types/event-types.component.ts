@@ -21,14 +21,22 @@ export class EventTypesComponent implements OnInit {
   showForm = false;
   editingEventType: EventType | null = null;
   eventTypeName = '';
-  eventTypeIcon = 'ti ti-star';
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
   submitting = false;
+  searchTerm = '';
 
   constructor(
     private eventTypeService: EventTypeService,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  get filteredEventTypes(): EventType[] {
+    return this.eventTypes.filter(t => 
+      t.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
 
   ngOnInit(): void {
     this.loadEventTypes();
@@ -50,17 +58,32 @@ export class EventTypesComponent implements OnInit {
     });
   }
 
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   addEventType(): void {
     this.editingEventType = null;
     this.eventTypeName = '';
-    this.eventTypeIcon = 'ti ti-star';
+    this.selectedFile = null;
+    this.imagePreview = null;
     this.showForm = true;
   }
 
   editEventType(eventType: EventType): void {
     this.editingEventType = eventType;
     this.eventTypeName = eventType.name;
-    this.eventTypeIcon = eventType.icon;
+    this.selectedFile = null;
+    this.imagePreview = eventType.imageUrl;
     this.showForm = true;
   }
 
@@ -68,17 +91,27 @@ export class EventTypesComponent implements OnInit {
     this.showForm = false;
     this.editingEventType = null;
     this.eventTypeName = '';
+    this.selectedFile = null;
+    this.imagePreview = null;
   }
 
   saveEventType(): void {
     if (!this.eventTypeName.trim()) return;
+    if (!this.editingEventType && !this.selectedFile) {
+      this.toastService.error('Please select an image');
+      return;
+    }
     
     this.submitting = true;
-    const data = { name: this.eventTypeName, icon: this.eventTypeIcon };
+    const formData = new FormData();
+    formData.append('name', this.eventTypeName);
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
     
     const request = this.editingEventType 
-      ? this.eventTypeService.update(this.editingEventType.id, data)
-      : this.eventTypeService.create(data);
+      ? this.eventTypeService.update(this.editingEventType.id, formData)
+      : this.eventTypeService.create(formData);
 
     request.subscribe({
       next: () => {

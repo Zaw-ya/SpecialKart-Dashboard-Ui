@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 export interface EventType {
   id: number;
   name: string;
-  icon: string;
+  imageUrl: string;
 }
 
 @Injectable({
@@ -16,13 +16,13 @@ export class EventTypeService {
   private apiUrl = `${environment.apiUrl}/EventTypes`;
   private eventTypes$: Observable<EventType[]> | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<EventType[]> {
     return this.http.get<EventType[]>(this.apiUrl);
   }
 
-  clearCache() {}
+  clearCache() { }
 
   create(eventType: any): Observable<EventType> {
     return this.http.post<EventType>(this.apiUrl, eventType);

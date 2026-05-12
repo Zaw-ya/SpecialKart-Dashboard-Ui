@@ -1,21 +1,69 @@
-.cursor-pointer {
-  cursor: pointer;
+.transition-all {
+  transition: all 0.3s ease;
 }
 
-.bg-light-primary {
-  background-color: rgba(0, 0, 0, 0.05) !important;
+.unread-row {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
 }
 
-.bg-light-secondary {
-  background-color: rgba(108, 117, 125, 0.1) !important;
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
-tr.fw-bold {
-    background-color: rgba(0,0,0,0.02);
-    td { color: #000; }
+.avatar-circle-lg {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.modal-body {
-    max-height: 70vh;
-    overflow-y: auto;
+.message-bubble {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 20px;
+    border-width: 8px 8px 8px 0;
+    border-style: solid;
+    border-color: transparent #f8f9fa transparent transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+  }
+}
+
+.smaller {
+  font-size: 0.75rem;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+tr.cursor-pointer:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 2;
+  position: relative;
+}
+
+.btn-group .btn {
+  font-weight: 500;
+  border: none;
 }

@@ -7,7 +7,7 @@ export interface ContactMessage {
   id: number;
   name: string;
   email: string;
-  subject: string;
+  phoneNumber: string;
   message: string;
   createdAt: string;
   isRead: boolean;

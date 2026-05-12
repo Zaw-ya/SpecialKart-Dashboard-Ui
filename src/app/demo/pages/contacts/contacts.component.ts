@@ -16,12 +16,34 @@ export class ContactsComponent implements OnInit {
   loading = true;
   error = '';
   selectedMessage: ContactMessage | null = null;
+  searchTerm = '';
+  filterStatus: 'all' | 'read' | 'unread' = 'all';
 
   constructor(
     private contactService: ContactService,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  get unreadCount(): number {
+    return this.messages.filter(m => !m.isRead).length;
+  }
+
+  get filteredMessages(): ContactMessage[] {
+    return this.messages.filter(m => {
+      const matchesSearch = 
+        m.name.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+        m.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        m.phoneNumber.includes(this.searchTerm);
+      
+      const matchesFilter = 
+        this.filterStatus === 'all' || 
+        (this.filterStatus === 'read' && m.isRead) || 
+        (this.filterStatus === 'unread' && !m.isRead);
+      
+      return matchesSearch && matchesFilter;
+    }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
 
   ngOnInit(): void {
     this.loadData();
