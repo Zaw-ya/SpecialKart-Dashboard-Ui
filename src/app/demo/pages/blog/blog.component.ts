@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
@@ -16,18 +16,31 @@ export class BlogComponent implements OnInit {
   posts: BlogPost[] = [];
   loading = true;
   error = '';
-  
+
   showForm = false;
   submitting = false;
   editingPost: BlogPost | null = null;
+
   postData = {
     title: '',
     content: '',
     author: '',
-    isPublished: true
+    isPublished: true,
+    slug: '',
+    metaTitle: '',
+    metaDescription: '',
+    altText: '',
+    category: '',
+    tags: ''
   };
+
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+
+  // Rich editor state
+  activeFormats: Set<string> = new Set();
+
+  @ViewChild('richEditor') richEditor!: ElementRef<HTMLDivElement>;
 
   constructor(
     private blogService: BlogService,
@@ -62,11 +75,18 @@ export class BlogComponent implements OnInit {
       title: '',
       content: '',
       author: '',
-      isPublished: true
+      isPublished: true,
+      slug: '',
+      metaTitle: '',
+      metaDescription: '',
+      altText: '',
+      category: '',
+      tags: ''
     };
     this.selectedFile = null;
     this.imagePreview = null;
     this.showForm = true;
+    setTimeout(() => this.syncEditorContent(), 100);
   }
 
   editPost(post: BlogPost): void {
@@ -75,20 +95,73 @@ export class BlogComponent implements OnInit {
       title: post.title,
       content: post.content,
       author: post.author,
-      isPublished: post.isPublished
+      isPublished: post.isPublished,
+      slug: post.slug || '',
+      metaTitle: post.metaTitle || '',
+      metaDescription: post.metaDescription || '',
+      altText: post.altText || '',
+      category: post.category || '',
+      tags: post.tags || ''
     };
     this.selectedFile = null;
-    this.imagePreview = post.imageUrl;
+    this.imagePreview = post.imageUrl || null;
     this.showForm = true;
+    setTimeout(() => this.syncEditorContent(), 100);
   }
 
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
+  syncEditorContent(): void {
+    if (this.richEditor?.nativeElement) {
+      this.richEditor.nativeElement.innerHTML = this.postData.content;
+    }
+  }
+
+  onEditorInput(event: Event): void {
+    const el = event.target as HTMLDivElement;
+    this.postData.content = el.innerHTML;
+    this.updateActiveFormats();
+  }
+
+  onEditorKeyup(): void {
+    this.updateActiveFormats();
+  }
+
+  onEditorMouseup(): void {
+    this.updateActiveFormats();
+  }
+
+  updateActiveFormats(): void {
+    this.activeFormats = new Set();
+    const cmds = ['bold', 'italic', 'underline', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList'];
+    cmds.forEach(cmd => {
+      if (document.queryCommandState(cmd)) {
+        this.activeFormats.add(cmd);
+      }
+    });
+  }
+
+  execCommand(command: string, value?: string): void {
+    document.execCommand(command, false, value);
+    this.richEditor?.nativeElement?.focus();
+    const el = this.richEditor?.nativeElement;
+    if (el) {
+      this.postData.content = el.innerHTML;
+    }
+    this.updateActiveFormats();
+  }
+
+  isActive(cmd: string): boolean {
+    return this.activeFormats.has(cmd);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (file) {
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
+        this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     }
@@ -103,12 +176,23 @@ export class BlogComponent implements OnInit {
 
   savePost(): void {
     this.submitting = true;
-    
+
+    // Sync content from editor
+    if (this.richEditor?.nativeElement) {
+      this.postData.content = this.richEditor.nativeElement.innerHTML;
+    }
+
     const formData = new FormData();
     formData.append('Title', this.postData.title);
     formData.append('Content', this.postData.content);
     formData.append('Author', this.postData.author);
     formData.append('IsPublished', this.postData.isPublished.toString());
+    formData.append('Slug', this.postData.slug);
+    formData.append('MetaTitle', this.postData.metaTitle);
+    formData.append('MetaDescription', this.postData.metaDescription);
+    formData.append('AltText', this.postData.altText);
+    formData.append('Category', this.postData.category);
+    formData.append('Tags', this.postData.tags);
 
     if (this.selectedFile) {
       formData.append('Image', this.selectedFile);
@@ -156,6 +240,12 @@ export class BlogComponent implements OnInit {
     formData.append('Content', post.content);
     formData.append('Author', post.author);
     formData.append('IsPublished', (!post.isPublished).toString());
+    formData.append('Slug', post.slug || '');
+    formData.append('MetaTitle', post.metaTitle || '');
+    formData.append('MetaDescription', post.metaDescription || '');
+    formData.append('AltText', post.altText || '');
+    formData.append('Category', post.category || '');
+    formData.append('Tags', post.tags || '');
 
     this.blogService.update(post.id, formData).subscribe({
       next: () => {
@@ -168,5 +258,11 @@ export class BlogComponent implements OnInit {
         this.toastService.error('Failed to update post status');
       }
     });
+  }
+
+  stripHtml(html: string): string {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
   }
 }

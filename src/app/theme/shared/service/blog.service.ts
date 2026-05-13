@@ -12,6 +12,12 @@ export interface BlogPost {
   author: string;
   createdAt: string;
   isPublished: boolean;
+  slug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  altText?: string;
+  category?: string;
+  tags?: string;
 }
 
 @Injectable({

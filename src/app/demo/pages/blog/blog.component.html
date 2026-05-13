@@ -1,150 +1,298 @@
-<div class="row">
-  <div class="col-sm-12">
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body py-3">
-        <div class="d-flex align-items-center justify-content-between">
-          <div>
-            <h5 class="mb-0 fw-bold">Blog Management</h5>
-            <p class="text-muted small mb-0">Manage articles and news for the landing page</p>
-          </div>
-          <button class="btn btn-dark d-flex align-items-center gap-2" (click)="addPost()">
-            <i class="ti ti-plus"></i>
-            <span>Add New Post</span>
-          </button>
+<!-- ── Blog Management Header ─────────────────────────────────────────────── -->
+<div class="blog-page">
+
+  <!-- Header Bar -->
+  <div class="blog-header card border-0 shadow-sm mb-4">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h5 class="mb-0 fw-bold">Blog Management</h5>
+          <p class="text-muted small mb-0">Manage SEO-optimized articles for the landing page</p>
         </div>
+        <button class="btn btn-dark d-flex align-items-center gap-2" (click)="addPost()">
+          <i class="ti ti-plus"></i>
+          <span>New Post</span>
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- Loading / Error -->
   @if (loading && posts.length === 0) {
-    <div class="col-12 text-center py-5">
-      <div class="spinner-border text-dark" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+    <div class="text-center py-5">
+      <div class="spinner-border text-dark" role="status"></div>
     </div>
   } @else if (error) {
-    <div class="col-12">
-      <div class="alert alert-danger">{{ error }}</div>
-    </div>
+    <div class="alert alert-danger">{{ error }}</div>
   } @else {
-    <div class="col-sm-12">
-      <div class="card border-0 shadow-sm">
-        <div class="table-responsive">
-          <table class="table table-hover mb-0 align-middle">
-            <thead class="bg-light">
+
+    <!-- Posts Table -->
+    <div class="card border-0 shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4">Cover</th>
+              <th>Title / Slug</th>
+              <th>Category</th>
+              <th>Author</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (post of posts; track post.id) {
               <tr>
-                <th class="ps-4">Image</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th class="text-end pe-4">Actions</th>
+                <td class="ps-4">
+                  <img [src]="post.imageUrl || 'assets/images/no-image.png'"
+                       class="rounded object-fit-cover"
+                       width="64" height="44"
+                       [alt]="post.altText || post.title" />
+                </td>
+                <td>
+                  <div class="fw-semibold">{{ post.title }}</div>
+                  @if (post.slug) {
+                    <small class="text-muted">/{{ post.slug }}</small>
+                  }
+                </td>
+                <td>
+                  @if (post.category) {
+                    <span class="badge bg-light-primary text-primary">{{ post.category }}</span>
+                  } @else {
+                    <span class="text-muted small">—</span>
+                  }
+                </td>
+                <td>{{ post.author }}</td>
+                <td>{{ post.createdAt | date: 'MMM dd, yyyy' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="post.isPublished ? 'bg-light-success text-success' : 'bg-light-secondary text-secondary'">
+                    {{ post.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                </td>
+                <td class="text-end pe-4">
+                  <div class="d-flex justify-content-end gap-1">
+                    <button class="btn btn-icon btn-link-secondary"
+                            (click)="togglePublish(post)"
+                            [title]="post.isPublished ? 'Unpublish' : 'Publish'">
+                      <i class="ti" [ngClass]="post.isPublished ? 'ti-eye-off' : 'ti-eye'"></i>
+                    </button>
+                    <button class="btn btn-icon btn-link-primary" (click)="editPost(post)" title="Edit">
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button class="btn btn-icon btn-link-danger" (click)="deletePost(post.id)" title="Delete">
+                      <i class="ti ti-trash"></i>
+                    </button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              @for (post of posts; track post.id) {
-                <tr>
-                  <td class="ps-4">
-                    <img [src]="post.imageUrl" class="rounded object-fit-cover" width="60" height="40" [alt]="post.title" />
-                  </td>
-                  <td>
-                    <div class="fw-semibold">{{ post.title }}</div>
-                  </td>
-                  <td>{{ post.author }}</td>
-                  <td>{{ post.createdAt | date: 'MMM dd, yyyy' }}</td>
-                  <td>
-                    <span class="badge" [ngClass]="post.isPublished ? 'bg-light-success text-success' : 'bg-light-secondary text-secondary'">
-                      {{ post.isPublished ? 'Published' : 'Draft' }}
-                    </span>
-                  </td>
-                  <td class="text-end pe-4">
-                    <div class="d-flex justify-content-end gap-1">
-                      <button class="btn btn-icon btn-link-secondary" (click)="togglePublish(post)" [title]="post.isPublished ? 'Unpublish' : 'Publish'">
-                        <i class="ti" [ngClass]="post.isPublished ? 'ti-eye-off' : 'ti-eye'"></i>
-                      </button>
-                      <button class="btn btn-icon btn-link-primary" (click)="editPost(post)">
-                        <i class="ti ti-edit"></i>
-                      </button>
-                      <button class="btn btn-icon btn-link-danger" (click)="deletePost(post.id)">
-                        <i class="ti ti-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              }
-              @if (posts.length === 0) {
-                <tr>
-                  <td colspan="6" class="text-center py-5 text-muted">No blog posts found. Create your first post!</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+            }
+            @if (posts.length === 0) {
+              <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                  <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                  No blog posts found. Create your first post!
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   }
 </div>
 
-<!-- Modal Form -->
+<!-- ── Full-page Editor Overlay ─────────────────────────────────────────────── -->
 @if (showForm) {
-  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header bg-dark text-white border-0 py-3">
-          <h5 class="modal-title fw-bold">{{ editingPost ? 'Edit Post' : 'Add New Post' }}</h5>
-          <button type="button" class="btn-close btn-close-white" (click)="cancelForm()"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="row g-4">
-            <div class="col-md-4">
-              <div class="image-upload-container h-100 d-flex flex-column gap-2">
-                <label class="form-label fw-semibold">Post Cover Image</label>
-                <div class="preview-box border rounded d-flex align-items-center justify-content-center bg-light overflow-hidden position-relative" style="height: 200px;">
-                  @if (imagePreview) {
-                    <img [src]="imagePreview" class="img-fluid w-100 h-100 object-fit-cover" alt="Preview" />
-                  } @else {
-                    <div class="text-center text-muted p-3">
-                      <i class="ti ti-photo-plus fs-1 d-block mb-2"></i>
-                      <span class="small">Upload cover image</span>
-                    </div>
-                  }
-                  <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" (change)="onFileSelected($event)" accept="image/*" />
-                </div>
-                <p class="text-muted x-small mt-1 mb-0"><i class="ti ti-info-circle me-1"></i>Recommended: 1200x800px</p>
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="row g-3">
-                <div class="col-12">
-                  <label class="form-label fw-semibold">Title</label>
-                  <input type="text" class="form-control" [(ngModel)]="postData.title" placeholder="Enter post title" />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Author</label>
-                  <input type="text" class="form-control" [(ngModel)]="postData.author" placeholder="Author name" />
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                  <div class="form-check form-switch mb-2">
-                    <input class="form-check-input" type="checkbox" id="publishSwitch" [(ngModel)]="postData.isPublished" />
-                    <label class="form-check-label fw-semibold" for="publishSwitch">Publish Immediately</label>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label class="form-label fw-semibold">Content</label>
-                  <textarea class="form-control" rows="8" [(ngModel)]="postData.content" placeholder="Write post content here..."></textarea>
-                </div>
-              </div>
-            </div>
+  <div class="editor-overlay">
+    <div class="editor-panel">
+
+      <!-- Editor Header -->
+      <div class="editor-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-icon btn-link-secondary" (click)="cancelForm()" title="Close">
+            <i class="ti ti-arrow-left fs-5"></i>
+          </button>
+          <div>
+            <h5 class="mb-0 fw-bold">{{ editingPost ? 'Edit Post' : 'New Blog Post' }}</h5>
+            <span class="text-muted small">SEO-Optimized Content Engine</span>
           </div>
         </div>
-        <div class="modal-footer border-0 p-4 pt-0">
-          <button type="button" class="btn btn-light px-4" (click)="cancelForm()">Cancel</button>
-          <button type="button" class="btn btn-dark px-5 d-flex align-items-center gap-2" (click)="savePost()" [disabled]="submitting || !postData.title">
+        <div class="d-flex gap-2">
+          <button class="btn btn-light px-4" (click)="cancelForm()">Cancel</button>
+          <button class="btn btn-dark px-5 d-flex align-items-center gap-2"
+                  (click)="savePost()"
+                  [disabled]="submitting || !postData.title">
             @if (submitting) {
               <span class="spinner-border spinner-border-sm"></span>
             }
-            <span>{{ editingPost ? 'Update Post' : 'Create Post' }}</span>
+            <span>{{ editingPost ? 'Update Post' : 'Publish Post' }}</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Editor Body -->
+      <div class="editor-body">
+
+        <!-- Left: Main Content -->
+        <div class="editor-main">
+
+          <!-- Cover Image -->
+          <div class="cover-upload-area mb-4">
+            <label class="fw-semibold d-block mb-2">
+              <i class="ti ti-photo me-1"></i> Post Cover Image
+            </label>
+            <div class="cover-preview" [class.has-image]="!!imagePreview">
+              @if (imagePreview) {
+                <img [src]="imagePreview" alt="Cover Preview" class="cover-img" />
+                <div class="cover-overlay">
+                  <i class="ti ti-camera fs-4"></i>
+                  <span>Change Image</span>
+                </div>
+              } @else {
+                <div class="cover-placeholder">
+                  <i class="ti ti-photo-plus fs-1 mb-2"></i>
+                  <span class="fw-semibold">Click to upload cover image</span>
+                  <span class="text-muted small">Recommended: 1200×630px (OG Image)</span>
+                </div>
+              }
+              <input type="file" class="cover-file-input" (change)="onFileSelected($event)" accept="image/*" />
+            </div>
+            @if (postData.altText !== undefined) {
+              <div class="mt-2">
+                <input type="text" class="form-control form-control-sm"
+                       [(ngModel)]="postData.altText"
+                       placeholder="Image Alt Text (for SEO & accessibility)" />
+              </div>
+            }
+          </div>
+
+          <!-- Title -->
+          <div class="mb-3">
+            <input type="text"
+                   class="form-control post-title-input"
+                   [(ngModel)]="postData.title"
+                   placeholder="Enter post title…"
+                   (ngModelChange)="postData.slug || (postData.slug = '')" />
+          </div>
+
+          <!-- Rich Text Editor -->
+          <div class="rich-editor-wrapper">
+            <div class="rich-toolbar">
+              <button class="tb-btn" [class.active]="isActive('bold')" (click)="execCommand('bold')" title="Bold"><b>B</b></button>
+              <button class="tb-btn" [class.active]="isActive('italic')" (click)="execCommand('italic')" title="Italic"><i>I</i></button>
+              <button class="tb-btn" [class.active]="isActive('underline')" (click)="execCommand('underline')" title="Underline"><u>U</u></button>
+              <button class="tb-btn" [class.active]="isActive('strikeThrough')" (click)="execCommand('strikeThrough')" title="Strike"><s>S</s></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" (click)="execCommand('formatBlock', 'H2')" title="Heading 2"><i class="ti ti-heading"></i></button>
+              <button class="tb-btn" (click)="execCommand('formatBlock', 'H3')" title="Heading 3"><i class="ti ti-letter-h"></i></button>
+              <button class="tb-btn" (click)="execCommand('formatBlock', 'P')" title="Paragraph"><i class="ti ti-paragraph"></i></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" [class.active]="isActive('insertUnorderedList')" (click)="execCommand('insertUnorderedList')" title="Bullet List"><i class="ti ti-list"></i></button>
+              <button class="tb-btn" [class.active]="isActive('insertOrderedList')" (click)="execCommand('insertOrderedList')" title="Ordered List"><i class="ti ti-list-numbers"></i></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" (click)="execCommand('justifyLeft')" title="Align Left"><i class="ti ti-align-left"></i></button>
+              <button class="tb-btn" (click)="execCommand('justifyCenter')" title="Align Center"><i class="ti ti-align-center"></i></button>
+              <button class="tb-btn" (click)="execCommand('justifyRight')" title="Align Right"><i class="ti ti-align-right"></i></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" (click)="execCommand('undo')" title="Undo"><i class="ti ti-arrow-back-up"></i></button>
+              <button class="tb-btn" (click)="execCommand('redo')" title="Redo"><i class="ti ti-arrow-forward-up"></i></button>
+            </div>
+            <div #richEditor
+                 class="rich-editor-content"
+                 contenteditable="true"
+                 (input)="onEditorInput($event)"
+                 (keyup)="onEditorKeyup()"
+                 (mouseup)="onEditorMouseup()"
+                 data-placeholder="Start writing your article here…">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sidebar Settings -->
+        <div class="editor-sidebar">
+
+          <!-- Publish Settings -->
+          <div class="sidebar-card">
+            <h6 class="sidebar-title"><i class="ti ti-settings me-2"></i>Post Settings</h6>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Author</label>
+              <input type="text" class="form-control" [(ngModel)]="postData.author" placeholder="Author name" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Category</label>
+              <input type="text" class="form-control" [(ngModel)]="postData.category" placeholder="e.g. Weddings, Events" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Tags <span class="text-muted">(comma-separated)</span></label>
+              <input type="text" class="form-control" [(ngModel)]="postData.tags" placeholder="e.g. invitation, design, wedding" />
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="publishSwitch" [(ngModel)]="postData.isPublished" />
+              <label class="form-check-label fw-semibold" for="publishSwitch">
+                {{ postData.isPublished ? 'Published' : 'Draft' }}
+              </label>
+            </div>
+          </div>
+
+          <!-- SEO Panel -->
+          <div class="sidebar-card seo-card">
+            <h6 class="sidebar-title seo-title">
+              <i class="ti ti-search me-2"></i>SEO & Metadata
+              <span class="badge bg-warning text-dark ms-2 small">Important</span>
+            </h6>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">URL Slug</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text text-muted">/blog/</span>
+                <input type="text" class="form-control" [(ngModel)]="postData.slug" placeholder="url-friendly-slug" />
+              </div>
+              <div class="form-text">Keyword-rich URL for search engines</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold d-flex justify-content-between">
+                <span>Meta Title</span>
+                <span class="text-muted">{{ postData.metaTitle.length }}/60</span>
+              </label>
+              <input type="text"
+                     class="form-control"
+                     [(ngModel)]="postData.metaTitle"
+                     placeholder="SEO title (max 60 chars)"
+                     maxlength="60"
+                     [class.border-warning]="postData.metaTitle.length > 50 && postData.metaTitle.length <= 60"
+                     [class.border-success]="postData.metaTitle.length > 0 && postData.metaTitle.length <= 50" />
+              <div class="form-text">Shown in browser tab & search results</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold d-flex justify-content-between">
+                <span>Meta Description</span>
+                <span class="text-muted">{{ postData.metaDescription.length }}/160</span>
+              </label>
+              <textarea class="form-control"
+                        rows="3"
+                        [(ngModel)]="postData.metaDescription"
+                        placeholder="A compelling description (max 160 chars)"
+                        maxlength="160"
+                        [class.border-warning]="postData.metaDescription.length > 130 && postData.metaDescription.length <= 160"
+                        [class.border-success]="postData.metaDescription.length > 0 && postData.metaDescription.length <= 130">
+              </textarea>
+              <div class="form-text">Snippet shown under title in Google results</div>
+            </div>
+
+            <!-- SEO Preview -->
+            @if (postData.metaTitle || postData.title) {
+              <div class="seo-preview">
+                <div class="seo-preview-label">Google Preview</div>
+                <div class="seo-preview-url">https://krooty.com/blog/{{ postData.slug || 'your-post-slug' }}</div>
+                <div class="seo-preview-title">{{ postData.metaTitle || postData.title }}</div>
+                <div class="seo-preview-desc">{{ postData.metaDescription || 'No meta description provided.' }}</div>
+              </div>
+            }
+          </div>
+
         </div>
       </div>
     </div>
