@@ -14,12 +14,16 @@ import { ToastService, ToastMessage } from '../../service/toast.service';
           class="toast show align-items-center text-white border-0 shadow"
           [class.bg-success]="current.type === 'success'"
           [class.bg-danger]="current.type === 'error'"
+          [class.bg-warning]="current.type === 'warning'"
+          [class.text-dark]="current.type === 'warning'"
           role="alert"
         >
           <div class="d-flex">
             <div class="toast-body d-flex align-items-center gap-2 fw-semibold fs-6">
               @if (current.type === 'success') {
                 <i class="ti ti-circle-check fs-5"></i>
+              } @else if (current.type === 'warning') {
+                <i class="ti ti-alert-triangle fs-5"></i>
               } @else {
                 <i class="ti ti-alert-circle fs-5"></i>
               }
@@ -27,7 +31,8 @@ import { ToastService, ToastMessage } from '../../service/toast.service';
             </div>
             <button
               type="button"
-              class="btn-close btn-close-white me-2 m-auto"
+              class="btn-close me-2 m-auto"
+              [class.btn-close-white]="current.type !== 'warning'"
               (click)="dismiss()"
             ></button>
           </div>

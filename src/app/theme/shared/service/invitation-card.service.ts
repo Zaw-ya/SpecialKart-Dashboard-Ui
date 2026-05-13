@@ -47,4 +47,13 @@ export class InvitationCardService {
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  triggerBulkVisibility(request: {
+    globalMinRating: number;
+    updateGlobal: boolean;
+    carouselMinRating: number;
+    updateCarousel: boolean;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/trigger-bulk-visibility`, request);
+  }
 }

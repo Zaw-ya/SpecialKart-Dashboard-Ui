@@ -156,7 +156,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         classes: 'nav-item',
         url: '/site-settings',
-        icon: 'settings',
+        icon: 'setting',
         breadcrumbs: false
       }
     ]
