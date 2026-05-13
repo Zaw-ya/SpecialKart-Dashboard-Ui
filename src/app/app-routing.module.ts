@@ -78,6 +78,10 @@ const routes: Routes = [
       {
         path: 'packages',
         loadComponent: () => import('./demo/pages/packages/packages.component').then((c) => c.PackagesComponent)
+      },
+      {
+        path: 'site-settings',
+        loadComponent: () => import('./demo/pages/site-settings/site-settings.component').then((c) => c.SiteSettingsComponent)
       }
     ]
   },

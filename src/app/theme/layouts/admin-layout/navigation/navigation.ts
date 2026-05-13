@@ -149,6 +149,15 @@ export const NavigationItems: NavigationItem[] = [
         url: '/register',
         icon: 'user',
         breadcrumbs: false
+      },
+      {
+        id: 'site-settings',
+        title: 'Site Settings',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/site-settings',
+        icon: 'settings',
+        breadcrumbs: false
       }
     ]
   }

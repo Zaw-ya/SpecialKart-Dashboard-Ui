@@ -1,0 +1,117 @@
+<div class="row animate__animated animate__fadeIn">
+  <div class="col-sm-12">
+    <!-- Header Card -->
+    <div class="card border-0 shadow-sm mb-4 bg-dark text-white overflow-hidden" style="border-radius: 15px;">
+      <div class="card-body p-4 position-relative">
+        <div class="row align-items-center position-relative" style="z-index: 1;">
+          <div class="col-md-6">
+            <h4 class="mb-1 fw-bold text-white">Site Settings</h4>
+            <p class="text-white-50 mb-0">Configure global website parameters and social links</p>
+          </div>
+          <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <button class="btn btn-warning px-4 fw-bold shadow-sm" (click)="saveAll()" [disabled]="saving">
+              @if (saving) {
+                <span class="spinner-border spinner-border-sm me-2"></span> Saving...
+              } @else {
+                <i class="ti ti-device-floppy me-2"></i> Save All Changes
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-dark" role="status"></div>
+        <p class="mt-2 text-muted">Loading settings...</p>
+      </div>
+    } @else {
+      <div class="row">
+        <!-- General Settings -->
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+              <h5 class="mb-0 fw-bold"><i class="ti ti-settings me-2"></i> General Information</h5>
+            </div>
+            <div class="card-body p-4">
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">Site Name</label>
+                <input type="text" class="form-control bg-light border-0" [(ngModel)]="settings['site-name']" placeholder="e.g. SpecialKart">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">Contact Email</label>
+                <input type="email" class="form-control bg-light border-0" [(ngModel)]="settings['contact-email']" placeholder="email@example.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">Contact Phone</label>
+                <input type="text" class="form-control bg-light border-0" [(ngModel)]="settings['contact-phone']" placeholder="+1 234 567 890">
+              </div>
+              <div class="mb-0">
+                <label class="form-label small fw-bold text-uppercase text-muted">Address</label>
+                <textarea class="form-control bg-light border-0" rows="3" [(ngModel)]="settings['address']" placeholder="Street address..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+              <h5 class="mb-0 fw-bold"><i class="ti ti-message me-2"></i> Messaging & Orders</h5>
+            </div>
+            <div class="card-body p-4">
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">WhatsApp Number</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0 text-success"><i class="ti ti-brand-whatsapp"></i></span>
+                  <input type="text" class="form-control bg-light border-0" [(ngModel)]="settings['whatsapp-number']" placeholder="e.g. 966500000000">
+                </div>
+                <small class="text-muted">Include country code without + or 00</small>
+              </div>
+              <div class="mb-0">
+                <label class="form-label small fw-bold text-uppercase text-muted">Design Order Message Template</label>
+                <textarea class="form-control bg-light border-0" rows="4" [(ngModel)]="settings['design-order-message']"></textarea>
+                <small class="text-muted">Use <code>&#123;id&#125;</code> as a placeholder for the design code.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Media Settings -->
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+              <h5 class="mb-0 fw-bold"><i class="ti ti-share me-2"></i> Social Presence</h5>
+            </div>
+            <div class="card-body p-4">
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">Facebook URL</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0 text-primary"><i class="ti ti-brand-facebook"></i></span>
+                  <input type="text" class="form-control bg-light border-0" [(ngModel)]="settings['facebook-url']" placeholder="https://facebook.com/yourpage">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">Instagram URL</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0 text-danger"><i class="ti ti-brand-instagram"></i></span>
+                  <input type="text" class="form-control bg-light border-0" [(ngModel)]="settings['instagram-url']" placeholder="https://instagram.com/yourprofile">
+                </div>
+              </div>
+              <!-- Add more social links if needed -->
+            </div>
+          </div>
+
+          <!-- Preview / Tips -->
+          <div class="card border-0 shadow-sm bg-light mb-4" style="border-radius: 12px; border-left: 4px solid #f39c12 !important;">
+            <div class="card-body p-4">
+              <h6 class="fw-bold mb-2 text-warning"><i class="ti ti-info-circle me-1"></i> Quick Tip</h6>
+              <p class="mb-0 small text-muted" style="line-height: 1.6;">
+                These settings are used across the public website to display contact information, social links, and pre-fill order messages. Changes take effect immediately after saving.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
