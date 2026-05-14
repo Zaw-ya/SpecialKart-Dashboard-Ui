@@ -51,7 +51,7 @@
                   @for (tier of pkg.pricingTiers; track $index) {
                     <div class="d-flex justify-content-between border-bottom py-2 small">
                       <span>{{ tier.minInvitations }} - {{ tier.maxInvitations }} دعوة</span>
-                      <span class="fw-bold">{{ tier.price }} L.E</span>
+                      <span class="fw-bold">{{ tier.price }} J.D</span>
                     </div>
                   } @empty {
                     <div class="text-muted small italic">No pricing tiers defined</div>
@@ -135,13 +135,41 @@
                 </div>
 
                 <h6 class="fw-bold mt-4 mb-3 border-bottom pb-2">Features Included</h6>
-                <div class="feature-selector overflow-auto" style="max-height: 300px;">
+                <div class="feature-selector overflow-auto" style="max-height: 200px;">
                   @for (feature of allFeatures; track feature.id) {
                     <div class="form-check mb-2">
                       <input class="form-check-input" type="checkbox" [id]="'feat'+feature.id" [checked]="isFeatureSelected(feature.id)" (change)="toggleFeature(feature.id)" />
                       <label class="form-check-label small" [for]="'feat'+feature.id">{{ feature.description }}</label>
                     </div>
                   }
+                </div>
+
+                <!-- Inline Add New Feature -->
+                <div class="add-feature-inline mt-3">
+                  <label class="form-label small text-muted fw-semibold">Add a new feature</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="newFeatureText"
+                      placeholder="e.g. Custom RSVP page"
+                      (keyup.enter)="addNewFeature()"
+                      [disabled]="addingFeature"
+                    />
+                    <button
+                      class="btn btn-dark d-flex align-items-center gap-1"
+                      type="button"
+                      (click)="addNewFeature()"
+                      [disabled]="addingFeature || !newFeatureText.trim()"
+                    >
+                      @if (addingFeature) {
+                        <span class="spinner-border spinner-border-sm"></span>
+                      } @else {
+                        <i class="ti ti-plus"></i>
+                      }
+                      <span>Add</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -161,7 +189,7 @@
                       <tr class="small text-muted">
                         <th>Min Invites</th>
                         <th>Max Invites</th>
-                        <th>Price (L.E)</th>
+                        <th>Price (J.D)</th>
                         <th class="text-end"></th>
                       </tr>
                     </thead>

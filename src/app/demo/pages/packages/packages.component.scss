@@ -1,6 +1,7 @@
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -14,6 +15,33 @@
     padding: 15px;
     border-radius: 8px;
     background: #fff;
+}
+
+.add-feature-inline {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+
+    .form-label {
+        margin-bottom: 6px;
+        font-size: 12px;
+        letter-spacing: 0.03em;
+    }
+
+    .input-group {
+        .form-control {
+            border-radius: 6px 0 0 6px;
+            &:focus {
+                border-color: #333;
+                box-shadow: none;
+            }
+        }
+        .btn {
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+        }
+    }
 }
 
 .card {

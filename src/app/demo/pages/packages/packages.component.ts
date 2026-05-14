@@ -23,6 +23,8 @@ export class PackagesComponent implements OnInit {
   showForm = false;
   submitting = false;
   editingPackage: Package | null = null;
+  newFeatureText = '';
+  addingFeature = false;
   packageData: any = {
     name: '',
     description: '',
@@ -143,6 +145,35 @@ export class PackagesComponent implements OnInit {
 
   isFeatureSelected(featureId: number): boolean {
     return this.packageData.featureIds.includes(featureId);
+  }
+
+  addNewFeature(): void {
+    const desc = this.newFeatureText.trim();
+    if (!desc) return;
+
+    // Prevent duplicates
+    const exists = this.allFeatures.some(f => f.description.toLowerCase() === desc.toLowerCase());
+    if (exists) {
+      this.toastService.error('This feature already exists');
+      return;
+    }
+
+    this.addingFeature = true;
+    this.featureService.create({ description: desc }).subscribe({
+      next: (created) => {
+        this.allFeatures.push(created);
+        this.packageData.featureIds.push(created.id);
+        this.newFeatureText = '';
+        this.addingFeature = false;
+        this.toastService.success(`Feature "${desc}" created & selected`);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.addingFeature = false;
+        const detail = err.error?.detail || err.error?.message || 'Failed to create feature';
+        this.toastService.error(detail);
+      }
+    });
   }
 
   cancelForm(): void {
