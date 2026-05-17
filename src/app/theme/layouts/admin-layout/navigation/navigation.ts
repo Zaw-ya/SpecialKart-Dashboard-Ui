@@ -151,6 +151,15 @@ export const NavigationItems: NavigationItem[] = [
         breadcrumbs: false
       },
       {
+        id: 'demo-requests',
+        title: 'Demo Requests',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/demo-requests',
+        icon: 'experiment',
+        breadcrumbs: false
+      },
+      {
         id: 'site-settings',
         title: 'Site Settings',
         type: 'item',

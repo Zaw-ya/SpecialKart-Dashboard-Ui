@@ -82,6 +82,10 @@ const routes: Routes = [
       {
         path: 'site-settings',
         loadComponent: () => import('./demo/pages/site-settings/site-settings.component').then((c) => c.SiteSettingsComponent)
+      },
+      {
+        path: 'demo-requests',
+        loadComponent: () => import('./demo/pages/demo-requests/demo-requests.component').then((c) => c.DemoRequestsComponent)
       }
     ]
   },

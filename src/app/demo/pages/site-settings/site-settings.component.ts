@@ -22,7 +22,10 @@ export class SiteSettingsComponent implements OnInit {
     'facebook-url': '',
     'instagram-url': '',
     'address': '',
-    'design-order-message': 'يعجبني تصميم الكارت بالكود "{id}"'
+    'design-order-message': 'يعجبني تصميم الكارت بالكود "{id}"',
+    'twilio-verify-sid': '',
+    'twilio-otp-template-sid': '',
+    'twilio-template-sid': ''
   };
 
   loading = true;
