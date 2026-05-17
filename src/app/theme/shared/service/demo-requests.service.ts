@@ -9,6 +9,7 @@ export interface DemoRequest {
   whatsAppNumber: string;
   isVerified: boolean;
   invitationCardId: number | null;
+  image: string | null;
   createdAt: string;
 }
 

@@ -25,6 +25,7 @@ export class SiteSettingsComponent implements OnInit {
     'design-order-message': 'يعجبني تصميم الكارت بالكود "{id}"',
     'twilio-verify-sid': '',
     'twilio-otp-template-sid': '',
+    'demo-default-image-url': '',
     'twilio-template-sid': ''
   };
 

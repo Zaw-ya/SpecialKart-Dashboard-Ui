@@ -43,4 +43,8 @@ export class DemoRequestsComponent implements OnInit {
     const clean = number.replace('+', '');
     window.open(`https://wa.me/${clean}`, '_blank');
   }
+
+  openImage(url: string) {
+    window.open(url, '_blank');
+  }
 }

@@ -166,6 +166,30 @@
                 </div>
               </div>
 
+              <!-- Demo Default Image -->
+              <div class="row mt-3">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold text-uppercase text-muted">Demo Default Card Image URL</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-0 text-muted"><i class="ti ti-photo"></i></span>
+                    <input type="url" class="form-control bg-light border-0"
+                      [(ngModel)]="settings['demo-default-image-url']"
+                      placeholder="https://res.cloudinary.com/.../card.jpg">
+                    <button class="btn btn-outline-secondary border-0 bg-light" type="button"
+                      (click)="saveSetting('demo-default-image-url')" [disabled]="saving">
+                      <i class="ti ti-device-floppy"></i>
+                    </button>
+                  </div>
+                  <small class="text-muted">Fallback image sent with demo card if no specific card is selected. Use a Cloudinary or public image URL.</small>
+                </div>
+                <div class="col-md-4">
+                  @if (settings['demo-default-image-url']) {
+                    <img [src]="settings['demo-default-image-url']" alt="Demo card preview"
+                      class="img-thumbnail mt-2" style="max-height:80px; object-fit:cover; border-radius:8px;">
+                  }
+                </div>
+              </div>
+
               <!-- WhatsApp Template SID -->
               <div class="row">
                 <div class="col-md-8">

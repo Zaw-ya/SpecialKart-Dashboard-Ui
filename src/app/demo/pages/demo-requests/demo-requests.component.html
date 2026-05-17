@@ -62,7 +62,7 @@
                   <th class="py-3">Name</th>
                   <th class="py-3">WhatsApp</th>
                   <th class="py-3">Status</th>
-                  <th class="py-3">Card</th>
+                  <th class="py-3">Image</th>
                   <th class="py-3">Date</th>
                   <th class="py-3"></th>
                 </tr>
@@ -84,8 +84,13 @@
                         </span>
                       }
                     </td>
-                    <td class="small text-muted">
-                      {{ r.invitationCardId ? '#' + r.invitationCardId : 'Auto' }}
+                    <td>
+                      @if (r.image) {
+                        <img [src]="r.image" alt="card" style="height:40px;width:40px;object-fit:cover;border-radius:6px;cursor:pointer;"
+                          (click)="openImage(r.image)">
+                      } @else {
+                        <span class="text-muted small">—</span>
+                      }
                     </td>
                     <td class="small text-muted">{{ formatDate(r.createdAt) }}</td>
                     <td>
