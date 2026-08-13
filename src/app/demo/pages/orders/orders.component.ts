@@ -82,6 +82,11 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+  getEntityLabel(entityType?: string): string {
+    if (!entityType) return 'غير محدد';
+    return entityType.toLowerCase() === 'company' || entityType === 'شركة' ? 'شركة' : 'فرد';
+  }
+
   getCardTitle(id?: number): string {
     if (!id) return 'N/A';
     return this.cards.find(c => c.id === id)?.title || 'Unknown Card';

@@ -23,6 +23,9 @@ export interface Order {
   notes: string;
   invitationCardId?: number;
   packageId?: number;
+  entityType?: string;
+  guestsCount?: number;
+  eventType?: string;
 }
 
 @Injectable({

@@ -52,7 +52,12 @@
                     <span class="fw-bold">#{{ order.orderNumber }}</span>
                   </td>
                   <td>
-                    <div class="fw-semibold">{{ order.customerName }}</div>
+                    <div class="fw-semibold d-flex align-items-center gap-2">
+                      {{ order.customerName }}
+                      @if (order.entityType) {
+                        <span class="badge bg-light-secondary text-dark border">{{ getEntityLabel(order.entityType) }}</span>
+                      }
+                    </div>
                     <div class="text-muted small">{{ order.customerPhone }}</div>
                   </td>
                   <td>{{ order.createdAt | date: 'MMM dd, yyyy' }}</td>
@@ -111,8 +116,13 @@
             <div class="col-md-6">
               <label class="text-muted small fw-bold text-uppercase d-block mb-1">بيانات العميل</label>
               <div class="card bg-light border-0 p-3">
-                <div class="fw-bold fs-5 mb-1">{{ selectedOrder.customerName }}</div>
-                <div class="text-muted mb-1"><i class="ti ti-mail ml-2"></i> {{ selectedOrder.customerEmail }}</div>
+                <div class="fw-bold fs-5 mb-1 d-flex align-items-center justify-content-between">
+                  <span>{{ selectedOrder.customerName }}</span>
+                  @if (selectedOrder.entityType) {
+                    <span class="badge bg-dark text-white fs-6">{{ getEntityLabel(selectedOrder.entityType) }}</span>
+                  }
+                </div>
+                <div class="text-muted mb-1"><i class="ti ti-mail ml-2"></i> {{ selectedOrder.customerEmail || 'غير محدد' }}</div>
                 <div class="text-muted"><i class="ti ti-phone ml-2"></i> {{ selectedOrder.customerPhone }}</div>
               </div>
             </div>
@@ -126,6 +136,23 @@
               </div>
             </div>
           </div>
+
+          @if (selectedOrder.eventType || selectedOrder.guestsCount) {
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <label class="text-muted small fw-bold text-uppercase d-block mb-1">نوع المناسبة</label>
+                <div class="card border-0 p-3 bg-light">
+                  <div class="fw-bold fs-6">{{ selectedOrder.eventType || 'غير محدد' }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="text-muted small fw-bold text-uppercase d-block mb-1">عدد الضيوف المتوقع</label>
+                <div class="card border-0 p-3 bg-light">
+                  <div class="fw-bold fs-6">{{ selectedOrder.guestsCount ? selectedOrder.guestsCount + ' ضيف' : 'غير محدد' }}</div>
+                </div>
+              </div>
+            </div>
+          }
 
           <div class="row g-4 mb-4">
             <div class="col-md-6">
