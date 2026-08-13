@@ -21,11 +21,16 @@ export class NavigationComponent {
 
   navCollapsedMob;
   windowWidth: number;
+  logoError = false;
 
   // Constructor
   constructor() {
     this.windowWidth = window.innerWidth;
     this.navCollapsedMob = false;
+  }
+
+  onLogoError() {
+    this.logoError = true;
   }
 
   // public method

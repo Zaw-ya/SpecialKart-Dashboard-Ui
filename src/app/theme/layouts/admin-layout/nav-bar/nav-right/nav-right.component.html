@@ -1,12 +1,12 @@
-<ul class="list-unstyled">
+<ul class="list-unstyled d-flex align-items-center mb-0 gap-2">
   <li class="pc-h-item">
-    <a [routerLink]="['/register']" class="pc-head-link me-2 bg-gray-200" title="Add New Admin">
-      <i antIcon type="user" theme="outline"></i>
+    <a [routerLink]="['/register']" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" title="إضافة مدير جديد" aria-label="Add Admin">
+      <i class="ti ti-user-plus fs-5 text-white"></i>
     </a>
   </li>
   <li class="pc-h-item">
-    <a href="javascript:" class="pc-head-link me-0 bg-gray-200" (click)="logout()" title="Logout">
-      <i antIcon type="logout" theme="outline"></i>
+    <a href="javascript:" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.3); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" (click)="logout()" title="تسجيل الخروج" aria-label="Logout">
+      <i class="ti ti-logout fs-5 text-danger"></i>
     </a>
   </li>
 </ul>

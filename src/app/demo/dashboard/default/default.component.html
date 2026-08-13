@@ -1,13 +1,13 @@
 <div class="row">
   <!-- Executive Overview Welcome Card -->
   <div class="col-12 mb-4">
-    <div class="card text-white welcome-card border-0 overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #14172A 0%, #0F1120 100%); border-radius: 16px;">
+    <div class="card welcome-card border-0 overflow-hidden shadow-lg p-2" style="border-radius: 16px;">
       <div class="card-body p-4 p-md-5 position-relative z-1">
         <div class="row align-items-center">
           <div class="col-lg-8">
-            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill" style="background: rgba(217, 182, 121, 0.15); border: 1px solid rgba(217, 182, 121, 0.3);">
-              <span class="rounded-circle bg-gold" style="width: 8px; height: 8px;"></span>
-              <span class="small fw-bold text-gold" style="letter-spacing: 0.05em;">Special Cards Executive Suite</span>
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4);">
+              <span class="rounded-circle" style="width: 8px; height: 8px; background-color: #F59E0B;"></span>
+              <span class="small fw-bold text-gold" style="letter-spacing: 0.05em; color: #F59E0B !important;">Special Cards Executive Suite</span>
             </div>
             <h2 class="text-white mb-2 fw-bold display-6">لوحة التحكم التنفيذية</h2>
             <p class="text-white-50 mb-0 leading-relaxed fs-6">
@@ -15,15 +15,15 @@
             </p>
           </div>
           <div class="col-lg-4 d-none d-lg-block text-end">
-            <div class="d-inline-flex gap-4 p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(217, 182, 121, 0.2);">
+            <div class="d-inline-flex gap-4 p-3 welcome-stats-box">
               <div class="text-end">
                 <p class="text-white-50 mb-1 small text-uppercase fw-bold">إجمالي الطلبات</p>
-                <h3 class="text-gold mb-0 fw-bold">{{ stats.orders }}</h3>
+                <h3 class="text-gold mb-0 fw-bold fs-2" style="color: #F59E0B !important;">{{ stats.orders }}</h3>
               </div>
-              <div class="vr bg-white-50 opacity-25"></div>
+              <div class="vr bg-white opacity-25"></div>
               <div class="text-end">
                 <p class="text-white-50 mb-1 small text-uppercase fw-bold">المهمات المعلقة</p>
-                <h3 class="text-white mb-0 fw-bold">{{ stats.pendingOrders + stats.messages }}</h3>
+                <h3 class="text-white mb-0 fw-bold fs-2">{{ stats.pendingOrders + stats.messages }}</h3>
               </div>
             </div>
           </div>
@@ -34,21 +34,21 @@
 
   @if (loading) {
     <div class="col-12 text-center p-5">
-      <div class="spinner-border text-gold" role="status"></div>
+      <div class="spinner-border text-primary" role="status"></div>
       <p class="mt-3 text-muted fw-bold">جاري تحميل وتحديث بيانات لوحة التحكم...</p>
     </div>
   } @else {
-    <!-- Professional Stats Grid -->
+    <!-- Professional High-Contrast Stats Grid -->
     <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card border-0 shadow-sm h-100 dashboard-stat-card" style="background: #FBF8F1;">
+      <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
           <div class="d-flex align-items-center mb-3">
-            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(184, 135, 59, 0.15); color: #B8873B;">
-              <i class="ti ti-currency-dollar fs-3"></i>
+            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(184, 135, 59, 0.12); color: #B8873B;">
+              <i class="ti ti-currency-dollar fs-2"></i>
             </div>
             <div>
               <p class="text-muted mb-1 small text-uppercase fw-bold">الإيرادات التقديرية</p>
-              <h3 class="mb-0 fw-bold text-dark">{{ stats.totalRevenue | number }} <span class="fs-6 text-muted">ر.س</span></h3>
+              <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.totalRevenue | number }} <span class="fs-6 text-muted">ر.س</span></h3>
             </div>
           </div>
           <div class="progress progress-xs bg-light">
@@ -59,15 +59,15 @@
     </div>
 
     <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card border-0 shadow-sm h-100 dashboard-stat-card" style="background: #FBF8F1;">
+      <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
           <div class="d-flex align-items-center mb-3">
-            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(255, 193, 7, 0.15); color: #b1810b;">
-              <i class="ti ti-shopping-cart fs-3"></i>
+            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(217, 119, 6, 0.12); color: #D97706;">
+              <i class="ti ti-shopping-cart fs-2"></i>
             </div>
             <div>
               <p class="text-muted mb-1 small text-uppercase fw-bold">الطلبات المعلقة</p>
-              <h3 class="mb-0 fw-bold text-dark">{{ stats.pendingOrders }}</h3>
+              <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.pendingOrders }}</h3>
             </div>
           </div>
           <div class="progress progress-xs bg-light">
@@ -78,15 +78,15 @@
     </div>
 
     <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card border-0 shadow-sm h-100 dashboard-stat-card" style="background: #FBF8F1;">
+      <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
           <div class="d-flex align-items-center mb-3">
-            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(13, 202, 240, 0.15); color: #0dcaf0;">
-              <i class="ti ti-mail fs-3"></i>
+            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(2, 132, 199, 0.12); color: #0284C7;">
+              <i class="ti ti-mail fs-2"></i>
             </div>
             <div>
               <p class="text-muted mb-1 small text-uppercase fw-bold">رسائل جديدة</p>
-              <h3 class="mb-0 fw-bold text-dark">{{ stats.messages }}</h3>
+              <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.messages }}</h3>
             </div>
           </div>
           <div class="progress progress-xs bg-light">
@@ -97,15 +97,15 @@
     </div>
 
     <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card border-0 shadow-sm h-100 dashboard-stat-card" style="background: #FBF8F1;">
+      <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
           <div class="d-flex align-items-center mb-3">
-            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(40, 167, 69, 0.15); color: #28a745;">
-              <i class="ti ti-package fs-3"></i>
+            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(22, 163, 74, 0.12); color: #16A34A;">
+              <i class="ti ti-package fs-2"></i>
             </div>
             <div>
               <p class="text-muted mb-1 small text-uppercase fw-bold">الباقات الفعالة</p>
-              <h3 class="mb-0 fw-bold text-dark">{{ stats.packages }}</h3>
+              <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.packages }}</h3>
             </div>
           </div>
           <div class="progress progress-xs bg-light">
@@ -248,7 +248,7 @@
       <div class="row g-4">
         <div class="col-md-3">
           <a [routerLink]="['/invitation-cards']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card btn-gold text-dark">
-            <div class="mb-3 rounded-circle p-3 d-inline-block" style="background: rgba(11, 19, 32, 0.1);">
+            <div class="mb-3 rounded-circle p-3 d-inline-block" style="background: rgba(11, 19, 32, 0.12);">
               <i class="ti ti-plus fs-2"></i>
             </div>
             <h6 class="mb-0 fw-bold">منتج جديد</h6>
@@ -256,7 +256,7 @@
         </div>
         <div class="col-md-3">
           <a [routerLink]="['/blog']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
-            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.1);">
+            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.12);">
               <i class="ti ti-news fs-2 text-gold"></i>
             </div>
             <h6 class="mb-0 text-dark fw-bold">كتابة مقال</h6>
@@ -264,7 +264,7 @@
         </div>
         <div class="col-md-3">
           <a [routerLink]="['/supervisors']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
-            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.1);">
+            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.12);">
               <i class="ti ti-users fs-2 text-gold"></i>
             </div>
             <h6 class="mb-0 text-dark fw-bold">إضافة مشرف</h6>
@@ -272,7 +272,7 @@
         </div>
         <div class="col-md-3">
           <a [routerLink]="['/site-settings']" class="card border-0 shadow-sm h-100 text-decoration-none p-4 text-center admin-action-card">
-            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.1);">
+            <div class="mb-3 rounded-circle p-3 d-inline-block text-dark" style="background: rgba(184, 135, 59, 0.12);">
               <i class="ti ti-settings fs-2 text-gold"></i>
             </div>
             <h6 class="mb-0 text-dark fw-bold">إعدادات الموقع</h6>

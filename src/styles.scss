@@ -1,13 +1,9 @@
 /**======================================================================
-=========================================================================
-Template Name: MAntis Angular - Angular Admin Template
-Author: codedThemes
-Support: https://codedthemes.support-hub.io/
-File: style.css
-=========================================================================
-=================================================================================== */
+ * Special Cards Executive Dashboard - Unified High-Contrast Design System
+ * Enforces strict WCAG AA contrast rules across all dark/light surfaces.
+ ========================================================================= */
 
-// main framework
+// Main Framework & Bootstrap Core
 @import 'node_modules/bootstrap/scss/functions';
 @import 'node_modules/bootstrap/scss/variables';
 @import 'node_modules/bootstrap/scss/variables-dark';
@@ -16,19 +12,15 @@ File: style.css
 @import 'scss/settings/theme-variables';
 @import 'scss/settings/bootstrap-variables';
 
-// bootstrap import
 @import 'scss/bootstrap/bootstrap.scss';
 
 @import 'node_modules/bootstrap/scss/utilities';
 @import 'node_modules/bootstrap/scss/utilities/api';
 
-// main framework
 @import 'scss/themes/generic.scss';
 @import 'scss/themes/general.scss';
-
 @import 'scss/themes/components/components.scss';
 
-// theme
 @import 'scss/themes/layouts/menu/sidebar.scss';
 @import 'scss/themes/layouts/navbar/navbar.scss';
 @import 'scss/themes/layouts/pc-common.scss';
@@ -37,7 +29,7 @@ File: style.css
 
 @import 'scss/themes/preset-style.scss';
 
-// Special Cards Luxury Theme Overrides & Global Design System
+// Fonts
 @font-face {
   font-family: 'ManchetteFine';
   src: url('/assets/images/data/MANCHETTEFINE-REGULAR.TTF') format('truetype');
@@ -54,188 +46,283 @@ File: style.css
   font-display: swap;
 }
 
+/* ==========================================================================
+   1. SEMANTIC COLOR TOKENS & SYSTEM DEFINITIONS
+   ========================================================================== */
 :root {
-  /* Brand Identity Tokens */
-  --bg: #F3EEE5;
-  --bg-surface: #FBF8F1;
-  --bg-card: #FBF8F1;
-  --bg-dark-hero: #14172A;
-  --text: #201F2E;
-  --text-muted: rgba(32, 31, 46, 0.65);
-  --border: rgba(32, 31, 46, 0.12);
-  --gold: #B8873B;
-  --gold-light: #D9B679;
-  --gold-pale: #F6E4B8;
-  --gold-gradient: linear-gradient(120deg, #F6E4B8 0%, #D8AE5E 30%, #8A6526 65%, #E3C07E 100%);
-  --shadow-gold: rgba(184, 135, 59, 0.25);
-  --radius-card: 12px;
+  /* Semantic Surface Tokens */
+  --background: #F4ECE1;
+  --surface: #FFFFFF;
+  --surface-secondary: #F8F5EE;
+  --surface-dark: #111625;
+  --surface-sidebar: #0E131F;
 
-  /* Bootstrap / Framework Overrides */
-  --bs-body-font-family: 'Cairo', 'ManchetteFine', sans-serif;
-  --bs-body-bg: var(--bg);
-  --bs-body-color: var(--text);
-  --bs-primary: #B8873B;
-  --bs-primary-rgb: 184, 135, 59;
-  --bs-border-color: rgba(32, 31, 46, 0.12);
-  
-  /* Mantis Layout Tokens */
-  --pc-sidebar-bg: #14172A;
-  --pc-sidebar-color: rgba(243, 238, 229, 0.85);
-  --pc-sidebar-active-color: #D9B679;
-  --pc-sidebar-caption-color: #D9B679;
-  --pc-header-bg: #14172A;
-  --pc-header-color: #F3EEE5;
+  /* High-Contrast Light Surface Typography */
+  --text-primary: #111827;     /* High contrast dark ink for titles/headings */
+  --text-secondary: #374151;   /* Medium contrast dark slate for labels/body */
+  --text-muted: #6B7280;       /* Muted dark slate for subtitles/dates */
+
+  /* High-Contrast Dark Surface Typography */
+  --text-on-dark-primary: #FFFFFF;    /* Pure white for titles on dark bg */
+  --text-on-dark-secondary: #E2E8F0;  /* Crisp light text for body on dark bg */
+  --text-on-dark-muted: #94A3B8;      /* Light slate for muted text on dark bg */
+
+  /* Brand & Action Palette */
+  --primary: #B8873B;
+  --primary-hover: #9E712B;
+  --primary-light: #FDF8EF;
+  --gold-gradient: linear-gradient(135deg, #E0BF82 0%, #B8873B 50%, #8A6122 100%);
+
+  /* Status Colors */
+  --success: #16A34A;
+  --success-bg: rgba(22, 163, 74, 0.12);
+  --warning: #D97706;
+  --warning-bg: rgba(217, 119, 6, 0.12);
+  --danger: #DC2626;
+  --danger-bg: rgba(220, 38, 38, 0.12);
+  --info: #0284C7;
+  --info-bg: rgba(2, 132, 199, 0.12);
+
+  /* Borders & Shadows */
+  --border: rgba(17, 24, 39, 0.12);
+  --border-subtle: rgba(17, 24, 39, 0.06);
+  --border-on-dark: rgba(255, 255, 255, 0.15);
+
+  --radius-card: 14px;
+  --shadow-card: 0 4px 20px rgba(17, 24, 39, 0.04), 0 1px 3px rgba(17, 24, 39, 0.02);
+  --shadow-lg: 0 12px 32px rgba(17, 24, 39, 0.08);
+
+  /* Bootstrap Variable Binding */
+  --bs-body-font-family: 'Cairo', sans-serif;
+  --bs-body-bg: var(--background);
+  --bs-body-color: var(--text-primary);
+  --bs-primary: var(--primary);
+  --bs-border-color: var(--border);
 }
 
+/* Base Document Reset */
 body {
-  background-color: var(--bg) !important;
-  color: var(--text) !important;
-  font-family: 'Cairo', 'ManchetteFine', sans-serif;
+  background-color: var(--background) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Cairo', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Page Layout & Containers */
 .pc-container {
-  background-color: var(--bg) !important;
+  background-color: var(--background) !important;
+  min-height: calc(100vh - 60px);
 }
 
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: var(--text-primary);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+p, span, label {
+  font-family: 'Cairo', sans-serif;
+}
+
+/* ==========================================================================
+   2. SIDEBAR HIGH-CONTRAST SYSTEM (.pc-sidebar)
+   ========================================================================== */
 .pc-sidebar {
-  background: #14172A !important;
-  border-right: 1px solid rgba(217, 182, 121, 0.15);
-  box-shadow: 4px 0 24px rgba(20, 23, 42, 0.15);
+  background: #0E131F !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25) !important;
+
+  /* Explicitly override all links and text inside dark sidebar */
+  a,
+  .pc-link,
+  .coded-mtext,
+  span,
+  label {
+    color: #E2E8F0 !important; /* Crisp high contrast white/cream text */
+    font-weight: 500;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  i,
+  .pc-micon,
+  .coded-micon {
+    color: #CBD5E1 !important; /* High contrast light slate icons */
+  }
 
   .logo-text {
     font-family: 'Cairo', sans-serif;
     font-size: 19px;
     font-weight: 800;
-    color: #D9B679 !important;
+    color: #F59E0B !important;
     letter-spacing: 0.02em;
   }
 
-  .pc-navbar {
-    .pc-item {
-      .pc-link {
-        color: rgba(243, 238, 229, 0.8) !important;
-        font-weight: 500;
-        font-family: 'Cairo', sans-serif;
-        border-radius: 8px;
-        margin: 2px 12px;
-        transition: all 0.25s ease;
+  .pc-caption {
+    color: #94A3B8 !important; /* Section title contrast */
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
 
-        .pc-micon {
-          color: rgba(217, 182, 121, 0.7);
-        }
+  .pc-item {
+    margin: 2px 10px;
 
-        &:hover {
-          color: #D9B679 !important;
-          background: rgba(217, 182, 121, 0.1) !important;
-          .pc-micon {
-            color: #D9B679;
-          }
-        }
-      }
+    .pc-link {
+      border-radius: 8px !important;
+      padding: 10px 14px !important;
+      transition: all 0.2s ease !important;
 
-      &.active > .pc-link {
-        color: #14172A !important;
-        background: var(--gold-gradient) !important;
-        font-weight: 700;
-        box-shadow: 0 4px 15px rgba(184, 135, 59, 0.3);
+      &:hover {
+        background: rgba(184, 135, 59, 0.18) !important;
+        color: #FFFFFF !important;
 
-        .pc-micon {
-          color: #14172A !important;
+        .pc-micon, i, .coded-mtext {
+          color: #F59E0B !important;
         }
       }
     }
 
-    .pc-caption {
-      color: #D9B679 !important;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      opacity: 0.85;
+    &.active > a,
+    &.active > .pc-link {
+      background: var(--gold-gradient) !important;
+      color: #0E131F !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 14px rgba(184, 135, 59, 0.35) !important;
+
+      a, .pc-link, .coded-mtext, .pc-micon, i {
+        color: #0E131F !important;
+      }
     }
   }
 }
 
+/* ==========================================================================
+   3. TOP NAVIGATION HEADER HIGH-CONTRAST SYSTEM (.pc-header)
+   ========================================================================== */
 .pc-header {
-  background: #14172A !important;
-  border-bottom: 1px solid rgba(217, 182, 121, 0.15);
+  background: #0E131F !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+  .pc-head-link,
+  .btn-icon,
+  i,
+  a {
+    color: #F8FAFC !important; /* High contrast light icons */
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: #F59E0B !important;
+    }
+  }
 
   .header-search {
     .form-control {
-      background: rgba(255, 255, 255, 0.07) !important;
-      border: 1px solid rgba(217, 182, 121, 0.2) !important;
-      color: #F3EEE5 !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      color: #FFFFFF !important;
       border-radius: 50px;
       padding-left: 40px;
 
       &::placeholder {
-        color: rgba(243, 238, 229, 0.5) !important;
+        color: rgba(255, 255, 255, 0.6) !important;
       }
 
       &:focus {
-        border-color: #D9B679 !important;
-        box-shadow: 0 0 0 3px rgba(217, 182, 121, 0.2);
+        border-color: #F59E0B !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
       }
-    }
-  }
-
-  .pc-head-link {
-    color: rgba(243, 238, 229, 0.9) !important;
-    &:hover {
-      color: #D9B679 !important;
-      background: rgba(217, 182, 121, 0.12) !important;
     }
   }
 }
 
-/* Luxury Cards */
+/* ==========================================================================
+   4. CARD & CONTAINER SYSTEM (LIGHT vs DARK CONTRAST)
+   ========================================================================== */
+/* Default Light Cards */
 .card {
-  background: var(--bg-card) !important;
-  border: 1px solid rgba(32, 31, 46, 0.08) !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
   border-radius: var(--radius-card) !important;
-  box-shadow: 0 6px 20px rgba(20, 23, 42, 0.04) !important;
-  transition: all 0.3s ease !important;
+  box-shadow: var(--shadow-card) !important;
+  color: var(--text-primary) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
 
   &:hover {
-    box-shadow: 0 12px 30px rgba(184, 135, 59, 0.12) !important;
+    box-shadow: var(--shadow-lg) !important;
   }
 
   .card-header {
     background: transparent !important;
-    border-bottom: 1px solid rgba(32, 31, 46, 0.06) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
 
-    h5, .card-title {
-      font-family: 'Cairo', sans-serif;
+    h1, h2, h3, h4, h5, h6, .card-title {
+      color: var(--text-primary) !important;
       font-weight: 700;
-      color: var(--text);
     }
+  }
+
+  .text-muted {
+    color: var(--text-muted) !important;
   }
 }
 
-/* Buttons */
-.btn-primary, .btn-gold {
+/* Dark Hero / Executive Welcome Card Rules */
+.welcome-card,
+.card-dark,
+.bg-dark-card,
+.card.welcome-card {
+  background: linear-gradient(135deg, #111625 0%, #0B0F19 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25) !important;
+
+  h1, h2, h3, h4, h5, h6, .display-6, .card-title, .text-white {
+    color: #FFFFFF !important;
+  }
+
+  p, span, .text-white-50, .fs-6 {
+    color: #E2E8F0 !important;
+  }
+
+  .text-gold {
+    color: #F59E0B !important;
+  }
+
+  .welcome-stats-box {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 12px;
+  }
+}
+
+/* ==========================================================================
+   5. BUTTONS & INTERACTIVE ELEMENTS
+   ========================================================================== */
+.btn-primary,
+.btn-gold {
   background: var(--gold-gradient) !important;
-  color: #0B1320 !important;
+  color: #0E131F !important;
   font-family: 'Cairo', sans-serif;
   font-weight: 700 !important;
   border: none !important;
   border-radius: 50px !important;
   padding: 10px 24px;
-  box-shadow: 0 6px 18px rgba(184, 135, 59, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(184, 135, 59, 0.3) !important;
   transition: all 0.25s ease !important;
 
   &:hover, &:focus, &:active {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(184, 135, 59, 0.35) !important;
-    color: #0B1320 !important;
+    box-shadow: 0 8px 20px rgba(184, 135, 59, 0.45) !important;
+    color: #0E131F !important;
   }
 }
 
-.btn-outline-gold, .btn-outline-primary {
+.btn-outline-gold,
+.btn-outline-primary {
   background: transparent !important;
-  color: var(--gold) !important;
-  border: 2px solid var(--gold) !important;
+  color: var(--primary) !important;
+  border: 2px solid var(--primary) !important;
   font-family: 'Cairo', sans-serif;
   font-weight: 700 !important;
   border-radius: 50px !important;
@@ -243,90 +330,136 @@ body {
   transition: all 0.25s ease !important;
 
   &:hover {
-    background: var(--gold) !important;
+    background: var(--primary) !important;
     color: #FFFFFF !important;
     transform: translateY(-2px);
   }
 }
 
-/* Data Tables */
+/* ==========================================================================
+   6. TABLES, BADGES & FORM INPUTS
+   ========================================================================== */
 .table {
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 
   thead th {
-    background-color: rgba(32, 31, 46, 0.04) !important;
-    color: var(--text) !important;
+    background-color: #F8FAFC !important;
+    color: var(--text-primary) !important;
     font-family: 'Cairo', sans-serif;
     font-weight: 700;
     font-size: 13px;
     letter-spacing: 0.02em;
-    border-bottom: 2px solid rgba(32, 31, 46, 0.08) !important;
+    border-bottom: 2px solid #E2E8F0 !important;
   }
 
   tbody td {
-    border-bottom: 1px solid rgba(32, 31, 46, 0.05) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid #F1F5F9 !important;
     font-family: 'Cairo', sans-serif;
   }
 
   &.table-hover tbody tr:hover {
-    background-color: rgba(184, 135, 59, 0.05) !important;
+    background-color: #FDF8EF !important;
   }
 }
 
-/* Badges */
 .badge {
   font-family: 'Cairo', sans-serif;
   font-weight: 700;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
 
   &.bg-light-primary {
-    background-color: var(--gold-pale) !important;
-    color: var(--gold) !important;
-    border: 1px solid rgba(184, 135, 59, 0.2);
+    background-color: #FDF8EF !important;
+    color: #B8873B !important;
+    border: 1px solid rgba(184, 135, 59, 0.3) !important;
   }
 
   &.bg-light-success {
-    background-color: rgba(40, 167, 69, 0.12) !important;
-    color: #1e7e34 !important;
+    background-color: #DCFCE7 !important;
+    color: #15803D !important;
+    border: 1px solid rgba(22, 163, 74, 0.2) !important;
   }
 
   &.bg-light-warning {
-    background-color: rgba(255, 193, 7, 0.15) !important;
-    color: #b1810b !important;
+    background-color: #FEF3C7 !important;
+    color: #B45309 !important;
+    border: 1px solid rgba(217, 119, 6, 0.2) !important;
   }
 
   &.bg-light-danger {
-    background-color: rgba(220, 53, 69, 0.12) !important;
-    color: #dc3545 !important;
+    background-color: #FEE2E2 !important;
+    color: #B91C1C !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  }
+
+  &.bg-light-info {
+    background-color: #E0F2FE !important;
+    color: #0369A1 !important;
+    border: 1px solid rgba(2, 132, 199, 0.2) !important;
   }
 }
 
-/* Form Inputs */
-.form-control, .form-select {
-  background-color: var(--bg-surface) !important;
-  border: 1.5px solid rgba(32, 31, 46, 0.12) !important;
-  border-radius: 10px !important;
-  color: var(--text) !important;
+.form-control,
+.form-select {
+  background-color: var(--surface) !important;
+  border: 1.5px solid #D1D5DB !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
   font-family: 'Cairo', sans-serif;
 
   &:focus {
-    border-color: var(--gold) !important;
-    box-shadow: 0 0 0 3px rgba(184, 135, 59, 0.15) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(184, 135, 59, 0.2) !important;
   }
 }
 
-/* Footer */
+/* ==========================================================================
+   7. FOOTER & AUTH SCREEN CONTAINER
+   ========================================================================== */
 .pc-footer {
-  background: #0F1120 !important;
-  border-top: 1px solid rgba(217, 182, 121, 0.15) !important;
-  color: rgba(243, 238, 229, 0.6) !important;
+  background: #0E131F !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(243, 238, 229, 0.7) !important;
   font-family: 'Cairo', sans-serif;
 
   a {
-    color: var(--gold-light) !important;
+    color: #F59E0B !important;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
   }
 }
+
+.auth-main {
+  min-height: 100vh !important;
+  width: 100% !important;
+  background: linear-gradient(135deg, #0E131F 0%, #080B14 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2.5rem 1rem !important;
+
+  .auth-container {
+    width: 100% !important;
+    max-width: 460px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .auth-card {
+    width: 100% !important;
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) !important;
+    padding: 2.5rem 2rem !important;
+  }
+}
+
+
 

@@ -1,8 +1,20 @@
 <nav>
   <div class="navbar-wrapper">
     <div class="m-header d-flex align-items-center justify-content-between px-3 py-3">
-      <a [routerLink]="['/']" class="b-brand d-flex align-items-center gap-2">
-        <img src="/assets/images/svg/logo-ar.svg" alt="Special Cards Logo" style="height: 42px; max-width: 170px; object-fit: contain;" />
+      <a [routerLink]="['/']" class="b-brand d-flex align-items-center gap-2 text-decoration-none">
+        @if (!logoError) {
+          <img src="/assets/images/svg/logo-ar.svg" (error)="onLogoError()" alt="Special Cards Logo" style="height: 44px; max-width: 170px; object-fit: contain;" />
+        } @else {
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #F6E4B8 0%, #D8AE5E 50%, #8A6526 100%); color: #0E131F; font-size: 14px;">
+              SC
+            </div>
+            <div class="d-flex flex-column">
+              <span class="fw-bold fs-6 text-gold" style="color: #F59E0B !important; line-height: 1.2;">Special Cards</span>
+              <span class="small text-white-50" style="font-size: 10px;">بطاقتي الخاصة</span>
+            </div>
+          </div>
+        }
       </a>
     </div>
     <app-nav-content

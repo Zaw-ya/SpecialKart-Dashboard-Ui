@@ -19,6 +19,11 @@ export class AuthRegisterComponent {
   loading = false;
   error = '';
   success = '';
+  logoError = false;
+
+  onLogoError() {
+    this.logoError = true;
+  }
 
   constructor(
     private authService: AuthService,

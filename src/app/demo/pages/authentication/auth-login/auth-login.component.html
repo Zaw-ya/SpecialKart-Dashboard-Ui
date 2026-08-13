@@ -1,41 +1,50 @@
-<div class="auth-main" style="background: linear-gradient(135deg, #14172A 0%, #0F1120 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
-  <div class="auth-wrapper" style="width: 100%; max-width: 440px;">
-    <div class="auth-form text-center">
-      <div class="auth-header mb-4">
-        <img src="/assets/images/svg/logo-ar.svg" alt="Special Cards Logo" style="height: 52px; max-width: 220px; object-fit: contain;" />
-      </div>
-      <div class="card shadow-lg border-0" style="background: #FBF8F1; border-radius: 16px;">
-        <div class="card-body p-4 p-md-5 text-start">
-          <div class="mb-4 text-center">
-            <h3 class="mb-1 fw-bold text-dark">تسجيل الدخول</h3>
-            <p class="text-muted small">لوحة تحكم منصة Special Cards</p>
+<div class="auth-main">
+  <div class="auth-container">
+    <div class="text-center mb-4">
+      @if (!logoError) {
+        <img src="/assets/images/svg/logo-ar.svg" (error)="onLogoError()" alt="Special Cards Logo" style="height: 60px; max-width: 240px; object-fit: contain;" />
+      } @else {
+        <div class="d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow" style="background: linear-gradient(135deg, #111625 0%, #0B0F19 100%); border: 1px solid rgba(245, 158, 11, 0.4);">
+          <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 42px; height: 42px; background: linear-gradient(135deg, #F6E4B8 0%, #D8AE5E 50%, #8A6526 100%); color: #0E131F;">
+            SC
           </div>
-          <form (ngSubmit)="login()">
-            <div class="form-group mb-3">
-              <label class="form-label fw-bold text-dark" for="email">البريد الإلكتروني</label>
-              <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="admin@specialcards.sa" [(ngModel)]="email" required />
-            </div>
-            <div class="form-group mb-3">
-              <label class="form-label fw-bold text-dark" for="password">كلمة المرور</label>
-              <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="••••••••" [(ngModel)]="password" required />
-            </div>
-            @if (error) {
-              <div class="alert alert-danger mb-3 py-2 small">{{ error }}</div>
-            }
-            <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-gold btn-lg w-100 fw-bold justify-content-center" [disabled]="loading">
-                @if (loading) {
-                  <span class="spinner-border spinner-border-sm me-2"></span>
-                }
-                دخول إلى لوحة التحكم
-              </button>
-            </div>
-          </form>
+          <span class="fw-bold fs-4 text-gold" style="color: #F59E0B !important;">Special Cards</span>
         </div>
+      }
+    </div>
+
+    <div class="auth-card">
+      <div class="text-center mb-4">
+        <h3 class="fw-bold text-dark mb-1">تسجيل الدخول</h3>
+        <p class="text-muted small mb-0">لوحة تحكم منصة Special Cards</p>
       </div>
-      <div class="auth-footer text-center mt-4">
-        <p class="m-0 text-white-50 small">&copy; 2026 Special Cards | مؤسسة بطاقتي الخاصة</p>
-      </div>
+
+      <form (ngSubmit)="login()">
+        <div class="mb-3 text-start">
+          <label class="form-label fw-bold text-dark small" for="email">البريد الإلكتروني</label>
+          <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="admin@specialcards.sa" [(ngModel)]="email" required />
+        </div>
+
+        <div class="mb-4 text-start">
+          <label class="form-label fw-bold text-dark small" for="password">كلمة المرور</label>
+          <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="••••••••" [(ngModel)]="password" required />
+        </div>
+
+        @if (error) {
+          <div class="alert alert-danger mb-3 py-2 small">{{ error }}</div>
+        }
+
+        <button type="submit" class="btn btn-gold btn-lg w-100 fw-bold justify-content-center" [disabled]="loading">
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          دخول إلى لوحة التحكم
+        </button>
+      </form>
+    </div>
+
+    <div class="text-center mt-4">
+      <p class="m-0 text-white-50 small">&copy; 2026 Special Cards | مؤسسة بطاقتي الخاصة</p>
     </div>
   </div>
 </div>

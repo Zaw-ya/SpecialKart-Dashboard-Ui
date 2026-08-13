@@ -18,6 +18,11 @@ export class AuthLoginComponent implements OnInit {
   loading = false;
   error = '';
   returnUrl = '';
+  logoError = false;
+
+  onLogoError() {
+    this.logoError = true;
+  }
 
   constructor(
     private route: ActivatedRoute,
