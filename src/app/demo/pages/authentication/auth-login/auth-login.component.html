@@ -1,41 +1,40 @@
-<div class="auth-main">
-  <div class="auth-wrapper v3">
-    <div class="auth-form">
-      <div class="auth-header">
-        <h2 class="logo-text">SpecialKart</h2>
+<div class="auth-main" style="background: linear-gradient(135deg, #14172A 0%, #0F1120 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+  <div class="auth-wrapper" style="width: 100%; max-width: 440px;">
+    <div class="auth-form text-center">
+      <div class="auth-header mb-4">
+        <img src="/assets/images/svg/logo-ar.svg" alt="Special Cards Logo" style="height: 52px; max-width: 220px; object-fit: contain;" />
       </div>
-      <div class="card my-5">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-end mb-4">
-            <h3 class="mb-0"><b>Login</b></h3>
+      <div class="card shadow-lg border-0" style="background: #FBF8F1; border-radius: 16px;">
+        <div class="card-body p-4 p-md-5 text-start">
+          <div class="mb-4 text-center">
+            <h3 class="mb-1 fw-bold text-dark">تسجيل الدخول</h3>
+            <p class="text-muted small">لوحة تحكم منصة Special Cards</p>
           </div>
           <form (ngSubmit)="login()">
             <div class="form-group mb-3">
-              <label class="form-label" for="email">Email Address</label>
-              <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" [(ngModel)]="email" required />
+              <label class="form-label fw-bold text-dark" for="email">البريد الإلكتروني</label>
+              <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="admin@specialcards.sa" [(ngModel)]="email" required />
             </div>
             <div class="form-group mb-3">
-              <label class="form-label" for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]="password" required />
+              <label class="form-label fw-bold text-dark" for="password">كلمة المرور</label>
+              <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="••••••••" [(ngModel)]="password" required />
             </div>
             @if (error) {
-              <div class="alert alert-danger mb-3">{{ error }}</div>
+              <div class="alert alert-danger mb-3 py-2 small">{{ error }}</div>
             }
             <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <button type="submit" class="btn btn-gold btn-lg w-100 fw-bold justify-content-center" [disabled]="loading">
                 @if (loading) {
-                  <span class="spinner-border spinner-border-sm me-1"></span>
+                  <span class="spinner-border spinner-border-sm me-2"></span>
                 }
-                Login
+                دخول إلى لوحة التحكم
               </button>
             </div>
           </form>
         </div>
       </div>
-      <div class="auth-footer row">
-        <div class="col my-1 text-center">
-          <p class="m-0">SpecialKart © 2026</p>
-        </div>
+      <div class="auth-footer text-center mt-4">
+        <p class="m-0 text-white-50 small">&copy; 2026 Special Cards | مؤسسة بطاقتي الخاصة</p>
       </div>
     </div>
   </div>

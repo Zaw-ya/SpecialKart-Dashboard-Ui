@@ -37,59 +37,296 @@ File: style.css
 
 @import 'scss/themes/preset-style.scss';
 
-// Black & White Theme Overrides
-:root {
-  --bs-primary: #000000;
-  --bs-primary-rgb: 0, 0, 0;
-  --pc-sidebar-active-color: #000000;
-  --pc-sidebar-caption-color: #262626;
-  --pc-header-color: #000000;
+// Special Cards Luxury Theme Overrides & Global Design System
+@font-face {
+  font-family: 'ManchetteFine';
+  src: url('/assets/images/data/MANCHETTEFINE-REGULAR.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-.logo-text {
-  font-size: 20px;
+@font-face {
+  font-family: 'ManchetteFine';
+  src: url('/assets/images/data/MANCHETTEFINE-BOLD.TTF') format('truetype');
   font-weight: 700;
-  color: #000000;
-  letter-spacing: -0.5px;
-  text-transform: uppercase;
+  font-style: normal;
+  font-display: swap;
 }
 
-.b-brand {
-  text-decoration: none !important;
+:root {
+  /* Brand Identity Tokens */
+  --bg: #F3EEE5;
+  --bg-surface: #FBF8F1;
+  --bg-card: #FBF8F1;
+  --bg-dark-hero: #14172A;
+  --text: #201F2E;
+  --text-muted: rgba(32, 31, 46, 0.65);
+  --border: rgba(32, 31, 46, 0.12);
+  --gold: #B8873B;
+  --gold-light: #D9B679;
+  --gold-pale: #F6E4B8;
+  --gold-gradient: linear-gradient(120deg, #F6E4B8 0%, #D8AE5E 30%, #8A6526 65%, #E3C07E 100%);
+  --shadow-gold: rgba(184, 135, 59, 0.25);
+  --radius-card: 12px;
+
+  /* Bootstrap / Framework Overrides */
+  --bs-body-font-family: 'Cairo', 'ManchetteFine', sans-serif;
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-primary: #B8873B;
+  --bs-primary-rgb: 184, 135, 59;
+  --bs-border-color: rgba(32, 31, 46, 0.12);
+  
+  /* Mantis Layout Tokens */
+  --pc-sidebar-bg: #14172A;
+  --pc-sidebar-color: rgba(243, 238, 229, 0.85);
+  --pc-sidebar-active-color: #D9B679;
+  --pc-sidebar-caption-color: #D9B679;
+  --pc-header-bg: #14172A;
+  --pc-header-color: #F3EEE5;
 }
 
-.btn-primary {
-  background-color: #000000;
-  border-color: #000000;
+body {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: 'Cairo', 'ManchetteFine', sans-serif;
+}
+
+/* Page Layout & Containers */
+.pc-container {
+  background-color: var(--bg) !important;
+}
+
+.pc-sidebar {
+  background: #14172A !important;
+  border-right: 1px solid rgba(217, 182, 121, 0.15);
+  box-shadow: 4px 0 24px rgba(20, 23, 42, 0.15);
+
+  .logo-text {
+    font-family: 'Cairo', sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    color: #D9B679 !important;
+    letter-spacing: 0.02em;
+  }
+
+  .pc-navbar {
+    .pc-item {
+      .pc-link {
+        color: rgba(243, 238, 229, 0.8) !important;
+        font-weight: 500;
+        font-family: 'Cairo', sans-serif;
+        border-radius: 8px;
+        margin: 2px 12px;
+        transition: all 0.25s ease;
+
+        .pc-micon {
+          color: rgba(217, 182, 121, 0.7);
+        }
+
+        &:hover {
+          color: #D9B679 !important;
+          background: rgba(217, 182, 121, 0.1) !important;
+          .pc-micon {
+            color: #D9B679;
+          }
+        }
+      }
+
+      &.active > .pc-link {
+        color: #14172A !important;
+        background: var(--gold-gradient) !important;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(184, 135, 59, 0.3);
+
+        .pc-micon {
+          color: #14172A !important;
+        }
+      }
+    }
+
+    .pc-caption {
+      color: #D9B679 !important;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+  }
+}
+
+.pc-header {
+  background: #14172A !important;
+  border-bottom: 1px solid rgba(217, 182, 121, 0.15);
+
+  .header-search {
+    .form-control {
+      background: rgba(255, 255, 255, 0.07) !important;
+      border: 1px solid rgba(217, 182, 121, 0.2) !important;
+      color: #F3EEE5 !important;
+      border-radius: 50px;
+      padding-left: 40px;
+
+      &::placeholder {
+        color: rgba(243, 238, 229, 0.5) !important;
+      }
+
+      &:focus {
+        border-color: #D9B679 !important;
+        box-shadow: 0 0 0 3px rgba(217, 182, 121, 0.2);
+      }
+    }
+  }
+
+  .pc-head-link {
+    color: rgba(243, 238, 229, 0.9) !important;
+    &:hover {
+      color: #D9B679 !important;
+      background: rgba(217, 182, 121, 0.12) !important;
+    }
+  }
+}
+
+/* Luxury Cards */
+.card {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(32, 31, 46, 0.08) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: 0 6px 20px rgba(20, 23, 42, 0.04) !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    box-shadow: 0 12px 30px rgba(184, 135, 59, 0.12) !important;
+  }
+
+  .card-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(32, 31, 46, 0.06) !important;
+
+    h5, .card-title {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      color: var(--text);
+    }
+  }
+}
+
+/* Buttons */
+.btn-primary, .btn-gold {
+  background: var(--gold-gradient) !important;
+  color: #0B1320 !important;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 50px !important;
+  padding: 10px 24px;
+  box-shadow: 0 6px 18px rgba(184, 135, 59, 0.25) !important;
+  transition: all 0.25s ease !important;
+
   &:hover, &:focus, &:active {
-    background-color: #262626 !important;
-    border-color: #262626 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(184, 135, 59, 0.35) !important;
+    color: #0B1320 !important;
   }
 }
 
-.badge.bg-light-primary {
-  background-color: #f0f0f0;
-  color: #262626;
+.btn-outline-gold, .btn-outline-primary {
+  background: transparent !important;
+  color: var(--gold) !important;
+  border: 2px solid var(--gold) !important;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700 !important;
+  border-radius: 50px !important;
+  padding: 8px 22px;
+  transition: all 0.25s ease !important;
+
+  &:hover {
+    background: var(--gold) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+  }
 }
 
-.nav-link.active {
-  background-color: #f5f5f5 !important;
-  color: #000000 !important;
-  font-weight: 600;
-  &::after {
-    background-color: #000000 !important;
+/* Data Tables */
+.table {
+  color: var(--text) !important;
+
+  thead th {
+    background-color: rgba(32, 31, 46, 0.04) !important;
+    color: var(--text) !important;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    border-bottom: 2px solid rgba(32, 31, 46, 0.08) !important;
+  }
+
+  tbody td {
+    border-bottom: 1px solid rgba(32, 31, 46, 0.05) !important;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  &.table-hover tbody tr:hover {
+    background-color: rgba(184, 135, 59, 0.05) !important;
   }
 }
 
-// Icon Visibility Fixes
-.btn-icon {
-  i {
-    font-size: 18px;
+/* Badges */
+.badge {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+
+  &.bg-light-primary {
+    background-color: var(--gold-pale) !important;
+    color: var(--gold) !important;
+    border: 1px solid rgba(184, 135, 59, 0.2);
   }
-  &.btn-light-primary i {
-    color: #000000;
+
+  &.bg-light-success {
+    background-color: rgba(40, 167, 69, 0.12) !important;
+    color: #1e7e34 !important;
   }
-  &.btn-light-danger i {
-    color: #dc3545;
+
+  &.bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    color: #b1810b !important;
+  }
+
+  &.bg-light-danger {
+    background-color: rgba(220, 53, 69, 0.12) !important;
+    color: #dc3545 !important;
   }
 }
+
+/* Form Inputs */
+.form-control, .form-select {
+  background-color: var(--bg-surface) !important;
+  border: 1.5px solid rgba(32, 31, 46, 0.12) !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+  font-family: 'Cairo', sans-serif;
+
+  &:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px rgba(184, 135, 59, 0.15) !important;
+  }
+}
+
+/* Footer */
+.pc-footer {
+  background: #0F1120 !important;
+  border-top: 1px solid rgba(217, 182, 121, 0.15) !important;
+  color: rgba(243, 238, 229, 0.6) !important;
+  font-family: 'Cairo', sans-serif;
+
+  a {
+    color: var(--gold-light) !important;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+

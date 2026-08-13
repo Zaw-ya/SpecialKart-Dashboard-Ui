@@ -77,7 +77,7 @@ export class DefaultComponent implements OnInit {
         format: 'dd/MM/yy HH:mm'
       }
     },
-    colors: ['#1890ff']
+    colors: ['#B8873B']
   };
 
   pieChartOptions: any = {
@@ -100,7 +100,7 @@ export class DefaultComponent implements OnInit {
         }
       }
     ],
-    colors: ['#faad14', '#1890ff', '#52c41a', '#f5222d']
+    colors: ['#D9B679', '#14172A', '#28a745', '#dc3545']
   };
 
   private cardService = inject(InvitationCardService);
