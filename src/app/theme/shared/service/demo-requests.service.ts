@@ -28,6 +28,15 @@ export interface DemoAdminResult {
   message?: string;
 }
 
+export interface DemoCardImageResult {
+  url: string;
+  contentType: string;
+  sizeBytes: number;
+}
+
+/** WhatsApp rejects media larger than this, so the file is checked before it is uploaded. */
+export const MAX_DEMO_CARD_IMAGE_BYTES = 5 * 1024 * 1024;
+
 @Injectable({ providedIn: 'root' })
 export class DemoRequestsService {
   private http = inject(HttpClient);
@@ -45,5 +54,16 @@ export class DemoRequestsService {
   /** Clears the "already used the free trial" lock so the number can request a demo again. */
   adminReset(whatsAppNumber: string): Observable<DemoAdminResult> {
     return this.http.post<DemoAdminResult>(`${this.baseUrl}/admin/reset`, { whatsAppNumber });
+  }
+
+  /**
+   * Uploads the demo card image to the API's own wwwroot and saves the resulting
+   * public URL as `demo-default-image-url`. That URL is what gets passed to the
+   * WhatsApp template as variable {{2}}.
+   */
+  uploadCardImage(file: File): Observable<DemoCardImageResult> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    return this.http.post<DemoCardImageResult>(`${this.baseUrl}/admin/card-image`, form);
   }
 }

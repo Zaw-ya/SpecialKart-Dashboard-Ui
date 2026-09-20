@@ -245,7 +245,27 @@
                       <i class="ti ti-device-floppy"></i>
                     </button>
                   </div>
-                  <small class="text-muted">Fallback image sent with demo card if no specific card is selected. Use a Cloudinary or public image URL.</small>
+                  <small class="text-muted">Fallback image sent with demo card if no specific card is selected. Upload below, or paste any public image URL.</small>
+
+                  <div class="d-flex align-items-center gap-2 mt-2">
+                    <input type="file" #cardImageInput class="d-none"
+                      accept="image/png,image/jpeg"
+                      (change)="onCardImageSelected($event)">
+                    <button class="btn btn-sm btn-outline-primary" type="button"
+                      (click)="cardImageInput.click()" [disabled]="uploadingCardImage">
+                      @if (uploadingCardImage) {
+                        <span class="spinner-border spinner-border-sm me-1"></span> جارِ الرفع...
+                      } @else {
+                        <i class="ti ti-upload me-1"></i> رفع صورة الكارت
+                      }
+                    </button>
+                    @if (cardImageSizeLabel) {
+                      <small class="text-muted">{{ cardImageSizeLabel }}</small>
+                    }
+                  </div>
+                  <small class="text-muted d-block mt-1">
+                    PNG أو JPG، بحد أقصى 5 ميجا — واتساب يرفض أي صورة أكبر من كده.
+                  </small>
                 </div>
                 <div class="col-md-4">
                   @if (settings['demo-default-image-url']) {
@@ -273,8 +293,12 @@
                     Get it from <strong>Twilio Console → Messaging → Content Templates</strong>.
                     Exactly 34 characters: <code>HX</code> + 32 hex digits, copied from the template that
                     belongs to <em>this</em> Twilio account — anything else fails with error 21655.<br>
-                    Template must have one variable: <code>{{'{{'}}1{{'}}'}}</code> = customer name.
-                    The card image comes from the template's own <strong>Media URL</strong>.
+                    Template must have two variables: <code>{{'{{'}}1{{'}}'}}</code> = customer name,
+                    and its <strong>Media URL</strong> set to
+                    <code>{{ cardImageBaseUrl }}{{'{{'}}2{{'}}'}}</code> — the backend sends only the
+                    uploaded file name as <code>{{'{{'}}2{{'}}'}}</code>.<br>
+                    Only images uploaded above can use the template; a card image hosted elsewhere
+                    is sent as a normal message instead.
                   </small>
                 </div>
                 <div class="col-md-4 d-flex align-items-center">

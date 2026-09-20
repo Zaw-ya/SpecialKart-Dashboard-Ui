@@ -4,6 +4,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { SiteSettingsService } from 'src/app/theme/shared/service/site-settings.service';
 import { InvitationCardService } from 'src/app/theme/shared/service/invitation-card.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { DemoRequestsService, MAX_DEMO_CARD_IMAGE_BYTES } from 'src/app/theme/shared/service/demo-requests.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -35,6 +36,20 @@ export class SiteSettingsComponent implements OnInit {
   loading = true;
   saving = false;
   triggering = false;
+  uploadingCardImage = false;
+  cardImageSizeLabel = '';
+
+  /**
+   * The prefix to hard-code into the WhatsApp template's Media URL. Derived from
+   * the uploaded image so it always shows the host the API actually serves from,
+   * rather than one guessed here.
+   */
+  get cardImageBaseUrl(): string {
+    const url = this.settings['demo-default-image-url'] ?? '';
+    const marker = '/demo-cards/';
+    const index = url.indexOf(marker);
+    return index >= 0 ? url.slice(0, index + marker.length) : '<api-host>/demo-cards/';
+  }
 
   bulkVisibility = {
     updateGlobal: false,
@@ -47,11 +62,52 @@ export class SiteSettingsComponent implements OnInit {
     private settingsService: SiteSettingsService,
     private invitationCardService: InvitationCardService,
     private toastService: ToastService,
+    private demoService: DemoRequestsService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadSettings();
+  }
+
+  /**
+   * Uploads the demo card image to the API's wwwroot. The API stores the public
+   * URL as `demo-default-image-url` itself, so the field is refreshed from the
+   * response rather than saved again from here.
+   */
+  onCardImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Checked here too so an oversized file is rejected instantly instead of
+    // after a long upload that the server would refuse anyway.
+    if (file.size > MAX_DEMO_CARD_IMAGE_BYTES) {
+      this.toastService.error(
+        `حجم الصورة ${(file.size / 1024 / 1024).toFixed(1)} ميجا. الحد الأقصى 5 ميجا، اضغط الصورة وحاول تاني.`
+      );
+      input.value = '';
+      return;
+    }
+
+    this.uploadingCardImage = true;
+    this.demoService.uploadCardImage(file).pipe(
+      finalize(() => {
+        this.uploadingCardImage = false;
+        input.value = '';
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (result) => {
+        this.settings['demo-default-image-url'] = result.url;
+        this.cardImageSizeLabel = `${(result.sizeBytes / 1024).toFixed(0)} KB`;
+        this.toastService.success('تم رفع صورة الكارت وحفظها');
+      },
+      error: (err) => {
+        console.error('Error uploading demo card image:', err);
+        this.toastService.error(err?.error?.message ?? 'فشل رفع صورة الكارت');
+      }
+    });
   }
 
   loadSettings(): void {

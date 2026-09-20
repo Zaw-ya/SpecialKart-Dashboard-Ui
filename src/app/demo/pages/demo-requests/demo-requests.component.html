@@ -43,6 +43,63 @@
       </div>
     </div>
 
+    <!-- Send a demo to any number, without the customer going through the site -->
+    <div class="card border-0 shadow-sm mb-4 border-start border-4 border-primary" style="border-radius: 12px;">
+      <div class="card-body p-3">
+        <h6 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+          <i class="ti ti-send text-primary"></i>
+          إرسال تجربة مجانية لأي رقم
+        </h6>
+        <p class="text-muted small mb-3">
+          يتخطى التحقق بالـ OTP وقيد «الرقم استخدم التجربة من قبل» — للاختبار السريع.
+        </p>
+
+        <div class="row g-2 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted mb-1">رقم الواتساب <span class="text-danger">*</span></label>
+            <input type="tel" class="form-control" dir="ltr"
+              [(ngModel)]="manualSend.whatsAppNumber"
+              placeholder="+201012345678"
+              (keyup.enter)="sendToNumber()">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted mb-1">الاسم</label>
+            <input type="text" class="form-control"
+              [(ngModel)]="manualSend.name"
+              placeholder="اختياري — يظهر في الرسالة">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">كارت الدعوة</label>
+            <select class="form-select" [(ngModel)]="manualSend.invitationCardId">
+              <option [ngValue]="null">الصورة الافتراضية (من إعدادات الموقع)</option>
+              @for (card of cards; track card.id) {
+                <option [ngValue]="card.id">{{ card.title }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100 rounded-pill"
+              (click)="sendToNumber()"
+              [disabled]="sendingManual || !manualSend.whatsAppNumber">
+              @if (sendingManual) {
+                <span class="spinner-border spinner-border-sm me-1"></span> جارِ الإرسال
+              } @else {
+                <i class="ti ti-send me-1"></i> إرسال
+              }
+            </button>
+          </div>
+        </div>
+
+        @if (manualSend.invitationCardId !== null) {
+          <div class="alert alert-warning py-2 px-3 mt-3 mb-0 small">
+            <i class="ti ti-alert-triangle me-1"></i>
+            صور بطاقات الدعوة مستضافة على Cloudinary، فلن يُستخدم قالب الواتساب المعتمد معها —
+            سترسل كرسالة عادية، وهي تصل فقط إذا كان الرقم قد راسلك خلال آخر 24 ساعة.
+          </div>
+        }
+      </div>
+    </div>
+
     <!-- Search & Date Filter Card -->
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
       <div class="card-body p-3">

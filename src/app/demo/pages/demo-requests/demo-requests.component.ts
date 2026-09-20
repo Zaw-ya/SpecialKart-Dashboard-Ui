@@ -4,6 +4,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { DemoRequestsService, DemoRequest } from 'src/app/theme/shared/service/demo-requests.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
+import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/service/invitation-card.service';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 
@@ -60,9 +61,19 @@ export class DemoRequestsComponent implements OnInit {
   highlightId: number | null = null;
   metaStatuses: Record<string, MetaRecordStatus> = {};
 
+  /** Manual send: delivers the demo to a number that never went through the site. */
+  manualSend: { whatsAppNumber: string; name: string; invitationCardId: number | null } = {
+    whatsAppNumber: '',
+    name: '',
+    invitationCardId: null
+  };
+  sendingManual = false;
+  cards: InvitationCard[] = [];
+
   constructor(
     private service: DemoRequestsService,
     private metaService: MetaLeadEventsService,
+    private cardService: InvitationCardService,
     private toastService: ToastService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -74,6 +85,43 @@ export class DemoRequestsComponent implements OnInit {
     });
     this.load();
     this.loadMetaStatuses();
+    this.loadCards();
+  }
+
+  /** Cards offered in the manual-send picker; failing to load just leaves the default option. */
+  loadCards(): void {
+    this.cardService.getAll().subscribe({
+      next: (data) => {
+        this.cards = data;
+        this.cdr.detectChanges();
+      },
+      error: () => (this.cards = [])
+    });
+  }
+
+  /** Sends the demo card to a number typed by the admin, skipping the OTP flow. */
+  sendToNumber(): void {
+    const number = (this.manualSend.whatsAppNumber || '').trim();
+    if (!number) return;
+
+    if (!confirm(`إرسال كارت التجربة المجانية إلى ${number}؟`)) return;
+
+    this.sendingManual = true;
+    this.service
+      .adminResend({
+        whatsAppNumber: number,
+        name: this.manualSend.name?.trim() || null,
+        invitationCardId: this.manualSend.invitationCardId
+      })
+      .pipe(finalize(() => { this.sendingManual = false; this.cdr.detectChanges(); }))
+      .subscribe({
+        next: (res) => {
+          this.toastService.success(res?.message || 'تم إرسال الكارت بنجاح');
+          this.manualSend = { whatsAppNumber: '', name: '', invitationCardId: null };
+          this.load();
+        },
+        error: (err) => this.toastService.error(err?.error?.message || 'فشل إرسال الكارت')
+      });
   }
 
   /** Delivery status of the Meta Lead event for each demo request (optional column). */
