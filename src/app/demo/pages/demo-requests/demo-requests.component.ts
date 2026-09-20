@@ -112,4 +112,56 @@ export class DemoRequestsComponent implements OnInit {
   openImage(url: string) {
     window.open(url, '_blank');
   }
+
+  /** ids with an admin action in flight, so only that row's buttons get disabled */
+  resendingIds = new Set<number>();
+  resettingIds = new Set<number>();
+
+  isResending(id: number): boolean {
+    return this.resendingIds.has(id);
+  }
+
+  isResetting(id: number): boolean {
+    return this.resettingIds.has(id);
+  }
+
+  /** Re-sends the same demo card to the customer without asking for a new OTP. */
+  resend(r: DemoRequest): void {
+    if (!confirm(`إعادة إرسال كارت التجربة المجانية إلى ${r.whatsAppNumber}؟`)) return;
+
+    this.resendingIds.add(r.id);
+    this.service
+      .adminResend({
+        whatsAppNumber: r.whatsAppNumber,
+        name: r.name,
+        invitationCardId: r.invitationCardId,
+        eventType: r.eventType,
+        category: r.category
+      })
+      .pipe(finalize(() => { this.resendingIds.delete(r.id); this.cdr.detectChanges(); }))
+      .subscribe({
+        next: (res) => {
+          this.toastService.success(res?.message || 'تم إعادة إرسال الكارت بنجاح');
+          this.load();
+        },
+        error: (err) => this.toastService.error(err?.error?.message || 'فشل إعادة إرسال الكارت')
+      });
+  }
+
+  /** Clears the free-trial lock so this number can request the demo again from the site. */
+  reset(r: DemoRequest): void {
+    if (!confirm(`السماح للرقم ${r.whatsAppNumber} بطلب التجربة المجانية من جديد؟`)) return;
+
+    this.resettingIds.add(r.id);
+    this.service
+      .adminReset(r.whatsAppNumber)
+      .pipe(finalize(() => { this.resettingIds.delete(r.id); this.cdr.detectChanges(); }))
+      .subscribe({
+        next: (res) => {
+          this.toastService.success(res?.message || 'تم فتح التجربة المجانية لهذا الرقم');
+          this.load();
+        },
+        error: (err) => this.toastService.error(err?.error?.message || 'فشل إعادة فتح التجربة المجانية')
+      });
+  }
 }

@@ -15,12 +15,35 @@ export interface DemoRequest {
   createdAt: string;
 }
 
+export interface AdminResendDemoRequest {
+  whatsAppNumber: string;
+  name?: string | null;
+  invitationCardId?: number | null;
+  eventType?: string | null;
+  category?: string | null;
+}
+
+export interface DemoAdminResult {
+  success?: boolean;
+  message?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DemoRequestsService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/Demo/requests`;
+  private baseUrl = `${environment.apiUrl}/Demo`;
 
   getAll(): Observable<DemoRequest[]> {
-    return this.http.get<DemoRequest[]>(this.apiUrl);
+    return this.http.get<DemoRequest[]>(`${this.baseUrl}/requests`);
+  }
+
+  /** Re-sends the free demo card to the customer on WhatsApp without asking for a new OTP. */
+  adminResend(request: AdminResendDemoRequest): Observable<DemoAdminResult> {
+    return this.http.post<DemoAdminResult>(`${this.baseUrl}/admin/resend`, request);
+  }
+
+  /** Clears the "already used the free trial" lock so the number can request a demo again. */
+  adminReset(whatsAppNumber: string): Observable<DemoAdminResult> {
+    return this.http.post<DemoAdminResult>(`${this.baseUrl}/admin/reset`, { whatsAppNumber });
   }
 }

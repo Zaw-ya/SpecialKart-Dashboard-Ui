@@ -170,9 +170,35 @@
                       }
                     </td>
                     <td class="text-start px-4">
-                      <button class="btn btn-sm btn-success d-inline-flex align-items-center gap-1 rounded-pill px-3" (click)="openWhatsApp(r.whatsAppNumber)" title="مراسلة الواتساب مباشرة">
-                        <i class="ti ti-brand-whatsapp"></i> مراسلة
-                      </button>
+                      <div class="d-inline-flex align-items-center gap-1 flex-wrap">
+                        <button class="btn btn-sm btn-success d-inline-flex align-items-center gap-1 rounded-pill px-3" (click)="openWhatsApp(r.whatsAppNumber)" title="مراسلة الواتساب مباشرة">
+                          <i class="ti ti-brand-whatsapp"></i> مراسلة
+                        </button>
+                        <button
+                          class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 rounded-pill px-3"
+                          (click)="resend(r)"
+                          [disabled]="isResending(r.id)"
+                          title="إعادة إرسال كارت التجربة المجانية على الواتساب">
+                          @if (isResending(r.id)) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            <i class="ti ti-send"></i>
+                          }
+                          إعادة إرسال
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-warning d-inline-flex align-items-center gap-1 rounded-pill px-3"
+                          (click)="reset(r)"
+                          [disabled]="isResetting(r.id)"
+                          title="السماح لهذا الرقم بطلب التجربة المجانية من جديد">
+                          @if (isResetting(r.id)) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            <i class="ti ti-rotate-clockwise"></i>
+                          }
+                          فتح التجربة
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }
