@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .welcome-card {
   position: relative;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
@@ -39,7 +41,7 @@
   }
 
   &.bg-primary:hover {
-    background-color: darken(#1890ff, 5%) !important;
+    background-color: color.adjust(#1890ff, $lightness: -5%) !important;
   }
 }
 
