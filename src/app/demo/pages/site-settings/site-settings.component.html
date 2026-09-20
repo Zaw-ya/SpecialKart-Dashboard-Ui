@@ -262,7 +262,7 @@
                   <div class="input-group">
                     <span class="input-group-text bg-light border-0" style="color:#25D366;"><i class="ti ti-brand-whatsapp"></i></span>
                     <input type="text" class="form-control bg-light border-0 font-monospace"
-                      [(ngModel)]="settings['twilio-template-sid']"
+                      [(ngModel)]="settings['twilio-template-sid']" maxlength="34"
                       placeholder="HXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                     <button class="btn btn-outline-secondary border-0 bg-light" type="button"
                       (click)="saveSetting('twilio-template-sid')" [disabled]="saving">
@@ -270,7 +270,9 @@
                     </button>
                   </div>
                   <small class="text-muted">
-                    Get it from <strong>Twilio Console → Messaging → Content Templates</strong>. Starts with <code>HX...</code><br>
+                    Get it from <strong>Twilio Console → Messaging → Content Templates</strong>.
+                    Exactly 34 characters: <code>HX</code> + 32 hex digits, copied from the template that
+                    belongs to <em>this</em> Twilio account — anything else fails with error 21655.<br>
                     Template must have one variable: <code>{{'{{'}}1{{'}}'}}</code> = customer name.
                     The card image comes from the template's own <strong>Media URL</strong>.
                   </small>
