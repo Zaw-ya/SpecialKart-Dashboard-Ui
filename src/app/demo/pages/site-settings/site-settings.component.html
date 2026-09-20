@@ -122,6 +122,71 @@
               <p class="text-muted small mb-0 mt-1">Configure Twilio settings used for the free demo OTP flow.</p>
             </div>
             <div class="card-body p-4">
+              <!-- Account credentials -->
+              <div class="row mb-4">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold text-uppercase text-muted">Twilio Account SID</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-0" style="color:#6f42c1;"><i class="ti ti-key"></i></span>
+                    <input type="text" class="form-control bg-light border-0 font-monospace"
+                      [(ngModel)]="settings['twilio-account-sid']"
+                      placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                    <button class="btn btn-outline-secondary border-0 bg-light" type="button"
+                      (click)="saveSetting('twilio-account-sid')" [disabled]="saving">
+                      <i class="ti ti-device-floppy"></i>
+                    </button>
+                  </div>
+                  <small class="text-muted">
+                    From <strong>Twilio Console → Account Info</strong>. Starts with <code>AC...</code>
+                  </small>
+                </div>
+                <div class="col-md-4 d-flex align-items-center">
+                  <div class="alert alert-danger mb-0 py-2 px-3 w-100" style="border-radius:10px; font-size:0.82rem;">
+                    <i class="ti ti-lock me-1"></i>
+                    Saved values are never sent back — a stored secret shows as dots. Leave a field blank to keep it unchanged.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold text-uppercase text-muted">Twilio Auth Token</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-0" style="color:#6f42c1;"><i class="ti ti-shield-lock"></i></span>
+                    <input type="password" class="form-control bg-light border-0 font-monospace"
+                      [(ngModel)]="settings['twilio-auth-token']"
+                      autocomplete="new-password"
+                      placeholder="••••••••">
+                    <button class="btn btn-outline-secondary border-0 bg-light" type="button"
+                      (click)="saveSetting('twilio-auth-token')" [disabled]="saving">
+                      <i class="ti ti-device-floppy"></i>
+                    </button>
+                  </div>
+                  <small class="text-muted">
+                    From <strong>Twilio Console → Account Info → Auth Token (Show)</strong>.
+                  </small>
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold text-uppercase text-muted">WhatsApp Sender Number</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-0" style="color:#25D366;"><i class="ti ti-brand-whatsapp"></i></span>
+                    <input type="text" class="form-control bg-light border-0 font-monospace"
+                      [(ngModel)]="settings['twilio-whatsapp-from']"
+                      placeholder="+966551529007">
+                    <button class="btn btn-outline-secondary border-0 bg-light" type="button"
+                      (click)="saveSetting('twilio-whatsapp-from')" [disabled]="saving">
+                      <i class="ti ti-device-floppy"></i>
+                    </button>
+                  </div>
+                  <small class="text-muted">
+                    The approved WhatsApp sender, in E.164 format with the leading <code>+</code>.
+                  </small>
+                </div>
+              </div>
+
               <!-- Verify Service SID -->
               <div class="row mb-4">
                 <div class="col-md-8">
