@@ -33,7 +33,8 @@ import {
   UnorderedListOutline,
   GlobalOutline,
   AuditOutline,
-  ReadOutline
+  ReadOutline,
+  LineChartOutline
 } from '@ant-design/icons-angular/icons';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
@@ -85,7 +86,8 @@ export class NavContentComponent implements OnInit {
         UnorderedListOutline,
         GlobalOutline,
         AuditOutline,
-        ReadOutline
+        ReadOutline,
+        LineChartOutline
       ]
     );
     this.navigations = NavigationItems;

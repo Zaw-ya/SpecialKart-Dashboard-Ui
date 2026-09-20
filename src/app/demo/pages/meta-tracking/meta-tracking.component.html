@@ -1,0 +1,315 @@
+<div class="row animate__animated animate__fadeIn" dir="rtl">
+  <div class="col-sm-12">
+
+    <!-- Header -->
+    <div class="card border-0 shadow-sm mb-4 bg-white border-start border-4 border-primary overflow-hidden" style="border-radius: 15px;">
+      <div class="card-body p-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h4 class="mb-1 fw-bold text-dark d-flex align-items-center gap-2">
+              <i class="ti ti-brand-meta text-primary fs-3"></i>
+              تتبّع Meta (Lead Events)
+            </h4>
+            <p class="text-muted mb-0">سجل إرسال أحداث الـ Lead لـ Meta — كل submission ناجح يقابله Lead واحد فقط</p>
+          </div>
+          <div class="col-md-6 text-md-start mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+            <select class="form-select w-auto" [(ngModel)]="days" (ngModelChange)="onDaysChange()">
+              <option [ngValue]="7">آخر 7 أيام</option>
+              <option [ngValue]="30">آخر 30 يوم</option>
+              <option [ngValue]="90">آخر 90 يوم</option>
+            </select>
+            <button class="btn btn-outline-dark px-4 rounded-pill" (click)="reload()" [disabled]="loading">
+              <i class="ti ti-refresh me-2"></i> تحديث
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failure alert -->
+    @if (summary && summary.failed > 0) {
+      <div class="alert alert-warning d-flex align-items-center gap-2 border-0 shadow-sm" style="border-radius:12px;">
+        <i class="ti ti-alert-triangle fs-5"></i>
+        <span>فشل إرسال {{ summary.failed }} حدث إلى Meta — راجع التفاصيل في الجدول بالأسفل.</span>
+      </div>
+    }
+
+    <!-- Summary cards -->
+    <div class="row mb-4">
+      <div class="col-md-3 col-6 mb-3 mb-md-0">
+        <div class="card border-0 shadow-sm text-center p-3 bg-white h-100" style="border-radius:12px; border-top: 4px solid #0d6efd;">
+          <h2 class="fw-bold mb-0 text-primary">{{ summary?.total ?? 0 }}</h2>
+          <p class="text-dark mb-0 small fw-bold">إجمالي الـ Leads</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6 mb-3 mb-md-0">
+        <div class="card border-0 shadow-sm text-center p-3 bg-white h-100" style="border-radius:12px; border-top: 4px solid #22c55e;">
+          <h2 class="fw-bold mb-0 text-success">{{ summary?.sent ?? 0 }}</h2>
+          <p class="text-dark mb-0 small fw-bold">تم الإرسال لـ Meta</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm text-center p-3 bg-white h-100" style="border-radius:12px;"
+             [style.border-top]="(summary?.failed ?? 0) > 0 ? '4px solid #dc3545' : '4px solid #adb5bd'">
+          <h2 class="fw-bold mb-0" [class.text-danger]="(summary?.failed ?? 0) > 0" [class.text-muted]="(summary?.failed ?? 0) === 0">
+            {{ summary?.failed ?? 0 }}
+          </h2>
+          <p class="text-dark mb-0 small fw-bold">فشل الإرسال</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm text-center p-3 bg-white h-100" style="border-radius:12px; border-top: 4px solid #6f42c1;">
+          <h2 class="fw-bold mb-0" style="color:#6f42c1;">{{ successRate }}%</h2>
+          <p class="text-dark mb-0 small fw-bold">نسبة النجاح</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-form breakdown -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+      <div class="card-body p-3">
+        <h6 class="fw-bold text-dark mb-3">التوزيع حسب الفورم</h6>
+        @if (summaryLoading) {
+          <div class="text-center py-3"><div class="spinner-border spinner-border-sm text-dark" role="status"></div></div>
+        } @else if (!summary || summary.byForm.length === 0) {
+          <p class="text-muted small mb-0">لا توجد بيانات في هذه الفترة</p>
+        } @else {
+          @for (f of summary.byForm; track f.sourceForm) {
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span class="fw-semibold text-dark">{{ formLabel(f.sourceForm) }}</span>
+                <span class="text-muted">
+                  {{ f.total }} إجمالي ·
+                  <span class="text-success">{{ f.sent }} ناجح</span> ·
+                  <span [class.text-danger]="f.failed > 0" [class.text-muted]="f.failed === 0">{{ f.failed }} فاشل</span>
+                </span>
+              </div>
+              <div class="progress" style="height:8px;">
+                <div class="progress-bar bg-success" [style.width.%]="f.total ? (f.sent / f.total) * 100 : 0"></div>
+                <div class="progress-bar bg-danger" [style.width.%]="f.total ? (f.failed / f.total) * 100 : 0"></div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+      <div class="card-body p-3">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label small text-dark fw-bold mb-1">نوع الفورم</label>
+            <select class="form-select" [(ngModel)]="sourceForm" (ngModelChange)="applyFilters()">
+              <option value="">كل النماذج</option>
+              <option value="OrderForm">نموذج الطلب</option>
+              <option value="ContactForm">نموذج التواصل</option>
+              <option value="DemoRequestForm">طلب التجربة</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small text-dark fw-bold mb-1">الحالة</label>
+            <select class="form-select" [(ngModel)]="status" (ngModelChange)="applyFilters()">
+              <option value="">الكل</option>
+              <option value="sent">ناجح</option>
+              <option value="failed">فاشل</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small text-dark fw-bold mb-1">من تاريخ</label>
+            <input type="date" class="form-control text-end" [(ngModel)]="startDate" (change)="applyFilters()" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small text-dark fw-bold mb-1">إلى تاريخ</label>
+            <input type="date" class="form-control text-end" [(ngModel)]="endDate" (change)="applyFilters()" />
+          </div>
+          <div class="col-md-2">
+            @if (hasFilters) {
+              <button type="button" class="btn btn-outline-danger w-100" (click)="clearFilters()">
+                <i class="ti ti-rotate me-1"></i> مسح الفلاتر
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <div class="alert alert-info border-0 shadow-sm small" style="border-radius:12px;">
+      <i class="ti ti-info-circle me-1"></i>
+      فشل الإرسال لـ Meta <strong>لا يعني</strong> ضياع الـ submission — البيانات محفوظة في لوحة التحكم عادي، اللي فشل هو إبلاغ Meta فقط.
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+      <div class="card-body p-0">
+        @if (loading) {
+          <div class="text-center py-5">
+            <div class="spinner-border text-dark" role="status"></div>
+            <p class="mt-2 text-muted">جاري تحميل البيانات...</p>
+          </div>
+        } @else if (loadError) {
+          <div class="text-center py-5">
+            <i class="ti ti-plug-connected-x text-danger" style="font-size:3rem;"></i>
+            <p class="mt-2 text-muted">تعذّر تحميل أحداث Meta</p>
+            <button class="btn btn-outline-dark rounded-pill px-4" (click)="loadEvents()">إعادة المحاولة</button>
+          </div>
+        } @else if (events.length === 0) {
+          <div class="text-center py-5 text-muted">
+            <i class="ti ti-inbox" style="font-size:3rem;"></i>
+            <p class="mt-2">لا توجد أحداث Meta في هذه الفترة</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-end">
+              <thead class="bg-light">
+                <tr>
+                  <th class="px-4 py-3">التاريخ</th>
+                  <th class="py-3">الفورم</th>
+                  <th class="py-3">رقم السجل</th>
+                  <th class="py-3">Event ID</th>
+                  <th class="py-3">الحالة</th>
+                  <th class="py-3">fbtrace_id</th>
+                  <th class="py-3 text-start px-4">تفاصيل</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (e of events; track e.id) {
+                  <tr [class.table-danger]="!e.sent">
+                    <td class="px-4 small text-muted">{{ formatDate(e.createdAt) }}</td>
+                    <td><span class="badge bg-light text-dark border px-2 py-1">{{ formLabel(e.sourceForm) }}</span></td>
+                    <td>
+                      @if (recordLink(e); as link) {
+                        <a [routerLink]="link" [queryParams]="{ highlight: e.sourceRecordId }" class="font-monospace small">#{{ e.sourceRecordId }}</a>
+                      } @else {
+                        <span class="text-muted small">{{ e.sourceRecordId || '—' }}</span>
+                      }
+                    </td>
+                    <td dir="ltr" class="text-end">
+                      <span class="font-monospace small">{{ short(e.eventId) }}</span>
+                      <button class="btn btn-sm btn-link p-0 ms-1" (click)="copy(e.eventId, 'Event ID')" title="نسخ">
+                        <i class="ti ti-copy"></i>
+                      </button>
+                    </td>
+                    <td>
+                      @if (e.sent) {
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                          <i class="ti ti-check me-1"></i> تم الإرسال
+                        </span>
+                      } @else {
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+                          <i class="ti ti-x me-1"></i> فشل
+                        </span>
+                      }
+                    </td>
+                    <td dir="ltr" class="text-end">
+                      @if (e.fbTraceId) {
+                        <span class="font-monospace small">{{ short(e.fbTraceId) }}</span>
+                        <button class="btn btn-sm btn-link p-0 ms-1" (click)="copy(e.fbTraceId, 'fbtrace_id')" title="نسخ">
+                          <i class="ti ti-copy"></i>
+                        </button>
+                      } @else {
+                        <span class="text-muted small">—</span>
+                      }
+                    </td>
+                    <td class="text-start px-4">
+                      <button class="btn btn-sm btn-outline-dark rounded-pill px-3" (click)="openDetails(e)">
+                        <i class="ti ti-eye me-1"></i> عرض التفاصيل
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center p-3 border-top flex-wrap gap-2">
+            <span class="small text-muted">إجمالي {{ total }} حدث — صفحة {{ page }} من {{ totalPages }}</span>
+            <nav>
+              <ul class="pagination pagination-sm mb-0" dir="ltr">
+                <li class="page-item" [class.disabled]="page === 1">
+                  <button class="page-link" (click)="goTo(page - 1)">‹</button>
+                </li>
+                @for (p of pages; track p) {
+                  <li class="page-item" [class.active]="p === page">
+                    <button class="page-link" (click)="goTo(p)">{{ p }}</button>
+                  </li>
+                }
+                <li class="page-item" [class.disabled]="page === totalPages">
+                  <button class="page-link" (click)="goTo(page + 1)">›</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Details modal -->
+@if (selected) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,.5);" dir="rtl" (click)="closeDetails()">
+    <div class="modal-dialog modal-lg modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">تفاصيل الحدث #{{ selected.id }}</h5>
+          <button type="button" class="btn-close" (click)="closeDetails()"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0 small">
+            <dt class="col-sm-3 text-muted">الفورم</dt>
+            <dd class="col-sm-9">{{ formLabel(selected.sourceForm) }}</dd>
+
+            <dt class="col-sm-3 text-muted">رقم السجل</dt>
+            <dd class="col-sm-9 font-monospace">{{ selected.sourceRecordId || '—' }}</dd>
+
+            <dt class="col-sm-3 text-muted">Event ID</dt>
+            <dd class="col-sm-9 font-monospace" dir="ltr">
+              {{ selected.eventId }}
+              <button class="btn btn-sm btn-link p-0 ms-1" (click)="copy(selected.eventId, 'Event ID')"><i class="ti ti-copy"></i></button>
+            </dd>
+
+            <dt class="col-sm-3 text-muted">اسم الحدث</dt>
+            <dd class="col-sm-9">{{ selected.eventName }}</dd>
+
+            <dt class="col-sm-3 text-muted">وقت الحدث</dt>
+            <dd class="col-sm-9">{{ formatDate(selected.eventTime) }}</dd>
+
+            <dt class="col-sm-3 text-muted">رابط المصدر</dt>
+            <dd class="col-sm-9 text-break" dir="ltr">{{ selected.eventSourceUrl || '—' }}</dd>
+
+            <dt class="col-sm-3 text-muted">الحالة</dt>
+            <dd class="col-sm-9">
+              @if (selected.sent) {
+                <span class="text-success fw-bold">تم الإرسال — {{ formatDate(selected.sentAt) }}</span>
+              } @else {
+                <span class="text-danger fw-bold">فشل الإرسال</span>
+              }
+            </dd>
+
+            <dt class="col-sm-3 text-muted">fbtrace_id</dt>
+            <dd class="col-sm-9 font-monospace" dir="ltr">
+              {{ selected.fbTraceId || '—' }}
+              @if (selected.fbTraceId) {
+                <button class="btn btn-sm btn-link p-0 ms-1" (click)="copy(selected.fbTraceId, 'fbtrace_id')"><i class="ti ti-copy"></i></button>
+              }
+            </dd>
+          </dl>
+
+          @if (selected.error) {
+            <div class="mt-3">
+              <label class="form-label small fw-bold text-danger mb-1">نص الخطأ</label>
+              <pre class="bg-light p-3 small text-break mb-0" dir="ltr" style="white-space:pre-wrap; max-height:260px; overflow:auto; border-radius:10px;">{{ selected.error }}</pre>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-dark rounded-pill px-4" (click)="closeDetails()">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

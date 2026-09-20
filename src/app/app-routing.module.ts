@@ -96,6 +96,10 @@ const routes: Routes = [
       {
         path: 'demo-requests',
         loadComponent: () => import('./demo/pages/demo-requests/demo-requests.component').then((c) => c.DemoRequestsComponent)
+      },
+      {
+        path: 'meta-tracking',
+        loadComponent: () => import('./demo/pages/meta-tracking/meta-tracking.component').then((c) => c.MetaTrackingComponent)
       }
     ]
   },

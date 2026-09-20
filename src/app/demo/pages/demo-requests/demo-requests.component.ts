@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { DemoRequestsService, DemoRequest } from 'src/app/theme/shared/service/demo-requests.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
+import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -55,13 +57,39 @@ export class DemoRequestsComponent implements OnInit {
     this.endDate = '';
   }
 
+  highlightId: number | null = null;
+  metaStatuses: Record<string, MetaRecordStatus> = {};
+
   constructor(
     private service: DemoRequestsService,
+    private metaService: MetaLeadEventsService,
     private toastService: ToastService,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      this.highlightId = params['highlight'] ? Number(params['highlight']) : null;
+    });
+    this.load();
+    this.loadMetaStatuses();
+  }
+
+  /** Delivery status of the Meta Lead event for each demo request (optional column). */
+  loadMetaStatuses(): void {
+    this.metaService.getStatusMap('DemoRequestForm').subscribe({
+      next: (map) => {
+        this.metaStatuses = map;
+        this.cdr.detectChanges();
+      },
+      error: () => (this.metaStatuses = {})
+    });
+  }
+
+  metaStatus(id: number): MetaRecordStatus {
+    return this.metaStatuses[String(id)] ?? 'none';
+  }
 
   load() {
     this.loading = true;

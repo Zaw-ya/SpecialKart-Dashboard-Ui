@@ -176,6 +176,15 @@ export const NavigationItems: NavigationItem[] = [
         breadcrumbs: false
       },
       {
+        id: 'meta-tracking',
+        title: 'تتبّع Meta',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/meta-tracking',
+        icon: 'line-chart',
+        breadcrumbs: false
+      },
+      {
         id: 'site-settings',
         title: 'إعدادات الموقع',
         type: 'item',

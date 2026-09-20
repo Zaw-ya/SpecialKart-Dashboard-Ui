@@ -5,6 +5,7 @@ import { OrderService, Order, OrderStatus } from 'src/app/theme/shared/service/o
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/service/invitation-card.service';
 import { PackageService, Package } from 'src/app/theme/shared/service/package.service';
+import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -26,8 +27,12 @@ export class OrdersComponent implements OnInit {
 
   activeFilter: 'all' | 'design' | 'package' = 'all';
 
+  highlightId: number | null = null;
+  metaStatuses: Record<string, MetaRecordStatus> = {};
+
   constructor(
     private orderService: OrderService,
+    private metaService: MetaLeadEventsService,
     private cardService: InvitationCardService,
     private packageService: PackageService,
     private toastService: ToastService,
@@ -81,9 +86,26 @@ export class OrdersComponent implements OnInit {
       if (params['type']) {
         this.activeFilter = params['type'];
       }
+      this.highlightId = params['highlight'] ? Number(params['highlight']) : null;
     });
 
     this.loadData();
+    this.loadMetaStatuses();
+  }
+
+  /** Delivery status of the Meta Lead event for each order (optional column). */
+  loadMetaStatuses(): void {
+    this.metaService.getStatusMap('OrderForm').subscribe({
+      next: (map) => {
+        this.metaStatuses = map;
+        this.cdr.detectChanges();
+      },
+      error: () => (this.metaStatuses = {})
+    });
+  }
+
+  metaStatus(id: number): MetaRecordStatus {
+    return this.metaStatuses[String(id)] ?? 'none';
   }
 
   loadData(silent = false): void {

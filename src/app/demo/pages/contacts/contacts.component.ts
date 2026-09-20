@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ContactService, ContactMessage } from 'src/app/theme/shared/service/contact.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -23,8 +24,12 @@ export class ContactsComponent implements OnInit {
   filterStatus: 'all' | 'read' | 'unread' = 'all';
   filterType: 'all' | 'package' | 'design' = 'all';
 
+  highlightId: number | null = null;
+  metaStatuses: Record<string, MetaRecordStatus> = {};
+
   constructor(
     private contactService: ContactService,
+    private metaService: MetaLeadEventsService,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
@@ -118,9 +123,26 @@ export class ContactsComponent implements OnInit {
           this.filterType = t;
         }
       }
+      this.highlightId = params['highlight'] ? Number(params['highlight']) : null;
     });
 
     this.loadData();
+    this.loadMetaStatuses();
+  }
+
+  /** Delivery status of the Meta Lead event for each contact message (optional column). */
+  loadMetaStatuses(): void {
+    this.metaService.getStatusMap('ContactForm').subscribe({
+      next: (map) => {
+        this.metaStatuses = map;
+        this.cdr.detectChanges();
+      },
+      error: () => (this.metaStatuses = {})
+    });
+  }
+
+  metaStatus(id: number): MetaRecordStatus {
+    return this.metaStatuses[String(id)] ?? 'none';
   }
 
   displayName(message: ContactMessage): string {
