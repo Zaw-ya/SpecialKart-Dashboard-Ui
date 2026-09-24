@@ -6,6 +6,7 @@ import { PackageService, Package, PackagePricingTier } from 'src/app/theme/share
 import { FeatureService, Feature } from 'src/app/theme/shared/service/feature.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 
 @Component({
   selector: 'app-packages',
@@ -39,8 +40,13 @@ export class PackagesComponent implements OnInit {
     private packageService: PackageService,
     private featureService: FeatureService,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public authService: AuthService
   ) {}
+
+  get canManagePackages(): boolean {
+    return this.authService.isAdmin() || this.authService.isMarketer();
+  }
 
   getFeatureDescription(id: number): string {
     return this.allFeatures.find(f => f.id === id)?.description || 'Feature';

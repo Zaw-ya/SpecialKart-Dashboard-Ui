@@ -29,7 +29,7 @@ import {
   GithubOutline
 } from '@ant-design/icons-angular/icons';
 
-import { AuthService } from 'src/app/theme/shared/service/auth.service';
+import { AuthService, AppRole } from 'src/app/theme/shared/service/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -40,12 +40,42 @@ import { Router } from '@angular/router';
 })
 export class NavRightComponent {
   private iconService = inject(IconService);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private router = inject(Router);
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  switchRole(role: AppRole | null) {
+    this.authService.setSimulatedRole(role);
+  }
+
+  getRoleLabel(role: AppRole): string {
+    switch (role) {
+      case 'Admin':
+        return 'مدير النظام';
+      case 'Marketer':
+        return 'مسؤول تسويق';
+      case 'CustomerSupport':
+        return 'خدمة العملاء';
+      default:
+        return role;
+    }
+  }
+
+  getRoleBadgeClass(role: AppRole): string {
+    switch (role) {
+      case 'Admin':
+        return 'bg-danger text-white';
+      case 'Marketer':
+        return 'bg-info text-white';
+      case 'CustomerSupport':
+        return 'bg-success text-white';
+      default:
+        return 'bg-secondary text-white';
+    }
   }
 
 

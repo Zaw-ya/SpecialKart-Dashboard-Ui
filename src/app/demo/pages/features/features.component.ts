@@ -4,6 +4,7 @@ import { FeatureService, Feature } from 'src/app/theme/shared/service/feature.se
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 
 @Component({
   selector: 'app-features',
@@ -25,7 +26,8 @@ export class FeaturesComponent implements OnInit {
   constructor(
     private featureService: FeatureService,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {

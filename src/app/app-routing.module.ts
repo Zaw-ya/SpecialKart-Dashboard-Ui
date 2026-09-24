@@ -7,6 +7,7 @@ import { AdminLayout } from './theme/layouts/admin-layout/admin-layout.component
 import { GuestLayoutComponent } from './theme/layouts/guest-layout/guest-layout.component';
 
 import { AuthGuard } from './theme/shared/service/auth.guard';
+import { RoleGuard } from './theme/shared/service/role.guard';
 
 const routes: Routes = [
   {
@@ -21,85 +22,129 @@ const routes: Routes = [
       },
       {
         path: 'dashboard/default',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer', 'CustomerSupport'] },
         loadComponent: () => import('./demo/dashboard/default/default.component').then((c) => c.DefaultComponent)
       },
       {
         path: 'invitation-cards',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer', 'CustomerSupport'] },
         loadComponent: () => import('./demo/pages/invitation-cards/invitation-cards.component').then((c) => c.InvitationCardsComponent)
       },
       {
         path: 'countries',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/pages/locations/countries/countries.component').then((c) => c.CountriesComponent)
       },
       {
         path: 'cities',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/pages/locations/cities/cities.component').then((c) => c.CitiesComponent)
       },
       {
         path: 'event-types',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/pages/locations/event-types/event-types.component').then((c) => c.EventTypesComponent)
       },
       {
         path: 'features',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer'] },
         loadComponent: () => import('./demo/pages/features/features.component').then((c) => c.FeaturesComponent)
       },
       {
         path: 'supervisors',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/pages/supervisors/supervisors.component').then((c) => c.SupervisorsComponent)
       },
       {
         path: 'typography',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/component/basic-component/typography/typography.component').then((c) => c.TypographyComponent)
       },
       {
         path: 'color',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/component/basic-component/color/color.component').then((c) => c.ColorComponent)
       },
       {
         path: 'sample-page',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/others/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
       },
       {
         path: 'blog',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer'] },
         loadComponent: () => import('./demo/pages/blog/blog.component').then((c) => c.BlogComponent)
       },
       {
         path: 'testimonials',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer'] },
         loadComponent: () => import('./demo/pages/testimonials/testimonials.component').then((c) => c.TestimonialsComponent)
       },
       {
         path: 'contacts',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer', 'CustomerSupport'] },
         loadComponent: () => import('./demo/pages/contacts/contacts.component').then((c) => c.ContactsComponent)
       },
       {
         path: 'orders',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer'] },
         loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent)
       },
       {
         path: 'orders/designs',
-        loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent),
-        data: { filterType: 'design' }
+        canActivate: [RoleGuard],
+        data: { filterType: 'design', expectedRoles: ['Admin', 'Marketer'] },
+        loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent)
       },
       {
         path: 'orders/packages',
-        loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent),
-        data: { filterType: 'package' }
+        canActivate: [RoleGuard],
+        data: { filterType: 'package', expectedRoles: ['Admin', 'Marketer'] },
+        loadComponent: () => import('./demo/pages/orders/orders.component').then((c) => c.OrdersComponent)
       },
       {
         path: 'packages',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer', 'CustomerSupport'] },
         loadComponent: () => import('./demo/pages/packages/packages.component').then((c) => c.PackagesComponent)
       },
       {
         path: 'site-settings',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
         loadComponent: () => import('./demo/pages/site-settings/site-settings.component').then((c) => c.SiteSettingsComponent)
       },
       {
         path: 'demo-requests',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer', 'CustomerSupport'] },
         loadComponent: () => import('./demo/pages/demo-requests/demo-requests.component').then((c) => c.DemoRequestsComponent)
       },
       {
         path: 'meta-tracking',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'Marketer'] },
         loadComponent: () => import('./demo/pages/meta-tracking/meta-tracking.component').then((c) => c.MetaTrackingComponent)
+      },
+      {
+        path: 'users',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
+        loadComponent: () => import('./demo/pages/users/users.component').then((c) => c.UsersComponent)
       }
     ]
   },

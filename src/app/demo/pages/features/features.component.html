@@ -58,9 +58,11 @@
                       <button class="btn btn-icon btn-light-primary me-2" (click)="editFeature(feature)">
                         <i class="ti ti-pencil"></i>
                       </button>
-                      <button class="btn btn-icon btn-light-danger" (click)="deleteFeature(feature.id)">
-                        <i class="ti ti-trash"></i>
-                      </button>
+                      @if (authService.isAdmin()) {
+                        <button class="btn btn-icon btn-light-danger" (click)="deleteFeature(feature.id)" title="Delete feature">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      }
                     </td>
                   </tr>
                 } @empty {

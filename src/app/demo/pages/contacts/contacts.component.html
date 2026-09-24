@@ -130,7 +130,9 @@
                 <th class="border-0 py-3">رقم الهاتف</th>
                 <th class="border-0 py-3 text-center">الحالة</th>
                 <th class="border-0 py-3 text-center">التاريخ</th>
-                <th class="border-0 py-3 text-center" title="هل طلع من الرسالة دي Lead على Meta؟">Meta</th>
+                @if (canViewMetaTracking) {
+                  <th class="border-0 py-3 text-center" title="هل طلع من الرسالة دي Lead على Meta؟">Meta</th>
+                }
                 <th class="text-start pe-4 border-0 py-3">إجراءات</th>
               </tr>
             </thead>
@@ -184,15 +186,17 @@
                     <div class="small fw-medium">{{ msg.createdAt | date: 'MMM dd' }}</div>
                     <div class="text-muted smaller">{{ msg.createdAt | date: 'HH:mm' }}</div>
                   </td>
-                  <td class="py-3 text-center">
-                    @if (metaStatus(msg.id) === 'sent') {
-                      <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
-                    } @else if (metaStatus(msg.id) === 'failed') {
-                      <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
-                    } @else {
-                      <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
-                    }
-                  </td>
+                  @if (canViewMetaTracking) {
+                    <td class="py-3 text-center">
+                      @if (metaStatus(msg.id) === 'sent') {
+                        <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
+                      } @else if (metaStatus(msg.id) === 'failed') {
+                        <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
+                      } @else {
+                        <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
+                      }
+                    </td>
+                  }
                   <td class="text-start pe-4 py-3">
                     <div class="d-flex justify-content-start gap-1" (click)="$event.stopPropagation()">
                       <button class="btn btn-icon btn-link-success border-0" (click)="openWhatsApp(msg.phoneNumber)" title="مراسلة الواتساب مباشرة">
@@ -201,15 +205,17 @@
                       <button class="btn btn-icon btn-link-dark border-0" (click)="viewMessage(msg)" title="عرض الرسالة والتفاصيل">
                         <i class="ti ti-eye"></i>
                       </button>
-                      <button class="btn btn-icon btn-link-danger border-0" (click)="deleteMessage(msg.id)" title="حذف الرسالة">
-                        <i class="ti ti-trash"></i>
-                      </button>
+                      @if (canDelete) {
+                        <button class="btn btn-icon btn-link-danger border-0" (click)="deleteMessage(msg.id)" title="حذف الرسالة">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      }
                     </div>
                   </td>
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="6" class="text-center py-5 text-muted">
+                  <td [attr.colspan]="canViewMetaTracking ? 7 : 6" class="text-center py-5 text-muted">
                     <i class="ti ti-mail-off d-block mb-2 opacity-25" style="font-size: 3rem;"></i>
                     لا يوجد رسائل أو طلبات مطابقة للبحث حالياً.
                   </td>
@@ -297,9 +303,11 @@
                     <i class="ti ti-phone me-1"></i> Call {{ selectedMessage.phoneNumber }}
                   </a>
                 }
-                <button type="button" class="btn btn-outline-danger px-3 rounded-3" (click)="deleteMessage(selectedMessage.id)">
-                  <i class="ti ti-trash"></i>
-                </button>
+                @if (canDelete) {
+                  <button type="button" class="btn btn-outline-danger px-3 rounded-3" (click)="deleteMessage(selectedMessage.id)">
+                    <i class="ti ti-trash"></i>
+                  </button>
+                }
               </div>
             </div>
           </div>

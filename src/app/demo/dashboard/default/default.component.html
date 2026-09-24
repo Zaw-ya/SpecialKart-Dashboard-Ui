@@ -42,18 +42,33 @@
     <div class="col-md-6 col-xl-3 mb-4">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
-          <div class="d-flex align-items-center mb-3">
-            <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(184, 135, 59, 0.12); color: #B8873B;">
-              <i class="ti ti-currency-dollar fs-2"></i>
+          @if (authService.isAdmin()) {
+            <div class="d-flex align-items-center mb-3">
+              <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(184, 135, 59, 0.12); color: #B8873B;">
+                <i class="ti ti-currency-dollar fs-2"></i>
+              </div>
+              <div>
+                <p class="text-muted mb-1 small text-uppercase fw-bold">الإيرادات التقديرية</p>
+                <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.totalRevenue | number }} <span class="fs-6 text-muted">ر.س</span></h3>
+              </div>
             </div>
-            <div>
-              <p class="text-muted mb-1 small text-uppercase fw-bold">الإيرادات التقديرية</p>
-              <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.totalRevenue | number }} <span class="fs-6 text-muted">ر.س</span></h3>
+            <div class="progress progress-xs bg-light">
+              <div class="progress-bar" role="progressbar" style="width: 75%; background: #B8873B;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-          </div>
-          <div class="progress progress-xs bg-light">
-            <div class="progress-bar" role="progressbar" style="width: 75%; background: #B8873B;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
+          } @else {
+            <div class="d-flex align-items-center mb-3">
+              <div class="flex-shrink-0 rounded-circle p-3 me-3" style="background: rgba(184, 135, 59, 0.12); color: #B8873B;">
+                <i class="ti ti-receipt fs-2"></i>
+              </div>
+              <div>
+                <p class="text-muted mb-1 small text-uppercase fw-bold">إجمالي الطلبات</p>
+                <h3 class="mb-0 fw-bold text-dark fs-2">{{ stats.orders }}</h3>
+              </div>
+            </div>
+            <div class="progress progress-xs bg-light">
+              <div class="progress-bar" role="progressbar" style="width: 80%; background: #B8873B;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          }
         </div>
       </div>
     </div>

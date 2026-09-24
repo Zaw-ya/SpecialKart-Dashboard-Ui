@@ -1,0 +1,284 @@
+<div class="row animate__animated animate__fadeIn" dir="rtl">
+  <div class="col-sm-12">
+    <!-- Header Card -->
+    <div class="card border-0 shadow-sm mb-4 bg-white border-start border-4 border-gold overflow-hidden" style="border-radius: 16px;">
+      <div class="card-body p-4 position-relative">
+        <div class="row align-items-center position-relative" style="z-index: 1;">
+          <div class="col-md-7">
+            <h4 class="mb-1 fw-bold text-dark d-flex align-items-center gap-2">
+              <i class="ti ti-users-group text-gold fs-3"></i>
+              إدارة المستخدمين والصلاحيات (Users & Access Control)
+            </h4>
+            <p class="text-muted mb-0">تحكم كامل بحسابات المدراء، مسؤولي التسويق، وفريق خدمة العملاء وتعيين كلمات المرور</p>
+          </div>
+          <div class="col-md-5 text-md-start mt-3 mt-md-0">
+            <div class="d-inline-flex gap-2">
+              <button class="btn btn-dark d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm" (click)="openCreateModal()">
+                <i class="ti ti-user-plus fs-5"></i>
+                <span class="fw-bold">إضافة مستخدم جديد</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+      <div class="card-body p-3">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="ti ti-search text-dark"></i></span>
+              <input
+                type="text"
+                class="form-control border-start-0 text-end"
+                placeholder="ابحث بالاسم، اسم المستخدم، البريد، أو الصلاحية..."
+                [(ngModel)]="searchTerm"
+              />
+            </div>
+          </div>
+          <div class="col-md-6 text-md-start text-muted small">
+            <span>إجمالي المستخدمين المسجلين: <strong class="text-dark">{{ users.length }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading && users.length === 0) {
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-dark" role="status"></div>
+      <p class="mt-2 text-muted">جاري تحميل المستخدمين...</p>
+    </div>
+  } @else if (error) {
+    <div class="col-12">
+      <div class="alert alert-danger border-0 shadow-sm">{{ error }}</div>
+    </div>
+  } @else {
+    <div class="col-sm-12">
+      <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle text-end" dir="rtl">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4 border-0 py-3">المستخدم (User)</th>
+                <th class="border-0 py-3">اسم الدخول (Username)</th>
+                <th class="border-0 py-3">الدور والصلاحية (Role)</th>
+                <th class="border-0 py-3 text-center">حالة الحساب</th>
+                <th class="text-start pe-4 border-0 py-3">إجراءات الإدارة</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of filteredUsers; track user.id) {
+                <tr class="transition-all">
+                  <td class="ps-4 py-3">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-3 ms-2 bg-dark text-white fw-bold d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+                        {{ (user.userName || user.email).charAt(0).toUpperCase() }}
+                      </div>
+                      <div>
+                        <div class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                          {{ user.userName || user.email }}
+                          @if (isCurrentLoggedInUser(user)) {
+                            <span class="badge bg-warning text-dark px-2" style="font-size: 0.65rem;">حسابك الحالي</span>
+                          }
+                        </div>
+                        <div class="text-muted small font-monospace">{{ user.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3 font-monospace text-muted">
+                    {{ user.userName }}
+                  </td>
+                  <td class="py-3">
+                    <span [ngClass]="getRoleBadgeClass(user.role)" class="px-3 py-1 rounded-pill fw-bold">
+                      <i class="ti ti-shield me-1"></i> {{ getRoleLabel(user.role) }}
+                    </span>
+                  </td>
+                  <td class="py-3 text-center">
+                    <span class="badge bg-success-subtle text-success border border-success px-2 py-1 rounded-pill small">
+                      <i class="ti ti-check me-1"></i> نشط
+                    </span>
+                  </td>
+                  <td class="text-start pe-4 py-3">
+                    <div class="d-flex justify-content-start gap-1">
+                      <!-- Edit User Details -->
+                      <button class="btn btn-icon btn-link-dark border-0" (click)="openEditModal(user)" title="تعديل بيانات المستخدم والدور">
+                        <i class="ti ti-pencil fs-5"></i>
+                      </button>
+
+                      <!-- Change Password -->
+                      <button class="btn btn-icon btn-link-warning border-0" (click)="openPasswordModal(user)" title="تعيين كلمة مرور جديدة">
+                        <i class="ti ti-key fs-5"></i>
+                      </button>
+
+                      <!-- Delete User -->
+                      @if (!isCurrentLoggedInUser(user)) {
+                        <button class="btn btn-icon btn-link-danger border-0" (click)="deleteUser(user)" title="حذف المستخدم">
+                          <i class="ti ti-trash fs-5"></i>
+                        </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="text-center py-5 text-muted">
+                    <i class="ti ti-user-x d-block mb-2 opacity-25" style="font-size: 3rem;"></i>
+                    لا يوجد مستخدمين مطابقين للبحث.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- ================= Modal: Create User ================= -->
+@if (showCreateModal) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header bg-dark text-white border-0 py-3" style="border-radius: 16px 16px 0 0;">
+          <h5 class="modal-title fw-bold">
+            <i class="ti ti-user-plus me-2 text-warning"></i> إضافة مستخدم جديد
+          </h5>
+          <button type="button" class="btn-close btn-close-white ms-0 me-auto" (click)="closeCreateModal()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form (ngSubmit)="submitCreate()">
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">البريد الإلكتروني*</label>
+              <input type="email" class="form-control text-end" [(ngModel)]="createData.email" name="createEmail" placeholder="user@specialcards.sa" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">اسم المستخدم (Username - للدخول السريع)*</label>
+              <input type="text" class="form-control text-end" [(ngModel)]="createData.userName" name="createUserName" placeholder="مثال: Ahmed_Support" />
+              <div class="form-text small text-muted">يمكن للمستخدم استخدام هذا الاسم أو بريده الإلكتروني لتسجيل الدخول.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">كلمة المرور*</label>
+              <input type="password" class="form-control text-end" [(ngModel)]="createData.password" name="createPassword" placeholder="••••••••" required />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark small">الدور والصلاحية (Role)*</label>
+              <select class="form-select text-end" [(ngModel)]="createData.role" name="createRole" required>
+                <option value="Admin">مدير النظام (Admin) - تحكم شامل بكل الصلاحيات</option>
+                <option value="Marketer">مسؤول تسويق (Marketer) - إدارة التصاميم والتحليلات</option>
+                <option value="CustomerSupport">خدمة العملاء (Customer Support) - متابعة الطلبات والرسائل</option>
+              </select>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-light px-4" (click)="closeCreateModal()">إلغاء</button>
+              <button type="submit" class="btn btn-dark px-4 fw-bold" [disabled]="createLoading">
+                @if (createLoading) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                إنشاء المستخدم
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ================= Modal: Edit User ================= -->
+@if (showEditModal && editingUser) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header bg-dark text-white border-0 py-3" style="border-radius: 16px 16px 0 0;">
+          <h5 class="modal-title fw-bold">
+            <i class="ti ti-pencil me-2 text-warning"></i> تعديل بيانات المستخدم
+          </h5>
+          <button type="button" class="btn-close btn-close-white ms-0 me-auto" (click)="closeEditModal()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form (ngSubmit)="submitEdit()">
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">البريد الإلكتروني</label>
+              <input type="email" class="form-control text-end" [(ngModel)]="editData.email" name="editEmail" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">اسم المستخدم (Username)</label>
+              <input type="text" class="form-control text-end" [(ngModel)]="editData.userName" name="editUserName" required />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark small">الدور والصلاحية (Role)</label>
+              <select class="form-select text-end" [(ngModel)]="editData.role" name="editRole" required>
+                <option value="Admin">مدير النظام (Admin)</option>
+                <option value="Marketer">مسؤول تسويق (Marketer)</option>
+                <option value="CustomerSupport">خدمة العملاء (Customer Support)</option>
+              </select>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-light px-4" (click)="closeEditModal()">إلغاء</button>
+              <button type="submit" class="btn btn-dark px-4 fw-bold" [disabled]="editLoading">
+                @if (editLoading) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                حفظ التعديلات
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ================= Modal: Change Password ================= -->
+@if (showPasswordModal && passwordUser) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+        <div class="modal-header bg-dark text-white border-0 py-3" style="border-radius: 16px 16px 0 0;">
+          <h5 class="modal-title fw-bold">
+            <i class="ti ti-key me-2 text-warning"></i> تعيين كلمة مرور جديدة للمستخدم
+          </h5>
+          <button type="button" class="btn-close btn-close-white ms-0 me-auto" (click)="closePasswordModal()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="alert alert-light border small text-muted mb-3">
+            أنت تقوم بتغيير كلمة المرور للمستخدم: <strong class="text-dark">{{ passwordUser.userName || passwordUser.email }}</strong>
+          </div>
+
+          <form (ngSubmit)="submitChangePassword()">
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark small">كلمة المرور الجديدة*</label>
+              <input type="password" class="form-control text-end" [(ngModel)]="newPassword" name="newPassword" placeholder="••••••••" required />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark small">تأكيد كلمة المرور الجديدة*</label>
+              <input type="password" class="form-control text-end" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="••••••••" required />
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-light px-4" (click)="closePasswordModal()">إلغاء</button>
+              <button type="submit" class="btn btn-warning px-4 fw-bold text-dark" [disabled]="passwordLoading">
+                @if (passwordLoading) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                تحديث كلمة المرور
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}

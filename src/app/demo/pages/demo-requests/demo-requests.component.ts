@@ -5,6 +5,7 @@ import { DemoRequestsService, DemoRequest } from 'src/app/theme/shared/service/d
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
 import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/service/invitation-card.service';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 
@@ -75,16 +76,23 @@ export class DemoRequestsComponent implements OnInit {
     private metaService: MetaLeadEventsService,
     private cardService: InvitationCardService,
     private toastService: ToastService,
+    public authService: AuthService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
+
+  get canViewMetaTracking(): boolean {
+    return this.authService.hasRole(['Admin', 'Marketer']);
+  }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.highlightId = params['highlight'] ? Number(params['highlight']) : null;
     });
     this.load();
-    this.loadMetaStatuses();
+    if (this.canViewMetaTracking) {
+      this.loadMetaStatuses();
+    }
     this.loadCards();
   }
 
@@ -126,6 +134,7 @@ export class DemoRequestsComponent implements OnInit {
 
   /** Delivery status of the Meta Lead event for each demo request (optional column). */
   loadMetaStatuses(): void {
+    if (!this.canViewMetaTracking) return;
     this.metaService.getStatusMap('DemoRequestForm').subscribe({
       next: (map) => {
         this.metaStatuses = map;

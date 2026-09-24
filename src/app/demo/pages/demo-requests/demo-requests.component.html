@@ -173,7 +173,9 @@
                   <th class="py-3">حالة التفعيل</th>
                   <th class="py-3">الكارت المعاين</th>
                   <th class="py-3">التاريخ</th>
-                  <th class="py-3 text-center" title="هل طلع من الطلب ده Lead على Meta؟">Meta</th>
+                  @if (canViewMetaTracking) {
+                    <th class="py-3 text-center" title="هل طلع من الطلب ده Lead على Meta؟">Meta</th>
+                  }
                   <th class="py-3 text-start px-4">إجراءات</th>
                 </tr>
               </thead>
@@ -217,15 +219,17 @@
                       }
                     </td>
                     <td class="small text-muted">{{ formatDate(r.createdAt) }}</td>
-                    <td class="text-center">
-                      @if (metaStatus(r.id) === 'sent') {
-                        <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
-                      } @else if (metaStatus(r.id) === 'failed') {
-                        <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
-                      } @else {
-                        <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
-                      }
-                    </td>
+                    @if (canViewMetaTracking) {
+                      <td class="text-center">
+                        @if (metaStatus(r.id) === 'sent') {
+                          <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
+                        } @else if (metaStatus(r.id) === 'failed') {
+                          <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
+                        } @else {
+                          <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
+                        }
+                      </td>
+                    }
                     <td class="text-start px-4">
                       <div class="d-inline-flex align-items-center gap-1 flex-wrap">
                         <button class="btn btn-sm btn-success d-inline-flex align-items-center gap-1 rounded-pill px-3" (click)="openWhatsApp(r.whatsAppNumber)" title="مراسلة الواتساب مباشرة">

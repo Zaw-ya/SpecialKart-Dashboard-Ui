@@ -5,6 +5,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { EventTypeService, EventType } from 'src/app/theme/shared/service/event-type.service';
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -40,8 +41,13 @@ export class InvitationCardsComponent implements OnInit {
     private invitationCardService: InvitationCardService,
     private eventTypeService: EventTypeService,
     private toastService: ToastService,
+    public authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  get canManageDesigns(): boolean {
+    return this.authService.hasRole(['Admin', 'Marketer']);
+  }
 
   getGenderLabel(gender: number): string {
     switch (gender) {
@@ -135,6 +141,11 @@ export class InvitationCardsComponent implements OnInit {
   }
 
   saveCard(): void {
+    if (!this.canManageDesigns) {
+      this.toastService.error('عفواً، إضافة وتعديل التصاميم مقتصر على مسؤولي التسويق ومديري النظام');
+      return;
+    }
+
     this.submitting = true;
     
     const formData = new FormData();

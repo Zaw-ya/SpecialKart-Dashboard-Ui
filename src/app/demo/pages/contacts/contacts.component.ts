@@ -5,6 +5,7 @@ import { ContactService, ContactMessage } from 'src/app/theme/shared/service/con
 import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 
 @Component({
   selector: 'app-contacts',
@@ -33,8 +34,17 @@ export class ContactsComponent implements OnInit {
     private toastService: ToastService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
+
+  get canViewMetaTracking(): boolean {
+    return this.authService.isAdmin() || this.authService.isMarketer();
+  }
+
+  get canDelete(): boolean {
+    return this.authService.isAdmin();
+  }
 
   get unreadCount(): number {
     return this.messages.filter(m => !m.isRead).length;
@@ -132,6 +142,7 @@ export class ContactsComponent implements OnInit {
 
   /** Delivery status of the Meta Lead event for each contact message (optional column). */
   loadMetaStatuses(): void {
+    if (!this.canViewMetaTracking) return;
     this.metaService.getStatusMap('ContactForm').subscribe({
       next: (map) => {
         this.metaStatuses = map;

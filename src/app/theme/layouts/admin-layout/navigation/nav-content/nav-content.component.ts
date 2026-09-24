@@ -1,10 +1,11 @@
-// Angular import
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, output } from '@angular/core';
 import { CommonModule, Location, LocationStrategy } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 // project import
 import { NavigationItem, NavigationItems } from '../navigation';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 import { environment } from 'src/environments/environment';
 
 import { NavGroupComponent } from './nav-group/nav-group.component';
@@ -34,7 +35,8 @@ import {
   GlobalOutline,
   AuditOutline,
   ReadOutline,
-  LineChartOutline
+  LineChartOutline,
+  TeamOutline
 } from '@ant-design/icons-angular/icons';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
@@ -44,15 +46,18 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
   templateUrl: './nav-content.component.html',
   styleUrls: ['./nav-content.component.scss']
 })
-export class NavContentComponent implements OnInit {
+export class NavContentComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private locationStrategy = inject(LocationStrategy);
   private iconService = inject(IconService);
+  private authService = inject(AuthService);
+
+  private roleSub: Subscription | null = null;
 
   // public props
   NavCollapsedMob = output();
 
-  navigations: NavigationItem[];
+  navigations: NavigationItem[] = [];
 
   // version
   title = 'Demo application for version numbering';
@@ -87,10 +92,11 @@ export class NavContentComponent implements OnInit {
         GlobalOutline,
         AuditOutline,
         ReadOutline,
-        LineChartOutline
+        LineChartOutline,
+        TeamOutline
       ]
     );
-    this.navigations = NavigationItems;
+    this.filterNavigation();
   }
 
   // Life cycle events
@@ -98,6 +104,40 @@ export class NavContentComponent implements OnInit {
     if (this.windowWidth < 1025) {
       (document.querySelector('.coded-navbar') as HTMLDivElement)?.classList.add('menupos-static');
     }
+
+    this.roleSub = this.authService.activeRole$.subscribe(() => {
+      this.filterNavigation();
+    });
+  }
+
+  ngOnDestroy() {
+    this.roleSub?.unsubscribe();
+  }
+
+  private filterNavigation(): void {
+    this.navigations = NavigationItems.map((group) => {
+      if (group.roles && !this.authService.hasRole(group.roles)) {
+        return null;
+      }
+
+      if (group.children) {
+        const allowedChildren = group.children.filter((child) => {
+          if (!child.roles) return true;
+          return this.authService.hasRole(child.roles);
+        });
+
+        if (allowedChildren.length === 0) {
+          return null;
+        }
+
+        return {
+          ...group,
+          children: allowedChildren
+        };
+      }
+
+      return group;
+    }).filter((g): g is NavigationItem => g !== null);
   }
 
   fireOutClick() {

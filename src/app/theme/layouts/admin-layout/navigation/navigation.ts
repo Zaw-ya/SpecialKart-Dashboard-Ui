@@ -16,6 +16,7 @@ export interface NavigationItem {
   link?: string;
   description?: string;
   path?: string;
+  roles?: string[];
 }
 
 export const NavigationItems: NavigationItem[] = [
@@ -24,6 +25,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'الرئيسية | Overview',
     type: 'group',
     icon: 'icon-navigation',
+    roles: ['Admin', 'Marketer', 'CustomerSupport'],
     children: [
       {
         id: 'default',
@@ -32,7 +34,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/dashboard/default',
         icon: 'dashboard',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer', 'CustomerSupport']
       }
     ]
   },
@@ -41,6 +44,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'طلبات النماذج والعملاء | Form Submissions',
     type: 'group',
     icon: 'icon-navigation',
+    roles: ['Admin', 'Marketer', 'CustomerSupport'],
     children: [
       {
         id: 'demo-requests',
@@ -49,7 +53,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/demo-requests',
         icon: 'experiment',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer', 'CustomerSupport']
       },
       {
         id: 'contacts',
@@ -58,7 +63,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/contacts',
         icon: 'mail',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer', 'CustomerSupport']
       }
     ]
   },
@@ -67,6 +73,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'إدارة المحتوى والخدمات | Catalog',
     type: 'group',
     icon: 'icon-navigation',
+    roles: ['Admin', 'Marketer', 'CustomerSupport'],
     children: [
       {
         id: 'invitation-cards',
@@ -75,7 +82,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/invitation-cards',
         icon: 'layout',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer', 'CustomerSupport']
       },
       {
         id: 'packages',
@@ -84,7 +92,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/packages',
         icon: 'audit',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer', 'CustomerSupport']
       },
       {
         id: 'orders',
@@ -93,7 +102,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/orders',
         icon: 'shopping-cart',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer']
       },
       {
         id: 'event-types',
@@ -102,7 +112,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/event-types',
         icon: 'tag',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
       },
       {
         id: 'features',
@@ -111,7 +122,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/features',
         icon: 'unordered-list',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer']
       },
       {
         id: 'supervisors',
@@ -120,7 +132,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/supervisors',
         icon: 'user',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
       },
       {
         id: 'blog',
@@ -129,7 +142,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/blog',
         icon: 'read',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer']
       },
       {
         id: 'testimonials',
@@ -138,7 +152,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/testimonials',
         icon: 'comment',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer']
       }
     ]
   },
@@ -147,6 +162,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'النظام والإعدادات | System',
     type: 'group',
     icon: 'icon-navigation',
+    roles: ['Admin', 'Marketer'],
     children: [
       {
         id: 'countries',
@@ -155,7 +171,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/countries',
         icon: 'global',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
       },
       {
         id: 'cities',
@@ -164,7 +181,18 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/cities',
         icon: 'environment',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
+      },
+      {
+        id: 'users',
+        title: 'إدارة المستخدمين',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/users',
+        icon: 'team',
+        breadcrumbs: false,
+        roles: ['Admin']
       },
       {
         id: 'register',
@@ -173,7 +201,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/register',
         icon: 'user-add',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
       },
       {
         id: 'meta-tracking',
@@ -182,7 +211,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/meta-tracking',
         icon: 'line-chart',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin', 'Marketer']
       },
       {
         id: 'site-settings',
@@ -191,7 +221,8 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item',
         url: '/site-settings',
         icon: 'setting',
-        breadcrumbs: false
+        breadcrumbs: false,
+        roles: ['Admin']
       }
     ]
   }

@@ -94,7 +94,9 @@
                 <th>التاريخ</th>
                 <th>الإجمالي</th>
                 <th>الحالة</th>
-                <th class="text-center" title="هل طلع من الطلب ده Lead على Meta؟">Meta</th>
+                @if (canViewMetaTracking) {
+                  <th class="text-center" title="هل طلع من الطلب ده Lead على Meta؟">Meta</th>
+                }
                 <th class="text-start pl-4">إجراءات</th>
               </tr>
             </thead>
@@ -145,15 +147,17 @@
                       {{ getStatusLabel(order.status) }}
                     </span>
                   </td>
-                  <td class="text-center">
-                    @if (metaStatus(order.id) === 'sent') {
-                      <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
-                    } @else if (metaStatus(order.id) === 'failed') {
-                      <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
-                    } @else {
-                      <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
-                    }
-                  </td>
+                  @if (canViewMetaTracking) {
+                    <td class="text-center">
+                      @if (metaStatus(order.id) === 'sent') {
+                        <i class="ti ti-circle-check text-success fs-5" title="تم إرسال Lead إلى Meta"></i>
+                      } @else if (metaStatus(order.id) === 'failed') {
+                        <i class="ti ti-alert-triangle text-danger fs-5" title="فشل إرسال الـ Lead إلى Meta"></i>
+                      } @else {
+                        <span class="text-muted small" title="لا يوجد حدث Meta لهذا السجل">—</span>
+                      }
+                    </td>
+                  }
                   <td class="text-start pl-4">
                     <div class="d-flex justify-content-start gap-1" (click)="$event.stopPropagation()">
                       <button class="btn btn-icon btn-link-primary" (click)="viewOrder(order)" title="عرض التفاصيل">
@@ -164,25 +168,33 @@
                         <i class="ti ti-brand-whatsapp"></i>
                       </button>
                       
-                      <div class="dropdown d-inline-block">
-                        <button class="btn btn-icon btn-link-secondary" data-bs-toggle="dropdown">
-                          <i class="ti ti-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-start border-0 shadow-sm">
-                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Processing)">قيد التنفيذ</a></li>
-                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Completed)">مكتمل</a></li>
-                          <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Cancelled)">إلغاء الطلب</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item py-2 text-danger" (click)="deleteOrder(order.id)">حذف نهائياً</a></li>
-                        </ul>
-                      </div>
+                      @if (canUpdateStatus || canDeleteOrder) {
+                        <div class="dropdown d-inline-block">
+                          <button class="btn btn-icon btn-link-secondary" data-bs-toggle="dropdown">
+                            <i class="ti ti-dots-vertical"></i>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-start border-0 shadow-sm">
+                            @if (canUpdateStatus) {
+                              <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Processing)">قيد التنفيذ</a></li>
+                              <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Completed)">مكتمل</a></li>
+                              <li><a class="dropdown-item py-2" (click)="updateStatus(order, OrderStatus.Cancelled)">إلغاء الطلب</a></li>
+                            }
+                            @if (canDeleteOrder) {
+                              @if (canUpdateStatus) {
+                                <li><hr class="dropdown-divider"></li>
+                              }
+                              <li><a class="dropdown-item py-2 text-danger" (click)="deleteOrder(order.id)">حذف نهائياً</a></li>
+                            }
+                          </ul>
+                        </div>
+                      }
                     </div>
                   </td>
                 </tr>
               }
               @if (filteredOrders.length === 0) {
                 <tr>
-                  <td colspan="9" class="text-center py-5 text-muted">لا يوجد طلبات في هذا القسم حالياً.</td>
+                  <td [attr.colspan]="canViewMetaTracking ? 9 : 8" class="text-center py-5 text-muted">لا يوجد طلبات في هذا القسم حالياً.</td>
                 </tr>
               }
             </tbody>

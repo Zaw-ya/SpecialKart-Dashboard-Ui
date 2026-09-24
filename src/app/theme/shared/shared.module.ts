@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // project import
 import { CardComponent } from './components/card/card.component';
+import { HasRoleDirective } from './directive/has-role.directive';
 
 // third party
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -35,7 +36,8 @@ import {
     FormsModule,
     ReactiveFormsModule,
     CardComponent,
-    IconDirective
+    IconDirective,
+    HasRoleDirective
   ],
   exports: [
     CommonModule,
@@ -50,7 +52,8 @@ import {
     FormsModule,
     ReactiveFormsModule,
     CardComponent,
-    IconDirective
+    IconDirective,
+    HasRoleDirective
   ]
 })
 export class SharedModule {}

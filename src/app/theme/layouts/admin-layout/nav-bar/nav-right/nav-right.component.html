@@ -1,12 +1,26 @@
 <ul class="list-unstyled d-flex align-items-center mb-0 gap-2">
-  <li class="pc-h-item">
-    <a [routerLink]="['/register']" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" title="إضافة مدير جديد" aria-label="Add Admin">
-      <i class="ti ti-user-plus fs-5 text-white"></i>
+  <!-- Role Badge -->
+  <li class="pc-h-item" *ngIf="authService.activeRole$ | async as currentRole">
+    <div class="px-3 py-1 rounded-pill d-inline-flex align-items-center gap-2 border"
+         style="background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18) !important; color: #fff; height: 38px;">
+      <i class="ti ti-shield-check text-warning fs-5"></i>
+      <span style="font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em;">{{ getRoleLabel(currentRole) }}</span>
+    </div>
+  </li>
+
+  <!-- User Management (Visible to Admin only) -->
+  <li class="pc-h-item" *appHasRole="'Admin'">
+    <a [routerLink]="['/users']" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" title="إدارة المستخدمين والصلاحيات" aria-label="Manage Users">
+      <i class="ti ti-users fs-5 text-white"></i>
     </a>
   </li>
+
+  <!-- Logout -->
   <li class="pc-h-item">
-    <a href="javascript:" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.3); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" (click)="logout()" title="تسجيل الخروج" aria-label="Logout">
+    <a href="javascript:" class="btn btn-icon text-white d-flex align-items-center justify-content-center" style="background: rgba(220, 38, 38, 0.18); border: 1px solid rgba(220, 38, 38, 0.35); width: 38px; height: 38px; border-radius: 8px; transition: all 0.2s;" (click)="logout()" title="تسجيل الخروج" aria-label="Logout">
       <i class="ti ti-logout fs-5 text-danger"></i>
     </a>
   </li>
 </ul>
+
+

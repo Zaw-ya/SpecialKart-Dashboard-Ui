@@ -12,9 +12,10 @@ import { OrderService, Order, OrderStatus } from '../../../theme/shared/service/
 import { ContactService, ContactMessage } from '../../../theme/shared/service/contact.service';
 import { PackageService } from '../../../theme/shared/service/package.service';
 import { BlogService } from '../../../theme/shared/service/blog.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of, catchError } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthService } from '../../../theme/shared/service/auth.service';
 
 @Component({
   selector: 'app-default',
@@ -111,6 +112,7 @@ export class DefaultComponent implements OnInit {
   private contactService = inject(ContactService);
   private packageService = inject(PackageService);
   private cdr = inject(ChangeDetectorRef);
+  public authService = inject(AuthService);
 
   ngOnInit(): void {
     this.loadStats();
@@ -118,13 +120,13 @@ export class DefaultComponent implements OnInit {
 
   loadStats(): void {
     forkJoin({
-      cards: this.cardService.getAll(),
-      countries: this.countryService.getAll(),
-      supervisors: this.supervisorService.getAll(),
-      eventTypes: this.eventTypeService.getAll(),
-      orders: this.orderService.getAll(),
-      messages: this.contactService.getAll(),
-      packages: this.packageService.getAll()
+      cards: this.cardService.getAll().pipe(catchError(() => of([]))),
+      countries: this.countryService.getAll().pipe(catchError(() => of([]))),
+      supervisors: this.supervisorService.getAll().pipe(catchError(() => of([]))),
+      eventTypes: this.eventTypeService.getAll().pipe(catchError(() => of([]))),
+      orders: this.orderService.getAll().pipe(catchError(() => of([]))),
+      messages: this.contactService.getAll().pipe(catchError(() => of([]))),
+      packages: this.packageService.getAll().pipe(catchError(() => of([])))
     }).subscribe({
       next: (res) => {
         this.stats.cards = res.cards.length;

@@ -16,6 +16,7 @@ export class AuthRegisterComponent {
   fullName = '';
   email = '';
   password = '';
+  role = 'Admin';
   loading = false;
   error = '';
   success = '';
@@ -36,7 +37,7 @@ export class AuthRegisterComponent {
     this.success = '';
 
     this.authService
-      .register(this.fullName, this.email, this.password)
+      .register(this.fullName, this.email, this.password, this.role)
       .pipe(first())
       .subscribe({
         next: () => {

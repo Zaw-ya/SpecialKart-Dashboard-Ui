@@ -21,8 +21,8 @@
 
       <form (ngSubmit)="login()">
         <div class="mb-3 text-start">
-          <label class="form-label fw-bold text-dark small" for="email">البريد الإلكتروني</label>
-          <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="admin@specialcards.sa" [(ngModel)]="email" required />
+          <label class="form-label fw-bold text-dark small" for="email">البريد الإلكتروني أو اسم المستخدم</label>
+          <input type="text" class="form-control form-control-lg" id="email" name="email" placeholder="اسم المستخدم أو admin@specialcards.sa" [(ngModel)]="email" required />
         </div>
 
         <div class="mb-4 text-start">

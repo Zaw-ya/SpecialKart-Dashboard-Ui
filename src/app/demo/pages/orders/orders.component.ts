@@ -6,6 +6,7 @@ import { ToastService } from 'src/app/theme/shared/service/toast.service';
 import { InvitationCardService, InvitationCard } from 'src/app/theme/shared/service/invitation-card.service';
 import { PackageService, Package } from 'src/app/theme/shared/service/package.service';
 import { MetaLeadEventsService, MetaRecordStatus } from 'src/app/theme/shared/service/meta-lead-events.service';
+import { AuthService } from 'src/app/theme/shared/service/auth.service';
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -36,6 +37,7 @@ export class OrdersComponent implements OnInit {
     private cardService: InvitationCardService,
     private packageService: PackageService,
     private toastService: ToastService,
+    public authService: AuthService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router
@@ -95,6 +97,7 @@ export class OrdersComponent implements OnInit {
 
   /** Delivery status of the Meta Lead event for each order (optional column). */
   loadMetaStatuses(): void {
+    if (!this.canViewMetaTracking) return;
     this.metaService.getStatusMap('OrderForm').subscribe({
       next: (map) => {
         this.metaStatuses = map;
@@ -166,6 +169,18 @@ export class OrdersComponent implements OnInit {
     return this.packages.find(p => p.id === id)?.name || 'Unknown Package';
   }
 
+  get canUpdateStatus(): boolean {
+    return this.authService.hasRole(['Admin', 'CustomerSupport']);
+  }
+
+  get canDeleteOrder(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  get canViewMetaTracking(): boolean {
+    return this.authService.hasRole(['Admin', 'Marketer']);
+  }
+
   viewOrder(order: Order): void {
     this.selectedOrder = order;
   }
@@ -175,6 +190,11 @@ export class OrdersComponent implements OnInit {
   }
 
   updateStatus(order: Order, status: OrderStatus): void {
+    if (!this.canUpdateStatus) {
+      this.toastService.error('ليس لديك الصلاحية لتحديث حالة الطلب');
+      return;
+    }
+
     this.orderService.updateStatus(order.id, status).subscribe({
       next: () => {
         order.status = status;
@@ -186,6 +206,11 @@ export class OrdersComponent implements OnInit {
   }
 
   deleteOrder(id: number): void {
+    if (!this.canDeleteOrder) {
+      this.toastService.error('عفواً، حذف الطلبات مقتصر على مدير النظام فقط');
+      return;
+    }
+
     if (confirm('Are you sure you want to delete this order?')) {
       this.orderService.delete(id).subscribe({
         next: () => {
@@ -199,3 +224,4 @@ export class OrdersComponent implements OnInit {
     }
   }
 }
+
