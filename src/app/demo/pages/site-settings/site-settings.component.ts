@@ -40,6 +40,21 @@ export class SiteSettingsComponent implements OnInit {
   uploadingCardImage = false;
   cardImageSizeLabel = '';
 
+  // Tab & UI state
+  activeTab: 'general' | 'social' | 'twilio' | 'demo' | 'bulk' = 'general';
+  showAuthToken = false;
+  copiedField: string | null = null;
+  searchQuery = '';
+  previewOrderId = 'CRD-108';
+
+  readonly tabs = [
+    { id: 'general', label: 'العامة والهوية', labelEn: 'General & Brand', icon: 'ti-settings', badge: null },
+    { id: 'social', label: 'التواصل والشبكات', labelEn: 'Channels & Social', icon: 'ti-share', badge: null },
+    { id: 'twilio', label: 'بوابة Twilio و OTP', labelEn: 'Twilio & WhatsApp API', icon: 'ti-plug', badge: 'api' },
+    { id: 'demo', label: 'إعدادات بطاقة الديمو', labelEn: 'Demo Card Flow', icon: 'ti-photo', badge: null },
+    { id: 'bulk', label: 'عمليات التحديث الشامل', labelEn: 'Bulk Operations', icon: 'ti-bolt', badge: 'tool' }
+  ] as const;
+
   /**
    * The prefix to hard-code into the WhatsApp template's Media URL. Derived from
    * the uploaded image so it always shows the host the API actually serves from,
@@ -50,6 +65,31 @@ export class SiteSettingsComponent implements OnInit {
     const marker = '/demo-cards/';
     const index = url.indexOf(marker);
     return index >= 0 ? url.slice(0, index + marker.length) : '<api-host>/demo-cards/';
+  }
+
+  get isTwilioConfigured(): boolean {
+    return !!(
+      this.settings['twilio-account-sid'] &&
+      this.settings['twilio-whatsapp-from'] &&
+      this.settings['twilio-verify-sid']
+    );
+  }
+
+  get isDemoConfigured(): boolean {
+    return !!(
+      this.settings['demo-default-image-url'] &&
+      this.settings['twilio-template-sid']
+    );
+  }
+
+  get orderMessagePreview(): string {
+    const template = this.settings['design-order-message'] || 'يعجبني تصميم الكارت بالكود "{id}"';
+    return template.replace(/\{id\}/g, this.previewOrderId);
+  }
+
+  get whatsAppTestLink(): string {
+    const raw = (this.settings['whatsapp-number'] || '').replace(/\D/g, '');
+    return raw ? `https://wa.me/${raw}` : '';
   }
 
   bulkVisibility = {
@@ -69,6 +109,35 @@ export class SiteSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSettings();
+  }
+
+  selectTab(tab: 'general' | 'social' | 'twilio' | 'demo' | 'bulk'): void {
+    this.activeTab = tab;
+  }
+
+  toggleAuthToken(): void {
+    this.showAuthToken = !this.showAuthToken;
+  }
+
+  copyToClipboard(text: string, fieldName: string): void {
+    if (!text) {
+      this.toastService.warning('لا يوجد نص لنسخه');
+      return;
+    }
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copiedField = fieldName;
+        this.toastService.success(`تم نسخ ${fieldName} للحافظة`);
+        setTimeout(() => {
+          if (this.copiedField === fieldName) {
+            this.copiedField = null;
+            this.cdr.detectChanges();
+          }
+        }, 2000);
+      }).catch(() => {
+        this.toastService.error('تعذر النسخ تلقائياً');
+      });
+    }
   }
 
   /**
@@ -159,6 +228,46 @@ export class SiteSettingsComponent implements OnInit {
         this.toastService.error(`Failed to update ${key}`);
       }
     });
+  }
+
+  saveSection(keys: string[], sectionName: string): void {
+    const payload: { [key: string]: string } = {};
+    keys.forEach(k => {
+      payload[k] = this.settings[k];
+    });
+
+    this.saving = true;
+    this.settingsService.setBatch(payload).pipe(
+      finalize(() => {
+        this.saving = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: () => {
+        this.toastService.success(`تم حفظ إعدادات ${sectionName} بنجاح`);
+      },
+      error: (err) => {
+        console.error(`Error saving ${sectionName} settings:`, err);
+        this.toastService.error(`فشل حفظ إعدادات ${sectionName}`);
+      }
+    });
+  }
+
+  onSearchChange(): void {
+    const q = (this.searchQuery || '').trim().toLowerCase();
+    if (!q) return;
+
+    if (q.includes('twilio') || q.includes('token') || q.includes('sid') || q.includes('otp') || q.includes('تويليو')) {
+      this.activeTab = 'twilio';
+    } else if (q.includes('demo') || q.includes('كارت') || q.includes('صورة') || q.includes('card') || q.includes('image')) {
+      this.activeTab = 'demo';
+    } else if (q.includes('whats') || q.includes('face') || q.includes('insta') || q.includes('واتس') || q.includes('انستا') || q.includes('فيسبوك') || q.includes('رسالة') || q.includes('message')) {
+      this.activeTab = 'social';
+    } else if (q.includes('bulk') || q.includes('star') || q.includes('rating') || q.includes('carousel') || q.includes('شامل') || q.includes('تقييم') || q.includes('سلايدر')) {
+      this.activeTab = 'bulk';
+    } else if (q.includes('name') || q.includes('email') || q.includes('phone') || q.includes('address') || q.includes('موقع') || q.includes('ايميل') || q.includes('عنوان') || q.includes('هاتف')) {
+      this.activeTab = 'general';
+    }
   }
 
   saveAll(): void {

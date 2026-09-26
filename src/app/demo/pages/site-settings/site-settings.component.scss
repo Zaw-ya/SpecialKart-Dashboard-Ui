@@ -1,51 +1,382 @@
+// Site Settings Component Styles
 :host {
   display: block;
 }
 
-.card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  &:hover {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+/* ==========================================================================
+   1. NAVIGATION PILLS / TABS
+   ========================================================================== */
+.settings-nav-bar {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, rgba(17, 24, 39, 0.1));
+  border-radius: 14px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.03);
+}
+
+.settings-nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  .nav-item {
+    margin: 0;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-secondary, #475569);
+    font-weight: 600;
+    font-size: 0.92rem;
+    transition: all 0.22s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+
+    i {
+      font-size: 1.15rem;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      background: rgba(184, 135, 59, 0.08);
+      color: var(--primary, #B8873B);
+      border-color: rgba(184, 135, 59, 0.15);
+
+      i {
+        transform: scale(1.1);
+      }
+    }
+
+    &.active {
+      background: var(--surface-dark, #0E131F);
+      color: #FFFFFF !important;
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 14px rgba(14, 19, 31, 0.25);
+
+      i {
+        color: #F59E0B !important;
+      }
+
+      .badge-indicator {
+        background: rgba(245, 158, 11, 0.25);
+        color: #F59E0B;
+        border-color: rgba(245, 158, 11, 0.4);
+      }
+    }
   }
 }
 
-.form-control {
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+.search-box-wrapper {
+  position: relative;
+  min-width: 240px;
+
+  .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted, #94A3B8);
+    pointer-events: none;
+  }
+
+  .search-input {
+    padding-right: 36px !important;
+    padding-left: 14px !important;
+    border-radius: 20px !important;
+    background-color: var(--surface-secondary, #F8F5EE) !important;
+    border: 1px solid var(--border, rgba(17, 24, 39, 0.1)) !important;
+    font-size: 0.88rem;
+
+    &:focus {
+      background-color: #FFFFFF !important;
+      border-color: var(--primary, #B8873B) !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   2. CARD & SECTION ENHANCEMENTS
+   ========================================================================== */
+.settings-card {
+  border-radius: 14px !important;
+  border: 1px solid var(--border, rgba(17, 24, 39, 0.08)) !important;
+  box-shadow: 0 4px 20px rgba(17, 24, 39, 0.04) !important;
+  background: var(--surface, #FFFFFF) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  .card-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--border-subtle, rgba(17, 24, 39, 0.06)) !important;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   3. FORM INPUTS & LABELS
+   ========================================================================== */
+.form-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  color: var(--text-primary, #111827);
+  margin-bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px !important;
+  border: 1.5px solid #E2E8F0 !important;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.93rem;
+  transition: all 0.2s ease-in-out;
 
   &:focus {
-    background-color: #fff !important;
-    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.1);
-    border: 1px solid var(--bs-primary);
+    border-color: var(--primary, #B8873B) !important;
+    box-shadow: 0 0 0 3px rgba(184, 135, 59, 0.15) !important;
+    background-color: #FFFFFF !important;
   }
 }
 
-.input-group-text {
-  font-size: 1.2rem;
-  border-radius: 8px 0 0 8px;
+.input-group {
+  .input-group-text {
+    border-radius: 10px 0 0 10px !important;
+    border: 1.5px solid #E2E8F0;
+    border-right: none;
+    background-color: #F8FAFC;
+    font-size: 1.1rem;
+    padding: 0.65rem 0.9rem;
+  }
+
+  .form-control {
+    border-radius: 0 10px 10px 0 !important;
+    border-left: none;
+  }
+
+  .btn-inline-action {
+    border: 1.5px solid #E2E8F0;
+    border-left: none;
+    background-color: #F8FAFC;
+    color: var(--text-secondary, #475569);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(184, 135, 59, 0.12);
+      color: var(--primary, #B8873B);
+    }
+  }
 }
 
-.form-label {
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
+/* ==========================================================================
+   4. WHATSAPP CHAT PREVIEW MOCKUP
+   ========================================================================== */
+.whatsapp-phone-mockup {
+  border-radius: 18px;
+  background: #EFEAE2;
+  border: 1px solid #D1D7DB;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  .whatsapp-header {
+    background: #075E54;
+    color: #FFFFFF;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #128C7E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #FFFFFF;
+    }
+
+    .contact-info {
+      line-height: 1.2;
+      .name {
+        font-weight: 700;
+        font-size: 0.92rem;
+      }
+      .status {
+        font-size: 0.72rem;
+        opacity: 0.85;
+      }
+    }
+  }
+
+  .whatsapp-chat-body {
+    padding: 18px 14px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: #EFEAE2;
+    background-image: radial-gradient(#d6cdc0 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  .chat-bubble-out {
+    align-self: flex-end;
+    max-width: 88%;
+    background: #DCF8C6;
+    color: #111B21;
+    padding: 9px 13px;
+    border-radius: 10px 0 10px 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.13);
+    position: relative;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    word-break: break-word;
+
+    .bubble-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      font-size: 0.68rem;
+      color: #667781;
+      margin-top: 4px;
+
+      .check-icons {
+        color: #53BDEB;
+      }
+    }
+  }
 }
 
-.btn-warning {
-  color: #000;
+/* ==========================================================================
+   5. TEMPLATE VARIABLE TILES
+   ========================================================================== */
+.variable-badge-tile {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+
   &:hover {
-    background-color: #e67e22;
-    border-color: #e67e22;
-    color: #fff;
+    background: #FFFFFF;
+    border-color: var(--primary, #B8873B);
+    box-shadow: 0 3px 10px rgba(184, 135, 59, 0.1);
+  }
+
+  .var-code {
+    font-family: var(--bs-font-monospace);
+    font-weight: 700;
+    color: #6F42C1;
+    background: rgba(111, 66, 193, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.88rem;
   }
 }
 
+/* ==========================================================================
+   6. BRAND SUMMARY CARD
+   ========================================================================== */
+.brand-summary-box {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #111625 0%, #0E131F 100%);
+  color: #FFFFFF;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  .brand-logo-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--gold-gradient);
+    color: #0E131F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  .preview-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #CBD5E1;
+    margin-bottom: 0.75rem;
+
+    i {
+      color: #F59E0B;
+      font-size: 1.1rem;
+      margin-top: 2px;
+    }
+  }
+}
+
+/* ==========================================================================
+   7. BULK TOOLS ACCENT & STATUS
+   ========================================================================== */
+.bulk-tool-card {
+  border-radius: 12px;
+  border: 1.5px solid #FEE2E2;
+  background: #FFFBFB;
+  transition: all 0.2s ease;
+
+  &.active-tool {
+    border-color: #EF4444;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+  }
+}
+
+.status-indicator-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  &.ready {
+    background: #DCFCE7;
+    color: #15803D;
+    border: 1px solid rgba(22, 163, 74, 0.25);
+  }
+
+  &.setup {
+    background: #FEF3C7;
+    color: #B45309;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+  }
+}
+
+/* Animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate__fadeIn {
-  animation: fadeIn 0.5s ease-out;
+.tab-pane-fade {
+  animation: fadeIn 0.25s ease-out;
 }
