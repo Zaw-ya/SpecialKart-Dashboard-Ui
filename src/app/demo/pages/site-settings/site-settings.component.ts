@@ -30,7 +30,8 @@ export class SiteSettingsComponent implements OnInit {
     'twilio-verify-sid': '',
     'twilio-otp-template-sid': '',
     'demo-default-image-url': '',
-    'twilio-template-sid': ''
+    'twilio-template-sid': '',
+    'demo-contact-phone': ''
   };
 
   loading = true;
