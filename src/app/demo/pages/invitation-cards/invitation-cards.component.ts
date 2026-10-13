@@ -137,9 +137,16 @@ export class InvitationCardsComponent implements OnInit {
   }
 
   private generateCardCode(): string {
-    const time = Date.now().toString(36).toUpperCase();
-    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `SK-${time}-${rand}`;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const used = new Set(this.cards.map((c) => c.title));
+    let code = '';
+    do {
+      code = '#';
+      for (let i = 0; i < 5; i++) {
+        code += chars[Math.floor(Math.random() * chars.length)];
+      }
+    } while (used.has(code));
+    return code;
   }
 
   cancelForm(): void {
