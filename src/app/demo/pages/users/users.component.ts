@@ -159,11 +159,13 @@ export class UsersComponent implements OnInit {
           this.closeCreateModal();
           this.toastService.success('تم إنشاء المستخدم بنجاح');
           this.loadUsers(true);
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.createLoading = false;
           const msg = err.error?.message || 'فشل في إنشاء المستخدم';
           this.toastService.error(msg);
+          this.cdr.detectChanges();
         }
       });
   }
@@ -200,11 +202,13 @@ export class UsersComponent implements OnInit {
           this.closeEditModal();
           this.toastService.success('تم تحديث بيانات المستخدم بنجاح');
           this.loadUsers(true);
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.editLoading = false;
           const msg = err.error?.message || 'فشل في تحديث بيانات المستخدم';
           this.toastService.error(msg);
+          this.cdr.detectChanges();
         }
       });
   }
@@ -243,11 +247,13 @@ export class UsersComponent implements OnInit {
         this.passwordLoading = false;
         this.closePasswordModal();
         this.toastService.success(`تم تغيير كلمة المرور للمستخدم ${this.passwordUser?.userName || this.passwordUser?.email} بنجاح`);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.passwordLoading = false;
         const msg = err.error?.message || 'فشل في تغيير كلمة المرور';
         this.toastService.error(msg);
+        this.cdr.detectChanges();
       }
     });
   }
