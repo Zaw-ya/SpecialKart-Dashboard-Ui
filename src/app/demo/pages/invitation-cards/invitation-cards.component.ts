@@ -125,12 +125,21 @@ export class InvitationCardsComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      if (!this.editingCard) {
+        this.cardData.title = this.generateCardCode();
+      }
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  private generateCardCode(): string {
+    const time = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `SK-${time}-${rand}`;
   }
 
   cancelForm(): void {
